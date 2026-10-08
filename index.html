@@ -40,7 +40,7 @@ body {
   max-width: 1280px;
   margin: 0 auto;
   padding: 20px;
-  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: 0;
   min-height: 100vh;
 }
 
@@ -535,6 +535,16 @@ input:invalid { box-shadow: none; outline: none; }
 .plan-bar { height: 10px; background: var(--panel); border-radius: 99px; overflow: hidden; margin-bottom: 12px; }
 .plan-bar-fill { height: 100%; border-radius: 99px; transition: width .3s; }
 
+.plan-collapse-btn {
+  background: transparent; border: 1px solid var(--border); color: var(--muted);
+  cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 7px;
+  line-height: 1; font-family: inherit; transition: .15s;
+  flex-shrink: 0; margin-top: 2px; min-width: 26px; text-align: center;
+}
+.plan-collapse-btn:hover { color: var(--text); background: var(--panel3); border-color: var(--accent); }
+.plan-body.hidden { display: none; }
+.plan-body { margin-top: 4px; }
+
 .subtasks { display: flex; flex-direction: column; gap: 6px; }
 .subtask {
   display: flex; align-items: center; gap: 10px;
@@ -661,6 +671,60 @@ input:invalid { box-shadow: none; outline: none; }
 .mini-tx-note { font-size: 11px; color: var(--muted); word-break: break-word; }
 .mini-tx-amt { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
+/* ============ DAILY BUDGET ============ */
+.daily-hero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.daily-hero .dh-item {
+  padding: 12px 14px; background: var(--panel2);
+  border: 1px solid var(--border); border-radius: 11px;
+}
+.daily-hero .dh-label {
+  font-size: 11px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px;
+  font-weight: 600; margin-bottom: 6px;
+}
+.daily-hero .dh-value {
+  font-size: 20px; font-weight: 700;
+  font-variant-numeric: tabular-nums; word-break: break-word;
+}
+.daily-hero .dh-note { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+.daily-progress {
+  height: 12px; background: var(--panel2);
+  border-radius: 99px; overflow: hidden; margin: 6px 0 14px;
+}
+.daily-progress-fill {
+  height: 100%; border-radius: 99px;
+  transition: width .4s ease;
+}
+
+.daily-plan-list {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.daily-plan-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; background: var(--panel2);
+  border-radius: 10px; border: 1px solid var(--border);
+  font-size: 13px;
+}
+.daily-plan-row .dpr-day {
+  font-weight: 700; color: var(--accent);
+  min-width: 90px; font-variant-numeric: tabular-nums;
+}
+.daily-plan-row .dpr-status {
+  flex: 1; font-size: 12px; color: var(--muted);
+}
+.daily-plan-row .dpr-amount {
+  font-weight: 700; font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.daily-plan-row.is-today { border-color: var(--accent); background: rgba(79,140,255,.1); }
+.daily-plan-row.is-past { opacity: .55; }
+
 /* ==================================================
    ================ MOBILE OPTIMIZATION =============
    ================================================== */
@@ -674,15 +738,14 @@ input:invalid { box-shadow: none; outline: none; }
   html { font-size: 15px; }
   body { font-size: 14px; }
 
-  /* Верхний отступ под шторку (notch / Dynamic Island) + нижний под bottom nav */
+  /* Верхний отступ под шторку + нижний под bottom nav */
   .app {
     padding: 8px;
     padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
-    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
     max-width: 100%;
   }
 
-  /* Sticky-хедер прижат ниже шторки */
   header {
     position: sticky;
     top: calc(env(safe-area-inset-top, 0px) + 4px);
@@ -834,6 +897,10 @@ input:invalid { box-shadow: none; outline: none; }
   .empty { padding: 30px 14px; font-size: 13px; }
   .empty .big { font-size: 32px; }
   .muted { font-size: 12px; }
+
+  .daily-hero { grid-template-columns: 1fr; gap: 8px; }
+  .daily-hero .dh-value { font-size: 18px; }
+  .daily-plan-row .dpr-day { min-width: 80px; font-size: 12px; }
 }
 
 @media (max-width: 360px) {
@@ -1119,6 +1186,74 @@ function getFixedByGroup() {
   return byGroup;
 }
 
+/* ============================ SAVINGS + DAILY BUDGET ============================ */
+
+function calcSavingsBalance() {
+  return state.transactions
+    .filter(t => t.type === 'expense' && (t.category === 'savings' || t.category === 'invest'))
+    .reduce((s, t) => s + t.amount, 0);
+}
+
+function calcDailyBudget() {
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd   = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const fromIso = fmtDateLocal(monthStart);
+  const toIso   = fmtDateLocal(monthEnd);
+
+  const monthTx = state.transactions.filter(x => x.date >= fromIso && x.date <= toIso);
+  const income  = monthTx.filter(x => x.type === 'income').reduce((s, x) => s + x.amount, 0);
+  const fixedTotal = getFixedExpensesTotal();
+
+  const nwPct  = (state.distribution.needs + state.distribution.wants) / 100;
+  const freeIncome = Math.max(0, income - fixedTotal);
+  const budget = freeIncome * nwPct;
+
+  const inGroup = (x, groups) => {
+    const c = CATEGORIES.expense.find(y => y.id === x.category);
+    return c && groups.includes(c.group);
+  };
+
+  const spent      = monthTx.filter(x => x.type === 'expense' && inGroup(x, ['needs','wants']))
+                            .reduce((s, x) => s + x.amount, 0);
+  const todaySpent = monthTx.filter(x => x.date === todayStr() && x.type === 'expense'
+                                       && inGroup(x, ['needs','wants']))
+                            .reduce((s, x) => s + x.amount, 0);
+
+  const remaining = Math.max(0, budget - spent);
+  const totalDays = monthEnd.getDate();
+  const daysLeft  = Math.max(1, totalDays - now.getDate() + 1);
+  const perDay    = remaining / daysLeft;
+
+  // План по оставшимся дням: пересчитываем лимит по мере трат
+  const planByDay = [];
+  let runningRemaining = remaining;
+  for (let i = 0; i < daysLeft; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() + i);
+    const iso = fmtDateLocal(d);
+    const daysAfter = daysLeft - i;
+    const dayLimit = runningRemaining / daysAfter;
+    const daySpent = monthTx
+      .filter(x => x.date === iso && x.type === 'expense' && inGroup(x, ['needs','wants']))
+      .reduce((s, x) => s + x.amount, 0);
+    runningRemaining = Math.max(0, runningRemaining - daySpent);
+    planByDay.push({
+      iso,
+      label: i === 0 ? 'Сегодня' : (i === 1 ? 'Завтра' : fmtDateHuman(iso)),
+      limit: dayLimit,
+      spent: daySpent,
+      isToday: i === 0
+    });
+  }
+
+  return {
+    income, fixedTotal, freeIncome,
+    budget, spent, todaySpent, remaining,
+    daysLeft, totalDays, perDay, planByDay
+  };
+}
+
 /* ============================ DISTRIBUTION ============================ */
 
 function calcDistribution(baseIncome) {
@@ -1321,7 +1456,6 @@ function openTimePicker(initial, onSelect) {
     let hoursHTML = '';
     for (let h = 0; h < 24; h++) hoursHTML += `<div class="time-item ${h === hh ? 'active' : ''}" data-h="${h}">${String(h).padStart(2,'0')}</div>`;
     let minsHTML = '';
-    // Шаг 1 минута — можно выбрать любую минуту от 00 до 59
     for (let m = 0; m < 60; m += 1) minsHTML += `<div class="time-item ${m === mm ? 'active' : ''}" data-m="${m}">${String(m).padStart(2,'0')}</div>`;
 
     overlay.innerHTML = `
@@ -1552,7 +1686,6 @@ function suggestedDistributionForGoal(goal) {
   const base = { ...state.distribution };
   const totalDebt = state.debts.reduce((s,d) => s + Math.max(0, d.amount - (d.paid || 0)), 0);
   const goalAmount = goal.amount;
-  const daysToGoal = goal.periodDays || 90;
 
   const incomeByMonth = {};
   state.transactions.filter(t => t.type === 'income').forEach(t => {
@@ -1654,6 +1787,88 @@ function txItemHTML(t) {
   </div>`;
 }
 
+function renderDailyPlanBlock(daily) {
+  const pctUsed = daily.perDay > 0
+    ? Math.min(100, daily.todaySpent / daily.perDay * 100)
+    : (daily.todaySpent > 0 ? 100 : 0);
+  const barColor = pctUsed > 100 ? 'var(--red)'
+                  : pctUsed > 80  ? 'var(--orange)'
+                  : 'var(--green)';
+
+  return `
+  <div class="card mt">
+    <div class="card-head-row">
+      <h3>📅 Ежедневный план расходов</h3>
+      <span class="pct-badge">${pctUsed.toFixed(0)}% лимита сегодня</span>
+    </div>
+
+    <div class="daily-hero">
+      <div class="dh-item">
+        <div class="dh-label">Лимит на день</div>
+        <div class="dh-value" style="color:var(--accent)">${money(daily.perDay)}</div>
+        <div class="dh-note">на ${daily.daysLeft} дн. вперёд</div>
+      </div>
+      <div class="dh-item">
+        <div class="dh-label">Бюджет месяца</div>
+        <div class="dh-value">${money(daily.budget)}</div>
+        <div class="dh-note">обязательное + развлечения</div>
+      </div>
+      <div class="dh-item">
+        <div class="dh-label">Потрачено сегодня</div>
+        <div class="dh-value" style="color:${daily.todaySpent > daily.perDay ? 'var(--red)' : 'var(--text)'}">
+          ${money(daily.todaySpent)}
+        </div>
+        <div class="dh-note">${daily.todaySpent > daily.perDay ? '⚠️ выше лимита' : 'в рамках лимита'}</div>
+      </div>
+      <div class="dh-item">
+        <div class="dh-label">Осталось на месяц</div>
+        <div class="dh-value" style="color:var(--green)">${money(daily.remaining)}</div>
+        <div class="dh-note">из ${money(daily.budget)}</div>
+      </div>
+    </div>
+
+    <div class="daily-progress">
+      <div class="daily-progress-fill"
+           style="width:${Math.min(100, pctUsed)}%;background:${barColor}"></div>
+    </div>
+
+    <div class="muted" style="font-size:12px;margin-bottom:10px">
+      Расчёт: доход ${money(daily.income)} − фикс. ${money(daily.fixedTotal)} =
+      <b>${money(daily.freeIncome)}</b> ×
+      ${(state.distribution.needs + state.distribution.wants)}% =
+      бюджет на «обязательное + развлечения».
+    </div>
+
+    <h3 style="margin-top:16px">Разбивка по оставшимся дням</h3>
+    <div class="daily-plan-list">
+      ${daily.planByDay.map(row => {
+        const over = row.spent > row.limit && row.limit > 0;
+        const under = row.spent < row.limit;
+        let status = '';
+        if (row.isToday) {
+          status = over ? '⚠️ превышен' : (row.spent > 0 ? 'идёт' : 'ещё не тратил');
+        } else {
+          status = row.spent > 0 ? 'траты были' : '—';
+        }
+        return `
+          <div class="daily-plan-row ${row.isToday ? 'is-today' : ''}">
+            <span class="dpr-day">${row.label}</span>
+            <span class="dpr-status">${status}</span>
+            <span class="dpr-amount" style="color:${row.isToday ? 'var(--accent)' : 'var(--muted)'}">
+              ${money(row.limit)}
+            </span>
+          </div>`;
+      }).join('')}
+    </div>
+
+    <div class="muted" style="font-size:11px;margin-top:10px">
+      💡 Лимит пересчитывается каждый день: если сегодня потратили меньше —
+      на завтра дневная норма немного увеличится. Если больше — уменьшится.
+    </div>
+  </div>
+  `;
+}
+
 function renderDashboard() {
   const tx = filteredTx();
   const income = tx.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
@@ -1710,7 +1925,9 @@ function renderDashboard() {
   const activeGoals = state.goals.filter(g => (g.saved || 0) < g.amount);
   const topGoal = activeGoals[0];
 
-  const fixedTotal = getFixedExpensesTotal();
+  const fixedTotal     = getFixedExpensesTotal();
+  const savingsBalance = calcSavingsBalance();
+  const daily          = calcDailyBudget();
 
   return `
   <div class="grid cards-4">
@@ -1730,11 +1947,13 @@ function renderDashboard() {
       <div class="sub">${income > 0 ? Math.round(balance/income*100) : 0}% от дохода</div>
     </div>
     <div class="card stat">
-      <div class="label">Фикс. расходы</div>
-      <div class="value" style="color:var(--orange)">${money(fixedTotal)}</div>
-      <div class="sub">в месяц</div>
+      <div class="label">💰 Баланс сбережений</div>
+      <div class="value" style="color:var(--green)">${money(savingsBalance)}</div>
+      <div class="sub">Накоплено за всё время</div>
     </div>
   </div>
+
+  ${renderDailyPlanBlock(daily)}
 
   <div class="row mt">
     <button type="button" class="btn ghost small" data-export="csv-period">📥 Скачать расходы (период)</button>
@@ -2307,10 +2526,15 @@ function renderPlanCard(plan) {
   const done = plan.subtasks.filter(s => s.done).length;
   const total = plan.subtasks.length;
   const isDone = pct === 100 && total > 0;
+  const collapsed = !!plan.collapsed;
 
   return `
   <div class="plan-item">
     <div class="plan-head">
+      <button type="button" class="plan-collapse-btn" data-plan-collapse="${plan.id}"
+              title="${collapsed ? 'Развернуть' : 'Свернуть'}">
+        ${collapsed ? '▸' : '▾'}
+      </button>
       <div style="flex:1;min-width:0">
         <div class="plan-title">${escapeHtml(plan.title)}</div>
         <div class="plan-period">${plan.endDate ? 'до ' + fmtDateHuman(plan.endDate) : 'без срока'} · ${done}/${total} пунктов</div>
@@ -2321,19 +2545,21 @@ function renderPlanCard(plan) {
     <div class="plan-bar">
       <div class="plan-bar-fill" style="width:${pct}%;background:${isDone ? 'var(--green)' : 'var(--accent)'}"></div>
     </div>
-    <div class="subtasks">
-      ${plan.subtasks.map(s => `
-        <div class="subtask ${s.done ? 'done' : ''}">
-          <button type="button" class="subtask-check" data-plan-toggle="${plan.id}|${s.id}">✓</button>
-          <span class="subtask-text">${escapeHtml(s.text)}</span>
-          <button type="button" class="subtask-del" data-plan-sub-del="${plan.id}|${s.id}" title="Удалить">×</button>
-        </div>
-      `).join('')}
+    <div class="plan-body ${collapsed ? 'hidden' : ''}">
+      <div class="subtasks">
+        ${plan.subtasks.map(s => `
+          <div class="subtask ${s.done ? 'done' : ''}">
+            <button type="button" class="subtask-check" data-plan-toggle="${plan.id}|${s.id}">✓</button>
+            <span class="subtask-text">${escapeHtml(s.text)}</span>
+            <button type="button" class="subtask-del" data-plan-sub-del="${plan.id}|${s.id}" title="Удалить">×</button>
+          </div>
+        `).join('')}
+      </div>
+      <form class="plan-add-form" data-plan-add="${plan.id}" novalidate>
+        <input type="text" placeholder="Добавить пункт..." maxlength="100">
+        <button type="submit" class="btn small">+</button>
+      </form>
     </div>
-    <form class="plan-add-form" data-plan-add="${plan.id}" novalidate>
-      <input type="text" placeholder="Добавить пункт..." maxlength="100">
-      <button type="submit" class="btn small">+</button>
-    </form>
   </div>
   `;
 }
@@ -3047,6 +3273,18 @@ document.addEventListener('click', e => {
     save(); render(); return;
   }
 
+  const planCollapse = e.target.closest('[data-plan-collapse]');
+  if (planCollapse) {
+    const planId = planCollapse.dataset.planCollapse;
+    const plan = state.plans.find(p => p.id === planId);
+    if (plan) {
+      plan.collapsed = !plan.collapsed;
+      save();
+      render();
+    }
+    return;
+  }
+
   const planToggle = e.target.closest('[data-plan-toggle]');
   if (planToggle) {
     const [planId, subId] = planToggle.dataset.planToggle.split('|');
@@ -3204,6 +3442,7 @@ document.addEventListener('submit', e => {
     state.plans.push({
       id: uid(), title, endDate,
       subtasks: [],
+      collapsed: false,
       createdAt: todayStr()
     });
     save(); render();
