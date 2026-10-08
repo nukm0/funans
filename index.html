@@ -24,7 +24,6 @@
   --purple: #a06bff;
   --orange: #f59e0b;
   --radius: 14px;
-  --header-h: 60px;
 }
 html, body { height: 100%; width: 100%; overflow-x: hidden; }
 body {
@@ -37,7 +36,6 @@ body {
   overscroll-behavior-y: none;
 }
 
-/* ============ APP LAYOUT ============ */
 .app {
   max-width: 1280px;
   margin: 0 auto;
@@ -258,6 +256,67 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 
 .progress-total { height: 10px; background: var(--panel2); border-radius: 99px; overflow: hidden; display: flex; margin: 8px 0 12px; }
 
+/* Preset picker */
+.preset-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.preset-chip {
+  background: var(--panel2); border: 1px solid var(--border);
+  color: var(--text); padding: 8px 14px; border-radius: 10px;
+  cursor: pointer; font-size: 13px; font-family: inherit;
+  transition: .15s; font-weight: 500;
+  display: inline-flex; flex-direction: column; align-items: flex-start;
+  line-height: 1.3; text-align: left;
+}
+.preset-chip:hover { border-color: var(--accent); }
+.preset-chip.active { background: rgba(79,140,255,.15); border-color: var(--accent); color: var(--accent); }
+.preset-chip .p-name { font-weight: 700; font-size: 13px; }
+.preset-chip .p-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.preset-chip.active .p-desc { color: var(--accent); opacity: .8; }
+
+/* Fixed expenses */
+.fixed-row {
+  display: grid; grid-template-columns: 1fr 130px 130px auto; gap: 10px;
+  align-items: end; margin-bottom: 10px;
+  padding: 12px; background: var(--panel2); border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.fixed-row .fixed-amount { font-variant-numeric: tabular-nums; text-align: right; padding-right: 6px; }
+.fixed-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.fixed-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; background: var(--panel2);
+  border: 1px solid var(--border); border-radius: 10px;
+}
+.fixed-item .f-icon { font-size: 18px; flex-shrink: 0; }
+.fixed-item .f-info { flex: 1; min-width: 0; }
+.fixed-item .f-name { font-weight: 600; font-size: 14px; }
+.fixed-item .f-meta { font-size: 11px; color: var(--muted); }
+.fixed-item .f-amt { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--orange); white-space: nowrap; }
+.fixed-item .f-del {
+  background: transparent; border: none; color: var(--muted); cursor: pointer;
+  font-size: 18px; padding: 2px 6px; border-radius: 6px; line-height: 1;
+  font-family: inherit;
+}
+.fixed-item .f-del:hover { color: var(--red); }
+
+.fixed-summary {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; background: rgba(245,158,11,.1);
+  border: 1px solid rgba(245,158,11,.3); border-radius: 10px;
+  margin-top: 12px;
+}
+.fixed-summary .fs-label { font-size: 13px; color: var(--orange); font-weight: 600; }
+.fixed-summary .fs-value { font-size: 16px; font-weight: 700; color: var(--orange); font-variant-numeric: tabular-nums; }
+
+/* Distribution + fixed */
+.dist-remaining {
+  padding: 14px; background: rgba(79,140,255,.1);
+  border: 1px solid rgba(79,140,255,.3); border-radius: 12px;
+  margin: 12px 0;
+}
+.dist-remaining .dr-title { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: .5px; font-weight: 700; }
+.dist-remaining .dr-value { font-size: 24px; font-weight: 700; color: var(--accent); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.dist-remaining .dr-note { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
 /* ============ PLANNER ============ */
 .planner-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .planner-date { font-size: 17px; font-weight: 700; }
@@ -335,16 +394,16 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   overflow: hidden;
 }
 
-/* ============ CALENDAR ============ */
-.calendar-popup { padding: 14px; max-width: 320px; }
+/* ============ CALENDAR — COMPACT ============ */
+.calendar-popup { padding: 12px; max-width: 290px; width: 100%; }
 .cal-head {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 10px; gap: 6px;
+  margin-bottom: 8px; gap: 6px;
 }
 .cal-nav {
-  width: 30px; height: 30px; border-radius: 9px;
+  width: 28px; height: 28px; border-radius: 8px;
   background: var(--panel2); border: 1px solid var(--border);
-  color: var(--text); font-size: 16px; cursor: pointer;
+  color: var(--text); font-size: 15px; cursor: pointer;
   display: grid; place-items: center;
   transition: .15s; font-family: inherit; line-height: 1;
   flex-shrink: 0;
@@ -353,19 +412,20 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .cal-title { font-weight: 700; font-size: 13px; letter-spacing: -0.1px; white-space: nowrap; }
 .cal-week {
   display: grid; grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   color: var(--muted); font-size: 10px; text-align: center;
   text-transform: uppercase; letter-spacing: .3px; font-weight: 600;
 }
-.cal-week span { padding: 3px 0; }
+.cal-week span { padding: 2px 0; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
 .cal-day {
   aspect-ratio: 1; border: none; background: transparent;
   color: var(--text); font-size: 12px; cursor: pointer;
-  border-radius: 7px; font-weight: 500;
+  border-radius: 6px; font-weight: 500;
   display: grid; place-items: center;
   transition: .12s; font-family: inherit;
   position: relative;
+  min-height: 0;
 }
 .cal-day:hover { background: var(--panel2); }
 .cal-day.empty { cursor: default; }
@@ -378,10 +438,10 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 
 .cal-foot {
   display: flex; justify-content: space-between; align-items: center;
-  margin-top: 10px; padding-top: 10px;
-  border-top: 1px solid var(--border); gap: 8px;
+  margin-top: 8px; padding-top: 8px;
+  border-top: 1px solid var(--border); gap: 6px;
 }
-.cal-foot .btn { padding: 7px 12px; font-size: 12px; }
+.cal-foot .btn { padding: 5px 10px; font-size: 12px; }
 
 /* ============ TIME PICKER ============ */
 .time-popup { padding: 16px; max-width: 280px; }
@@ -587,24 +647,21 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
    ================ MOBILE OPTIMIZATION =============
    ================================================== */
 
-/* Tablet */
 @media (max-width: 900px) {
   .tx-form { grid-template-columns: 1fr 1fr; }
+  .fixed-row { grid-template-columns: 1fr 1fr auto; }
 }
 
-/* Phone */
 @media (max-width: 640px) {
   html { font-size: 15px; }
   body { font-size: 14px; }
 
-  /* App container: full width, tight padding */
   .app {
     padding: 8px;
-    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)); /* space for bottom nav */
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
     max-width: 100%;
   }
 
-  /* === Header becomes compact sticky === */
   header {
     position: sticky;
     top: 0;
@@ -616,10 +673,9 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
     align-items: center;
     justify-content: space-between;
     border-radius: 12px;
-    background: var(--panel);
+    background: rgba(21,25,34,.92);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
-    background: rgba(21,25,34,.92);
   }
   .brand {
     font-size: 17px;
@@ -629,13 +685,8 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
     justify-content: flex-start;
   }
   .brand::before { font-size: 18px; }
+  header nav { display: none; }
 
-  /* Hide top nav — replaced with bottom nav */
-  header nav {
-    display: none;
-  }
-
-  /* === Bottom Navigation Bar === */
   .mobile-nav {
     display: flex !important;
     position: fixed;
@@ -669,7 +720,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
     align-items: center;
     gap: 3px;
     transition: .15s;
-    -webkit-tap-highlight-color: transparent;
   }
   .mobile-nav button .nav-emoji {
     font-size: 20px;
@@ -680,11 +730,8 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
     color: var(--accent);
     background: rgba(79,140,255,.12);
   }
-  .mobile-nav button.active .nav-emoji {
-    transform: scale(1.15);
-  }
+  .mobile-nav button.active .nav-emoji { transform: scale(1.15); }
 
-  /* === Period bar: horizontal scroll chips === */
   .period-bar {
     padding: 8px 12px;
     margin-bottom: 10px;
@@ -700,7 +747,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .period-bar .range-note { display: none; }
   .chip { padding: 6px 11px; font-size: 12px; }
 
-  /* === Inputs: prevent iOS zoom === */
   input[type=text], input[type=number], input[type=date], select, textarea,
   .date-trigger, .select-trigger, .time-trigger, .btn, button {
     font-size: 16px;
@@ -708,7 +754,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .btn { padding: 11px 16px; font-size: 14px; }
   .btn.small { padding: 8px 12px; font-size: 13px; }
 
-  /* === Cards: tighter === */
   .card {
     padding: 14px;
     border-radius: 12px;
@@ -718,7 +763,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .grid { gap: 10px; }
   .mt { margin-top: 10px; }
 
-  /* === Stats: 2 columns even on mobile === */
   .cards-4 { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .cards-3 { grid-template-columns: 1fr; gap: 8px; }
   .two-col { grid-template-columns: 1fr; gap: 10px; }
@@ -728,7 +772,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .stat .label { font-size: 11px; margin-bottom: 3px; }
   .stat .sub { font-size: 10px; }
 
-  /* === Forms: everything stacks === */
   .tx-form,
   .task-form {
     grid-template-columns: 1fr !important;
@@ -739,18 +782,13 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
     gap: 10px;
   }
 
-  /* === Transaction items: tighter === */
-  .tx-item {
-    padding: 10px 12px;
-    gap: 10px;
-  }
+  .tx-item { padding: 10px 12px; gap: 10px; }
   .tx-icon { width: 36px; height: 36px; font-size: 17px; }
   .tx-info .t { font-size: 13px; }
   .tx-info .d { font-size: 11px; }
   .tx-amount { font-size: 14px; }
   .tx-del { font-size: 22px; padding: 6px 8px; }
 
-  /* === Donut charts: center on mobile === */
   .donut-wrap { flex-direction: column; align-items: stretch; gap: 14px; }
   .donut { margin: 0 auto; width: 140px; height: 140px; }
   .donut::after { inset: 22px; }
@@ -758,15 +796,12 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .legend { min-width: 0; }
   .legend-item { font-size: 12px; gap: 8px; }
 
-  /* === Daily chart smaller === */
   .daily-chart { height: 110px; gap: 2px; }
   .daily-bar { min-width: 6px; }
 
-  /* === Distribution cards === */
   .dist-card .amount { font-size: 20px; }
   .dist-card .pct-input input { font-size: 16px; width: 68px; }
 
-  /* === Planner === */
   .planner-head { gap: 6px; }
   .planner-head .btn { padding: 8px 10px; font-size: 13px; }
   .planner-date { font-size: 14px; flex-basis: 100%; order: -1; text-align: center; }
@@ -775,7 +810,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .task-text { font-size: 13px; }
   .task-check { width: 22px; height: 22px; }
 
-  /* === Plans / Goals / Debts === */
   .plan-item, .goal-card, .debt-card { padding: 12px; }
   .plan-title, .goal-title, .debt-name { font-size: 13px; }
   .goal-amount, .debt-amount { font-size: 17px; }
@@ -783,7 +817,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .goal-stats { font-size: 11px; gap: 6px; }
   .goal-tip { font-size: 11px; padding: 9px 10px; }
 
-  /* === Popups: bottom-sheet style on mobile === */
   .popup-overlay {
     padding: 0;
     place-items: end center;
@@ -797,47 +830,55 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
     animation: slideUp .25s ease;
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
-  .calendar-popup { max-width: 100%; border-radius: 22px 22px 0 0; padding: 16px; }
+
+  /* Compact calendar on mobile */
+  .calendar-popup {
+    max-width: 100%;
+    border-radius: 22px 22px 0 0;
+    padding: 12px 14px 14px;
+  }
+  .cal-day {
+    font-size: 12px;
+    border-radius: 6px;
+  }
+  .cal-nav { width: 30px; height: 30px; font-size: 14px; }
+  .cal-title { font-size: 12px; }
+  .cal-week { font-size: 9px; }
+  .cal-foot .btn { padding: 6px 10px; font-size: 12px; }
+
   .time-popup { max-width: 100%; }
   .select-popup { max-height: 82vh; border-radius: 22px 22px 0 0; }
-  .cal-day { font-size: 14px; border-radius: 9px; }
-  .cal-nav { width: 34px; height: 34px; }
   .day-popup { max-width: 100%; border-radius: 22px 22px 0 0; }
   .day-body { max-height: 75vh; padding: 14px 16px 18px; }
 
-  /* === Alerts === */
   .alert-item { padding: 10px 12px; gap: 10px; }
   .alert-title { font-size: 13px; }
   .alert-desc { font-size: 11px; }
 
-  /* === Card head row === */
-  .card-head-row { gap: 8px; }
-  .card-head-row h3 { font-size: 12px; }
+  .fixed-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .fixed-row > button { grid-column: 1 / -1; }
 
-  /* === Bars === */
-  .bar-top { font-size: 12px; }
-  .bar-row { margin-bottom: 11px; }
+  .preset-chip { font-size: 12px; padding: 7px 11px; }
+  .preset-chip .p-name { font-size: 12px; }
+  .preset-chip .p-desc { font-size: 10px; }
 
-  /* === Misc === */
+  .dist-remaining .dr-value { font-size: 20px; }
+
   .empty { padding: 30px 14px; font-size: 13px; }
   .empty .big { font-size: 32px; }
   .muted { font-size: 12px; }
 }
 
-/* Show mobile nav only on phone */
-.mobile-nav { display: none; }
-
-/* Very small phones */
 @media (max-width: 360px) {
   .cards-4 { grid-template-columns: 1fr; }
   .stat .value { font-size: 16px; }
+  .cal-day { font-size: 11px; }
 }
 
-/* Landscape phone: reduce vertical spacing */
-@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
-  .app { padding-bottom: 20px; }
-  .mobile-nav { position: static; margin-top: 10px; }
-}
+.mobile-nav { display: none; }
 
 /* ============ PRINT ============ */
 @media print {
@@ -865,7 +906,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   <main id="main"></main>
 </div>
 
-<!-- Mobile bottom navigation -->
 <nav class="mobile-nav" id="mobileNav">
   <button data-tab="dashboard" class="active">
     <span class="nav-emoji">📊</span>
@@ -900,7 +940,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 <script>
 /* ============================ DATA ============================ */
 
-const LS_KEY = 'finansy_v3';
+const LS_KEY = 'finansy_v4';
 
 const CATEGORIES = {
   income: [
@@ -948,6 +988,20 @@ const DEBT_TYPES = {
 
 const PERIOD_LABELS = { day: 'День', week: 'Неделя', month: 'Месяц', year: 'Год', all: 'Всё', custom: 'Период' };
 
+/**
+ * Пресеты распределения.
+ * Каждый пресет — это 4 процента (needs/wants/savings/debts) + название и описание.
+ */
+const PRESETS = {
+  balanced:   { name: 'Баланс',           desc: '40 / 20 / 20 / 20',   values: { needs: 40, wants: 20, savings: 20, debts: 20 } },
+  needsFocus: { name: 'Обязательное',     desc: '50 / 20 / 20 / 10',   values: { needs: 50, wants: 20, savings: 20, debts: 10 } },
+  savingsFocus: { name: 'Сбережения',     desc: '35 / 15 / 30 / 20',   values: { needs: 35, wants: 15, savings: 30, debts: 20 } },
+  debtFocus:  { name: 'Долги',            desc: '35 / 15 / 15 / 35',   values: { needs: 35, wants: 15, savings: 15, debts: 35 } },
+  debtMax:    { name: 'Сначала долги',    desc: '35 / 10 / 10 / 45',   values: { needs: 35, wants: 10, savings: 10, debts: 45 } },
+  frugal:     { name: 'Жёсткая экономия', desc: '50 / 10 / 30 / 10',   values: { needs: 50, wants: 10, savings: 30, debts: 10 } },
+  youth:      { name: 'Молодой',          desc: '45 / 30 / 15 / 10',   values: { needs: 45, wants: 30, savings: 15, debts: 10 } }
+};
+
 /* ============================ STATE ============================ */
 
 function todayStr() {
@@ -966,6 +1020,8 @@ let state = (() => {
       parsed.plans = parsed.plans || [];
       parsed.goals = parsed.goals || [];
       parsed.debts = parsed.debts || [];
+      parsed.fixedExpenses = parsed.fixedExpenses || [];
+      parsed.activePreset = parsed.activePreset || null;
       return parsed;
     }
   } catch(e) {}
@@ -975,7 +1031,9 @@ let state = (() => {
     plans: [],
     goals: [],
     debts: [],
+    fixedExpenses: [],
     distribution: { needs: 40, wants: 20, savings: 20, debts: 20 },
+    activePreset: 'balanced',
     currency: '₽'
   };
 })();
@@ -988,7 +1046,8 @@ let ui = {
   txType: 'expense',
   txCat: 'housing',
   plannerDate: todayStr(),
-  distBase: null
+  distBase: null,
+  fixedType: 'housing'
 };
 
 function save() { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
@@ -1080,6 +1139,170 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+/* ============================ FIXED EXPENSES ============================ */
+
+/**
+ * Возвращает сумму фиксированных расходов, которые надо вычесть из дохода
+ * перед распределением по группам.
+ */
+function getFixedExpensesTotal() {
+  return state.fixedExpenses.reduce((s, f) => s + (f.amount || 0), 0);
+}
+
+/** Группа фиксированного расхода */
+function getFixedGroup(categoryId) {
+  const c = CATEGORIES.expense.find(x => x.id === categoryId);
+  return c ? c.group : 'needs';
+}
+
+/** Разбивка фиксированных расходов по группам */
+function getFixedByGroup() {
+  const byGroup = { needs: 0, wants: 0, savings: 0, debts: 0 };
+  state.fixedExpenses.forEach(f => {
+    const g = getFixedGroup(f.category);
+    byGroup[g] += f.amount || 0;
+  });
+  return byGroup;
+}
+
+/* ============================ DISTRIBUTION LOGIC ============================ */
+
+/**
+ * Считаем распределение с учётом фиксированных расходов.
+ * Из дохода сначала вычитается сумма фиксированных, потом распределяется по группам,
+ * и к каждой группе прибавляется её фиксированная часть.
+ */
+function calcDistribution(baseIncome) {
+  const base = ui.distBase !== null ? ui.distBase : baseIncome;
+  const fixedTotal = getFixedExpensesTotal();
+  const fixedByGroup = getFixedByGroup();
+  const freeIncome = Math.max(0, base - fixedTotal);
+
+  const d = state.distribution;
+  const out = { base, fixedTotal, freeIncome, fixedByGroup };
+
+  ['needs','wants','savings','debts'].forEach(g => {
+    const fromFree = freeIncome * d[g] / 100;
+    const fixed = fixedByGroup[g] || 0;
+    out[g] = {
+      pct: d[g],
+      plan: fromFree + fixed,      // итоговая сумма в группе
+      fromFree,                     // часть от свободных денег
+      fixed,                        // фиксированная часть
+      planFromBase: base > 0 ? ((fromFree + fixed) / base * 100) : 0
+    };
+  });
+  return out;
+}
+
+/* ============================ EXPORT ============================ */
+
+/** CSV-экранирование */
+function csvCell(v) {
+  const s = String(v ?? '');
+  if (/[",;\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
+/**
+ * Экспорт операций в CSV.
+ * scope: 'period' — только за выбранный период, 'all' — все
+ */
+function exportTransactionsCSV(scope = 'period') {
+  const rows = [];
+  rows.push(['Дата', 'Тип', 'Категория', 'Группа', 'Сумма', 'Валюта', 'Заметка']);
+
+  const list = scope === 'all' ? state.transactions : filteredTx();
+  const sorted = [...list].sort((a, b) => a.date.localeCompare(b.date));
+
+  sorted.forEach(t => {
+    const c = catById(t.type, t.category);
+    const group = t.type === 'expense' && c.group ? GROUPS[c.group].name : '';
+    rows.push([
+      t.date,
+      t.type === 'income' ? 'Доход' : 'Расход',
+      c.name,
+      group,
+      t.amount,
+      state.currency,
+      t.note || ''
+    ]);
+  });
+
+  // Итоги
+  const totalInc = sorted.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+  const totalExp = sorted.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+  rows.push([]);
+  rows.push(['ИТОГО доход', totalInc]);
+  rows.push(['ИТОГО расход', totalExp]);
+  rows.push(['Баланс', totalInc - totalExp]);
+
+  const csv = rows.map(r => r.map(csvCell).join(';')).join('\n');
+  const BOM = '\uFEFF'; // чтобы Excel открывал UTF-8
+  const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const scopeName = scope === 'all' ? 'all' : 'period';
+  const stamp = todayStr();
+  a.href = url;
+  a.download = `finance_${scopeName}_${stamp}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/** Экспорт всей базы в JSON (для бэкапа) */
+function exportFullJSON() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `finance_backup_${todayStr()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/** Экспорт плана долгов в CSV */
+function exportDebtsCSV() {
+  const rows = [];
+  rows.push(['Название', 'Тип', 'Сумма', 'Выплачено', 'Остаток', '% закрытия', 'Создан']);
+  state.debts.forEach(d => {
+    const paid = d.paid || 0;
+    const pct = d.amount > 0 ? Math.round(paid / d.amount * 100) : 0;
+    rows.push([
+      d.name,
+      (DEBT_TYPES[d.type] || DEBT_TYPES.other).name,
+      d.amount,
+      paid,
+      Math.max(0, d.amount - paid),
+      pct,
+      d.createdAt || ''
+    ]);
+  });
+  const total = state.debts.reduce((s, d) => s + d.amount, 0);
+  const totalPaid = state.debts.reduce((s, d) => s + (d.paid || 0), 0);
+  rows.push([]);
+  rows.push(['ВСЕГО', total]);
+  rows.push(['ВЫПЛАЧЕНО', totalPaid]);
+  rows.push(['ОСТАТОК', total - totalPaid]);
+
+  const csv = rows.map(r => r.map(csvCell).join(';')).join('\n');
+  const BOM = '\uFEFF';
+  const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `debts_${todayStr()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 /* ============================ POPUP SYSTEM ============================ */
 
 let activePopup = null;
@@ -1127,7 +1350,7 @@ function openCalendarPopup(initialISO, onSelect, options = {}) {
       <div class="popup calendar-popup">
         <div class="cal-head">
           <button type="button" class="cal-nav" data-nav="-1">‹</button>
-          <div class="cal-title">${MONTHS_FULL[viewMonth]} ${viewYear}</div>
+          <div class="cal-title">${MONTHS_FULL[viewMonth].slice(0,3)} ${viewYear}</div>
           <button type="button" class="cal-nav" data-nav="1">›</button>
         </div>
         <div class="cal-week">${WEEKDAYS_SHORT.map(w => `<span>${w}</span>`).join('')}</div>
@@ -1407,8 +1630,6 @@ function suggestedDistributionForGoal(goal) {
   const goalAmount = goal.amount;
   const daysToGoal = goal.periodDays || 90;
 
-  const neededPerMonth = goalAmount / (daysToGoal / 30);
-
   const incomeByMonth = {};
   state.transactions.filter(t => t.type === 'income').forEach(t => {
     const k = t.date.slice(0,7);
@@ -1434,7 +1655,7 @@ function suggestedDistributionForGoal(goal) {
   const monthlyToGoal = avgIncome * suggested.savings / 100;
   const monthsNeeded = monthlyToGoal > 0 ? goalAmount / monthlyToGoal : Infinity;
 
-  return { suggested, avgIncome, monthsNeeded, neededPerMonth, totalDebt };
+  return { suggested, avgIncome, monthsNeeded, totalDebt };
 }
 
 /* ============================ RENDER: PERIOD BAR ============================ */
@@ -1539,6 +1760,8 @@ function renderDashboard() {
   const activeGoals = state.goals.filter(g => (g.saved || 0) < g.amount);
   const topGoal = activeGoals[0];
 
+  const fixedTotal = getFixedExpensesTotal();
+
   return `
   <div class="grid cards-4">
     <div class="card stat">
@@ -1557,10 +1780,16 @@ function renderDashboard() {
       <div class="sub">${income > 0 ? Math.round(balance/income*100) : 0}% от дохода</div>
     </div>
     <div class="card stat">
-      <div class="label">В день</div>
-      <div class="value">${money(avgPerDay)}</div>
-      <div class="sub">в среднем за ${days} дн.</div>
+      <div class="label">Фикс. расходы</div>
+      <div class="value" style="color:var(--orange)">${money(fixedTotal)}</div>
+      <div class="sub">в месяц</div>
     </div>
+  </div>
+
+  <div class="row mt">
+    <button type="button" class="btn ghost small" data-export="csv-period">📥 Скачать расходы (период)</button>
+    <button type="button" class="btn ghost small" data-export="csv-all">📥 Все операции (CSV)</button>
+    <button type="button" class="btn ghost small" data-export="json">💾 Бэкап (JSON)</button>
   </div>
 
   <div class="grid two-col mt">
@@ -1661,7 +1890,13 @@ function renderTransactions() {
   </div>
 
   <div class="card mt">
-    <h3>Операции · ${rangeLabel()}</h3>
+    <div class="card-head-row">
+      <h3>Операции · ${rangeLabel()}</h3>
+      <div class="row" style="gap:6px">
+        <button type="button" class="btn ghost small" data-export="csv-period">📥 Период</button>
+        <button type="button" class="btn ghost small" data-export="csv-all">📥 Всё</button>
+      </div>
+    </div>
     ${tx.length ? Object.keys(groups).map(date => `
       <div class="date-group">
         <div class="date-head">${fmtDateHuman(date)}</div>
@@ -1753,6 +1988,7 @@ function renderAnalytics() {
   });
 
   const chart = buildDailyChart(tx);
+  const fixedTotal = getFixedExpensesTotal();
 
   return `
   <div class="grid cards-4">
@@ -1769,9 +2005,14 @@ function renderAnalytics() {
       <div class="value ${balance >= 0 ? 'balance-pos' : 'balance-neg'}">${balance >= 0 ? '+' : ''}${money(balance)}</div>
     </div>
     <div class="card stat">
-      <div class="label">Норма сбережений</div>
-      <div class="value">${income > 0 ? Math.round((income - expense) / income * 100) : 0}%</div>
+      <div class="label">Фикс. расходы</div>
+      <div class="value" style="color:var(--orange)">${money(fixedTotal)}</div>
     </div>
+  </div>
+
+  <div class="row mt">
+    <button type="button" class="btn ghost small" data-export="csv-period">📥 Скачать расходы (период)</button>
+    <button type="button" class="btn ghost small" data-export="csv-all">📥 Все операции</button>
   </div>
 
   <div class="grid two-col mt">
@@ -1883,16 +2124,6 @@ function renderAnalytics() {
 
 /* ============================ RENDER: DISTRIBUTION ============================ */
 
-function calcDistribution(baseIncome) {
-  const base = ui.distBase !== null ? ui.distBase : baseIncome;
-  const d = state.distribution;
-  const out = { base };
-  ['needs','wants','savings','debts'].forEach(g => {
-    out[g] = { pct: d[g], plan: base * d[g] / 100 };
-  });
-  return out;
-}
-
 function renderDistribution() {
   const tx = filteredTx();
   const periodIncome = tx.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
@@ -1906,6 +2137,18 @@ function renderDistribution() {
   });
 
   const totalDebt = state.debts.reduce((s,d) => s + Math.max(0, d.amount - (d.paid || 0)), 0);
+  const fixedTotal = getFixedExpensesTotal();
+
+  // Найти активный пресет, если проценты точно совпадают
+  let matchedPreset = state.activePreset;
+  if (matchedPreset && PRESETS[matchedPreset]) {
+    const p = PRESETS[matchedPreset].values;
+    const same = p.needs === state.distribution.needs &&
+                 p.wants === state.distribution.wants &&
+                 p.savings === state.distribution.savings &&
+                 p.debts === state.distribution.debts;
+    if (!same) matchedPreset = null;
+  }
 
   return `
   <div class="card">
@@ -1918,6 +2161,30 @@ function renderDistribution() {
       ${ui.distBase === null ? 'Значение берётся автоматически из доходов за выбранный период.' : 'Используется ручное значение.'}
       ${totalDebt > 0 ? `<br>💡 Активных долгов на <b style="color:var(--red)">${money(totalDebt)}</b> — распределение учтёт это.` : ''}
     </div>
+
+    ${fixedTotal > 0 ? `
+    <div class="dist-remaining">
+      <div class="dr-title">📌 Фиксированные расходы</div>
+      <div class="dr-value">${money(fixedTotal)}</div>
+      <div class="dr-note">Вычитаются из дохода до распределения. Свободно: <b>${money(dist.freeIncome)}</b></div>
+    </div>
+    ` : ''}
+  </div>
+
+  <div class="card mt">
+    <h3>Пресеты распределения</h3>
+    <div class="preset-row">
+      ${Object.keys(PRESETS).map(k => {
+        const p = PRESETS[k];
+        const active = matchedPreset === k;
+        return `
+        <button type="button" class="preset-chip ${active ? 'active' : ''}" data-preset="${k}">
+          <span class="p-name">${p.name}</span>
+          <span class="p-desc">${p.desc}</span>
+        </button>`;
+      }).join('')}
+    </div>
+    <div class="muted mt" style="font-size:12px">Нажмите на пресет, чтобы применить его. Затем корректируйте проценты вручную под свою ситуацию.</div>
   </div>
 
   <div class="card mt">
@@ -1935,9 +2202,11 @@ function renderDistribution() {
     <div class="grid cards-3 mt">
       ${Object.keys(GROUPS).map(g => {
         const pct = state.distribution[g];
-        const plan = dist.base * pct / 100;
+        const plan = dist[g].plan;
         const fact = actual[g];
         const diff = fact - plan;
+        const fixedPart = dist[g].fixed;
+        const freePart = dist[g].fromFree;
         return `
         <div class="dist-card card" style="background:var(--panel2);border-color:${GROUPS[g].color}33">
           <div class="stripe" style="background:${GROUPS[g].color}"></div>
@@ -1951,6 +2220,8 @@ function renderDistribution() {
 
           <div class="amount" style="color:${GROUPS[g].color}">${money(plan)}</div>
           <div class="actual">
+            ${fixedPart > 0 ? `📌 фикс: <b>${money(fixedPart)}</b><br>` : ''}
+            ${freePart > 0 ? `💸 из свободы: ${money(freePart)}<br>` : ''}
             Потрачено: <b>${money(fact)}</b><br>
             <span style="color:${diff > 0 ? 'var(--red)' : 'var(--green)'}">
               ${diff > 0 ? '▲ перерасход ' + money(diff) : '▼ остаток ' + money(-diff)}
@@ -1965,13 +2236,87 @@ function renderDistribution() {
     </div>
   </div>
 
+  ${renderFixedExpenses()}
+  `;
+}
+
+/* ============================ FIXED EXPENSES BLOCK ============================ */
+
+function renderFixedExpenses() {
+  const list = state.fixedExpenses;
+  const total = getFixedExpensesTotal();
+
+  // Предустановленные варианты для быстрого выбора
+  const quickOptions = [
+    { cat: 'housing',    label: '🏠 Квартира' },
+    { cat: 'utilities',  label: '💡 Коммуналка' },
+    { cat: 'transport',  label: '🚌 Транспорт' },
+    { cat: 'debt_credit',label: '🏦 Кредит' },
+    { cat: 'debt_mfo',   label: '🏪 МФО' },
+    { cat: 'health',     label: '💊 Здоровье' },
+    { cat: 'food',       label: '🛒 Продукты' }
+  ];
+
+  return `
   <div class="card mt">
-    <h3>Пресеты</h3>
-    <div class="row">
-      <button type="button" class="btn ghost small" id="preset1">40 / 20 / 20 / 20</button>
-      <button type="button" class="btn ghost small" id="preset2">50 / 20 / 20 / 10</button>
-      <button type="button" class="btn ghost small" id="preset3">35 / 15 / 30 / 20</button>
+    <div class="card-head-row">
+      <h3>📌 Фиксированные расходы</h3>
+      <span class="pct-badge">${list.length}</span>
     </div>
+    <div class="muted" style="margin-bottom:12px;font-size:13px">
+      Укажите расходы, которые вы точно знаете: квартплата, кредит, подписки.
+      Они вычитаются из дохода <b>до</b> распределения. Например: доход 70 000, квартира 25 000 → распределяем только 45 000.
+    </div>
+
+    <form id="fixedForm" class="fixed-row">
+      <div>
+        <label>Название</label>
+        <input type="text" id="fixedName" placeholder="Например: Квартира" required maxlength="60">
+      </div>
+      <div>
+        <label>Категория</label>
+        <button type="button" class="select-trigger" data-select-for="fixedCat" data-select-value="housing">
+          <span class="st-icon">🏠</span>
+          <span class="st-text">Жильё</span>
+          <span class="st-arrow">▾</span>
+        </button>
+      </div>
+      <div>
+        <label>Сумма / мес</label>
+        <input type="number" id="fixedAmount" step="100" min="1" inputmode="numeric" placeholder="0" required>
+      </div>
+      <button class="btn" type="submit">Добавить</button>
+    </form>
+
+    <div class="row" style="gap:6px;margin-top:10px">
+      <span class="muted" style="font-size:12px">Быстрый выбор:</span>
+      ${quickOptions.map(o => `
+        <button type="button" class="btn ghost small" data-quick-fixed="${o.cat}" data-quick-label="${o.label}">${o.label}</button>
+      `).join('')}
+    </div>
+
+    ${list.length ? `
+      <div class="fixed-list">
+        ${list.map(f => {
+          const c = catById('expense', f.category);
+          const group = getFixedGroup(f.category);
+          return `
+          <div class="fixed-item">
+            <span class="f-icon">${c.icon}</span>
+            <div class="f-info">
+              <div class="f-name">${escapeHtml(f.name)}</div>
+              <div class="f-meta">${c.name} · ${GROUPS[group].name}</div>
+            </div>
+            <span class="f-amt">${money(f.amount)}</span>
+            <button type="button" class="f-del" data-fixed-del="${f.id}" title="Удалить">×</button>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="fixed-summary">
+        <span class="fs-label">Итого фиксированных в месяц</span>
+        <span class="fs-value">${money(total)}</span>
+      </div>
+    ` : `<div class="empty" style="padding:20px"><div class="big">📌</div>Пока не добавлено ни одного фиксированного расхода</div>`}
   </div>
   `;
 }
@@ -2156,6 +2501,10 @@ function renderDebts() {
       <button class="btn" type="submit">Добавить</button>
     </form>
     ${totalActive > 0 ? `<div class="muted mt">💡 Активных долгов на <b style="color:var(--red)">${money(totalActive)}</b></div>` : ''}
+  </div>
+
+  <div class="row mt">
+    <button type="button" class="btn ghost small" data-export="debts-csv">📥 Скачать долги (CSV)</button>
   </div>
 
   <div class="card mt">
@@ -2471,6 +2820,7 @@ function attachHandlers() {
       const g = inp.dataset.distInput;
       const v = Math.max(0, Math.min(100, parseInt(inp.value) || 0));
       state.distribution[g] = v;
+      state.activePreset = null;
       save();
       refreshDistributionNumbers();
     });
@@ -2507,10 +2857,14 @@ function refreshDistributionNumbers() {
     const diff = actual - plan;
     const actualEl = card.querySelector('.actual');
     if (actualEl) {
-      actualEl.innerHTML = `Потрачено: <b>${money(actual)}</b><br>
+      let html = '';
+      if (dist[g].fixed > 0) html += `📌 фикс: <b>${money(dist[g].fixed)}</b><br>`;
+      if (dist[g].fromFree > 0) html += `💸 из свободы: ${money(dist[g].fromFree)}<br>`;
+      html += `Потрачено: <b>${money(actual)}</b><br>
         <span style="color:${diff > 0 ? 'var(--red)' : 'var(--green)'}">
           ${diff > 0 ? '▲ перерасход ' + money(diff) : '▼ остаток ' + money(-diff)}
         </span>`;
+      actualEl.innerHTML = html;
     }
     const barEl = card.querySelector('.bar-fill');
     if (barEl) barEl.style.width = (plan > 0 ? Math.min(100, actual/plan*100) : 0) + '%';
@@ -2539,7 +2893,6 @@ document.addEventListener('click', e => {
   const mobileBtn = e.target.closest('#mobileNav button');
   if (mobileBtn) {
     if (mobileBtn.id === 'mobileMoreBtn' || mobileBtn.dataset.tab === 'more') {
-      // Show full nav sheet
       openMobileMoreSheet();
       return;
     }
@@ -2563,6 +2916,17 @@ document.addEventListener('click', e => {
     ui.tab = navBtn.dataset.tab;
     closePopup();
     render();
+    return;
+  }
+
+  // Export buttons
+  const exportBtn = e.target.closest('[data-export]');
+  if (exportBtn) {
+    const kind = exportBtn.dataset.export;
+    if (kind === 'csv-period') exportTransactionsCSV('period');
+    else if (kind === 'csv-all') exportTransactionsCSV('all');
+    else if (kind === 'json') exportFullJSON();
+    else if (kind === 'debts-csv') exportDebtsCSV();
     return;
   }
 
@@ -2622,6 +2986,51 @@ document.addEventListener('click', e => {
         selTrig.querySelector('.st-icon').textContent = DEBT_TYPES[v].icon;
         selTrig.querySelector('.st-text').textContent = DEBT_TYPES[v].name;
       });
+    } else if (key === 'fixedCat') {
+      openSelectPopup('Категория фикс. расхода', CATEGORIES.expense, selTrig.dataset.selectValue, v => {
+        selTrig.dataset.selectValue = v;
+        const c = catById('expense', v);
+        selTrig.querySelector('.st-icon').textContent = c.icon;
+        selTrig.querySelector('.st-text').textContent = c.name;
+      });
+    }
+    return;
+  }
+
+  // Quick fixed expense button — prefill form
+  const quickFixed = e.target.closest('[data-quick-fixed]');
+  if (quickFixed) {
+    const cat = quickFixed.dataset.quickFixed;
+    const label = quickFixed.dataset.quickLabel || '';
+    const nameInput = document.getElementById('fixedName');
+    const catTrig = document.querySelector('[data-select-for="fixedCat"]');
+    const amtInput = document.getElementById('fixedAmount');
+    if (nameInput) nameInput.value = label.replace(/^[^\s]+\s/, '');
+    if (catTrig) {
+      catTrig.dataset.selectValue = cat;
+      const c = catById('expense', cat);
+      catTrig.querySelector('.st-icon').textContent = c.icon;
+      catTrig.querySelector('.st-text').textContent = c.name;
+    }
+    if (amtInput) amtInput.focus();
+    return;
+  }
+
+  // Delete fixed expense
+  const fixedDel = e.target.closest('[data-fixed-del]');
+  if (fixedDel) {
+    state.fixedExpenses = state.fixedExpenses.filter(f => f.id !== fixedDel.dataset.fixedDel);
+    save(); render(); return;
+  }
+
+  // Preset apply
+  const presetBtn = e.target.closest('[data-preset]');
+  if (presetBtn) {
+    const key = presetBtn.dataset.preset;
+    if (PRESETS[key]) {
+      state.distribution = { ...PRESETS[key].values };
+      state.activePreset = key;
+      save(); render();
     }
     return;
   }
@@ -2682,11 +3091,8 @@ document.addEventListener('click', e => {
   const dayView = e.target.closest('[data-day-view]');
   if (dayView) { openDayAnalytics(dayView.dataset.dayView); return; }
 
-  // distribution presets
+  // distribution presets old buttons — removed
   if (e.target.closest('#distAuto')) { ui.distBase = null; render(); return; }
-  if (e.target.closest('#preset1')) { state.distribution = { needs: 40, wants: 20, savings: 20, debts: 20 }; save(); render(); return; }
-  if (e.target.closest('#preset2')) { state.distribution = { needs: 50, wants: 20, savings: 20, debts: 10 }; save(); render(); return; }
-  if (e.target.closest('#preset3')) { state.distribution = { needs: 35, wants: 15, savings: 30, debts: 20 }; save(); render(); return; }
 
   // plan delete
   const planDel = e.target.closest('[data-plan-del]');
@@ -2733,6 +3139,7 @@ document.addEventListener('click', e => {
     if (g) {
       const sug = suggestedDistributionForGoal(g);
       state.distribution = { ...sug.suggested };
+      state.activePreset = null;
       save();
       alert('Распределение обновлено на основе цели и долгов!');
       ui.tab = 'distribution';
@@ -2803,6 +3210,20 @@ document.addEventListener('submit', e => {
       id: uid(), type: ui.txType, amount,
       category: ui.txCat, date,
       note: document.getElementById('txNote').value.trim()
+    });
+    save(); render();
+    return;
+  }
+
+  if (e.target.id === 'fixedForm') {
+    e.preventDefault();
+    const name = document.getElementById('fixedName').value.trim();
+    const amount = parseFloat(document.getElementById('fixedAmount').value);
+    const catTrig = document.querySelector('[data-select-for="fixedCat"]');
+    const category = catTrig ? catTrig.dataset.selectValue : 'housing';
+    if (!name || !amount || amount <= 0) return;
+    state.fixedExpenses.push({
+      id: uid(), name, category, amount
     });
     save(); render();
     return;
