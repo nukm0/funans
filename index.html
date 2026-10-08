@@ -102,12 +102,10 @@ input[type=text], input[type=number], input[type=date], select, textarea {
 input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
 
-/* Убираем спиннеры number */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 
-/* Скрываем нативные подсказки валидации */
 input:invalid { box-shadow: none; outline: none; }
 
 /* ============ BUTTONS ============ */
@@ -258,7 +256,6 @@ input:invalid { box-shadow: none; outline: none; }
 
 .progress-total { height: 10px; background: var(--panel2); border-radius: 99px; overflow: hidden; display: flex; margin: 8px 0 12px; }
 
-/* Preset picker */
 .preset-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .preset-chip {
   background: var(--panel2); border: 1px solid var(--border);
@@ -289,13 +286,11 @@ input:invalid { box-shadow: none; outline: none; }
 }
 .preset-chip .p-del:hover { color: var(--red); background: rgba(239,68,68,.15); }
 
-/* Save current as preset */
 .save-preset-form {
   display: grid; grid-template-columns: 1fr auto; gap: 8px;
   margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
 }
 
-/* Fixed expenses */
 .fixed-row {
   display: grid; grid-template-columns: 1fr 130px 130px auto; gap: 10px;
   align-items: end; margin-bottom: 10px;
@@ -679,16 +674,25 @@ input:invalid { box-shadow: none; outline: none; }
   html { font-size: 15px; }
   body { font-size: 14px; }
 
+  /* Верхний отступ под шторку (notch / Dynamic Island) + нижний под bottom nav */
   .app {
     padding: 8px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
     padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
     max-width: 100%;
   }
 
+  /* Sticky-хедер прижат ниже шторки */
   header {
-    position: sticky; top: 0; z-index: 100;
-    padding: 10px 14px; margin-bottom: 10px; gap: 10px;
-    flex-direction: row; align-items: center; justify-content: space-between;
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 4px);
+    z-index: 100;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    gap: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     border-radius: 12px;
     background: rgba(21,25,34,.92);
     -webkit-backdrop-filter: blur(14px);
@@ -1317,7 +1321,8 @@ function openTimePicker(initial, onSelect) {
     let hoursHTML = '';
     for (let h = 0; h < 24; h++) hoursHTML += `<div class="time-item ${h === hh ? 'active' : ''}" data-h="${h}">${String(h).padStart(2,'0')}</div>`;
     let minsHTML = '';
-    for (let m = 0; m < 60; m += 5) minsHTML += `<div class="time-item ${m === mm ? 'active' : ''}" data-m="${m}">${String(m).padStart(2,'0')}</div>`;
+    // Шаг 1 минута — можно выбрать любую минуту от 00 до 59
+    for (let m = 0; m < 60; m += 1) minsHTML += `<div class="time-item ${m === mm ? 'active' : ''}" data-m="${m}">${String(m).padStart(2,'0')}</div>`;
 
     overlay.innerHTML = `
       <div class="popup time-popup">
@@ -2832,7 +2837,6 @@ function refreshDistributionNumbers() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
-// Глобально отключаем нативные подсказки валидации
 document.addEventListener('invalid', e => {
   e.preventDefault();
 }, true);
