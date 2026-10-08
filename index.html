@@ -102,9 +102,13 @@ input[type=text], input[type=number], input[type=date], select, textarea {
 input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
 
+/* Убираем спиннеры number */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+
+/* Скрываем нативные подсказки валидации */
+input:invalid { box-shadow: none; outline: none; }
 
 /* ============ BUTTONS ============ */
 .btn {
@@ -411,13 +415,8 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   overflow: hidden;
 }
 
-/* ============ CALENDAR — COMPACT & FIXED ============ */
-.calendar-popup {
-  padding: 12px;
-  max-width: 300px;
-  width: 100%;
-  box-sizing: border-box;
-}
+/* ============ CALENDAR ============ */
+.calendar-popup { padding: 12px; max-width: 300px; width: 100%; box-sizing: border-box; }
 .cal-head {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 8px; gap: 6px;
@@ -432,46 +431,24 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .cal-nav:hover { background: var(--border); color: var(--accent); }
 .cal-title { font-weight: 700; font-size: 13px; letter-spacing: -0.1px; white-space: nowrap; }
-
-/* Сетка: используем фиксированную ширину, никаких aspect-ratio */
 .cal-week {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-  margin-bottom: 3px;
-  color: var(--muted);
-  font-size: 10px;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: .3px;
-  font-weight: 600;
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 2px; margin-bottom: 3px;
+  color: var(--muted); font-size: 10px; text-align: center;
+  text-transform: uppercase; letter-spacing: .3px; font-weight: 600;
 }
 .cal-week span { padding: 2px 0; overflow: hidden; }
-
 .cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
 }
-
 .cal-day {
-  width: 100%;
-  height: 34px;
-  border: none;
-  background: transparent;
-  color: var(--text);
-  font-size: 12px;
-  cursor: pointer;
-  border-radius: 6px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: .12s;
-  font-family: inherit;
-  padding: 0;
-  min-width: 0;
-  box-sizing: border-box;
+  width: 100%; height: 34px;
+  border: none; background: transparent;
+  color: var(--text); font-size: 12px; cursor: pointer;
+  border-radius: 6px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  transition: .12s; font-family: inherit;
+  padding: 0; min-width: 0; box-sizing: border-box;
 }
 .cal-day:hover { background: var(--panel2); }
 .cal-day.empty { cursor: default; pointer-events: none; }
@@ -709,83 +686,47 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   }
 
   header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    padding: 10px 14px;
-    margin-bottom: 10px;
-    gap: 10px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    padding: 10px 14px; margin-bottom: 10px; gap: 10px;
+    flex-direction: row; align-items: center; justify-content: space-between;
     border-radius: 12px;
     background: rgba(21,25,34,.92);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
   }
-  .brand {
-    font-size: 17px;
-    padding: 0;
-    border: none;
-    flex: 1;
-    justify-content: flex-start;
-  }
+  .brand { font-size: 17px; padding: 0; border: none; flex: 1; justify-content: flex-start; }
   .brand::before { font-size: 18px; }
   header nav { display: none; }
 
   .mobile-nav {
     display: flex !important;
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
+    position: fixed; bottom: 0; left: 0; right: 0;
     background: rgba(21,25,34,.96);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border-top: 1px solid var(--border);
     padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
-    z-index: 999;
-    gap: 2px;
-    overflow-x: auto;
-    scrollbar-width: none;
+    z-index: 999; gap: 2px;
+    overflow-x: auto; scrollbar-width: none;
     justify-content: space-around;
   }
   .mobile-nav::-webkit-scrollbar { display: none; }
   .mobile-nav button {
-    flex: 1;
-    min-width: 56px;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    padding: 6px 4px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 10px;
-    font-weight: 500;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
+    flex: 1; min-width: 56px;
+    background: transparent; border: none; color: var(--muted);
+    padding: 6px 4px; border-radius: 10px; cursor: pointer;
+    font-family: inherit; font-size: 10px; font-weight: 500;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
     transition: .15s;
   }
-  .mobile-nav button .nav-emoji {
-    font-size: 20px;
-    line-height: 1;
-    transition: transform .15s;
-  }
-  .mobile-nav button.active {
-    color: var(--accent);
-    background: rgba(79,140,255,.12);
-  }
+  .mobile-nav button .nav-emoji { font-size: 20px; line-height: 1; transition: transform .15s; }
+  .mobile-nav button.active { color: var(--accent); background: rgba(79,140,255,.12); }
   .mobile-nav button.active .nav-emoji { transform: scale(1.15); }
 
   .period-bar {
-    padding: 8px 12px;
-    margin-bottom: 10px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    gap: 6px;
-    border-radius: 12px;
+    padding: 8px 12px; margin-bottom: 10px;
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+    gap: 6px; border-radius: 12px;
   }
   .period-bar::-webkit-scrollbar { display: none; }
   .period-bar .label { display: none; }
@@ -800,11 +741,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .btn { padding: 11px 16px; font-size: 14px; }
   .btn.small { padding: 8px 12px; font-size: 13px; }
 
-  .card {
-    padding: 14px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-  }
+  .card { padding: 14px; border-radius: 12px; margin-bottom: 10px; }
   .card h3 { font-size: 12px; margin-bottom: 10px; }
   .grid { gap: 10px; }
   .mt { margin-top: 10px; }
@@ -818,15 +755,8 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .stat .label { font-size: 11px; margin-bottom: 3px; }
   .stat .sub { font-size: 10px; }
 
-  .tx-form,
-  .task-form {
-    grid-template-columns: 1fr !important;
-    gap: 10px;
-  }
-  #planForm, #goalForm, #debtForm {
-    grid-template-columns: 1fr !important;
-    gap: 10px;
-  }
+  .tx-form, .task-form { grid-template-columns: 1fr !important; gap: 10px; }
+  #planForm, #goalForm, #debtForm { grid-template-columns: 1fr !important; gap: 10px; }
 
   .tx-item { padding: 10px 12px; gap: 10px; }
   .tx-icon { width: 36px; height: 36px; font-size: 17px; }
@@ -863,30 +793,16 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .goal-stats { font-size: 11px; gap: 6px; }
   .goal-tip { font-size: 11px; padding: 9px 10px; }
 
-  .popup-overlay {
-    padding: 0;
-    place-items: end center;
-    align-items: end;
-  }
+  .popup-overlay { padding: 0; place-items: end center; align-items: end; }
   .popup {
-    max-width: 100%;
-    width: 100%;
-    border-radius: 22px 22px 0 0;
-    max-height: 92vh;
+    max-width: 100%; width: 100%;
+    border-radius: 22px 22px 0 0; max-height: 92vh;
     animation: slideUp .25s ease;
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* Calendar on mobile: same fix — full width, proper grid */
-  .calendar-popup {
-    max-width: 100%;
-    border-radius: 22px 22px 0 0;
-    padding: 14px 12px 16px;
-  }
-  .cal-day {
-    height: 38px;
-    font-size: 13px;
-  }
+  .calendar-popup { max-width: 100%; border-radius: 22px 22px 0 0; padding: 14px 12px 16px; }
+  .cal-day { height: 38px; font-size: 13px; }
   .cal-nav { width: 32px; height: 32px; font-size: 16px; }
   .cal-title { font-size: 13px; }
   .cal-week { font-size: 10px; }
@@ -902,10 +818,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .alert-title { font-size: 13px; }
   .alert-desc { font-size: 11px; }
 
-  .fixed-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
+  .fixed-row { grid-template-columns: 1fr 1fr; gap: 8px; }
   .fixed-row > button { grid-column: 1 / -1; }
 
   .preset-chip { font-size: 12px; padding: 7px 26px 7px 11px; }
@@ -1034,7 +947,6 @@ const DEBT_TYPES = {
 
 const PERIOD_LABELS = { day: 'День', week: 'Неделя', month: 'Месяц', year: 'Год', all: 'Всё', custom: 'Период' };
 
-/** Встроенные пресеты (нельзя удалить) */
 const BUILTIN_PRESETS = {
   balanced:    { name: 'Баланс',           values: { needs: 40, wants: 20, savings: 20, debts: 20 } },
   needsFocus:  { name: 'Обязательное',     values: { needs: 50, wants: 20, savings: 20, debts: 10 } },
@@ -1203,12 +1115,8 @@ function getFixedByGroup() {
   return byGroup;
 }
 
-/* ============================ DISTRIBUTION LOGIC ============================ */
+/* ============================ DISTRIBUTION ============================ */
 
-/**
- * Считаем распределение с учётом фиксированных расходов.
- * Проценты могут быть любыми — никаких ограничений и предупреждений.
- */
 function calcDistribution(baseIncome) {
   const base = ui.distBase !== null ? ui.distBase : baseIncome;
   const fixedTotal = getFixedExpensesTotal();
@@ -1321,7 +1229,7 @@ function closePopup() {
   if (activePopup) { activePopup.remove(); activePopup = null; }
 }
 
-/* ============================ CALENDAR — FIXED ============================ */
+/* ============================ CALENDAR ============================ */
 
 function getDaysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
 function getFirstWeekday(y, m) { const d = new Date(y, m, 1).getDay(); return (d + 6) % 7; }
@@ -1345,11 +1253,7 @@ function openCalendarPopup(initialISO, onSelect, options = {}) {
     const daysInMonth = getDaysInMonth(viewYear, viewMonth);
 
     let daysHTML = '';
-    // Пустые ячейки в начале (только до первого дня)
-    for (let i = 0; i < firstWd; i++) {
-      daysHTML += '<span class="cal-day empty"></span>';
-    }
-    // Все дни месяца — ровно 7 колонок
+    for (let i = 0; i < firstWd; i++) daysHTML += '<span class="cal-day empty"></span>';
     for (let day = 1; day <= daysInMonth; day++) {
       const iso = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
       const cls = ['cal-day'];
@@ -1673,7 +1577,7 @@ function suggestedDistributionForGoal(goal) {
   return { suggested, avgIncome, monthsNeeded, totalDebt };
 }
 
-/* ============================ PRESETS HELPERS ============================ */
+/* ============================ PRESETS ============================ */
 
 function getAllPresets() {
   const out = [];
@@ -1895,7 +1799,7 @@ function renderTransactions() {
   return `
   <div class="card">
     <h3>Новая операция</h3>
-    <form id="txForm" class="tx-form">
+    <form id="txForm" class="tx-form" novalidate>
       <div>
         <label>Тип</label>
         <div class="type-toggle" id="typeToggle">
@@ -1905,7 +1809,7 @@ function renderTransactions() {
       </div>
       <div>
         <label>Сумма</label>
-        <input type="number" id="txAmount" step="0.01" min="0.01" inputmode="decimal" placeholder="0" required>
+        <input type="number" id="txAmount" step="any" min="0" inputmode="decimal" placeholder="0">
       </div>
       <div>
         <label>Категория</label>
@@ -2186,7 +2090,7 @@ function renderDistribution() {
   <div class="card">
     <h3>Доход для распределения</h3>
     <div class="row">
-      <input type="number" id="distBase" value="${Math.round(dist.base)}" style="max-width:220px" step="100" inputmode="numeric" placeholder="0">
+      <input type="number" id="distBase" value="${Math.round(dist.base)}" style="max-width:220px" step="any" inputmode="decimal" placeholder="0">
       <button type="button" class="btn ghost small" id="distAuto">Взять доход за период (${money(periodIncome)})</button>
     </div>
     <div class="muted mt" style="font-size:13px">
@@ -2218,8 +2122,8 @@ function renderDistribution() {
       }).join('')}
     </div>
 
-    <form class="save-preset-form" id="savePresetForm">
-      <input type="text" id="presetName" placeholder="Название своего пресета" maxlength="40" required>
+    <form class="save-preset-form" id="savePresetForm" novalidate>
+      <input type="text" id="presetName" placeholder="Название своего пресета" maxlength="40">
       <button type="submit" class="btn small">💾 Сохранить текущее</button>
     </form>
     <div class="muted mt" style="font-size:12px">
@@ -2236,7 +2140,7 @@ function renderDistribution() {
     <div class="progress-total">
       ${Object.keys(GROUPS).map(g => {
         const p = state.distribution[g];
-        return `<div style="width:${p}%;background:${GROUPS[g].color}"></div>`;
+        return `<div style="width:${Math.max(0, p)}%;background:${GROUPS[g].color}"></div>`;
       }).join('')}
     </div>
 
@@ -2255,7 +2159,7 @@ function renderDistribution() {
           <div class="dist-desc">${GROUPS[g].desc}</div>
 
           <div class="pct-input">
-            <input type="number" min="0" value="${pct}" data-dist-input="${g}" inputmode="numeric">
+            <input type="number" min="0" value="${pct}" data-dist-input="${g}" inputmode="decimal" step="any">
             <span class="muted">%</span>
           </div>
 
@@ -2308,10 +2212,10 @@ function renderFixedExpenses() {
       Они вычитаются из дохода <b>до</b> распределения. Например: доход 70 000, квартира 25 000 → распределяем только 45 000.
     </div>
 
-    <form id="fixedForm" class="fixed-row">
+    <form id="fixedForm" class="fixed-row" novalidate>
       <div>
         <label>Название</label>
-        <input type="text" id="fixedName" placeholder="Например: Квартира" required maxlength="60">
+        <input type="text" id="fixedName" placeholder="Например: Квартира" maxlength="60">
       </div>
       <div>
         <label>Категория</label>
@@ -2323,7 +2227,7 @@ function renderFixedExpenses() {
       </div>
       <div>
         <label>Сумма / мес</label>
-        <input type="number" id="fixedAmount" step="100" min="1" inputmode="numeric" placeholder="0" required>
+        <input type="number" id="fixedAmount" step="any" min="0" inputmode="decimal" placeholder="0">
       </div>
       <button class="btn" type="submit">Добавить</button>
     </form>
@@ -2369,10 +2273,10 @@ function renderPlans() {
   return `
   <div class="card">
     <h3>Новый план</h3>
-    <form id="planForm" class="tx-form" style="grid-template-columns: 1fr 1fr auto;">
+    <form id="planForm" class="tx-form" style="grid-template-columns: 1fr 1fr auto;" novalidate>
       <div>
         <label>Название</label>
-        <input type="text" id="planTitle" placeholder="План на месяц" required maxlength="80">
+        <input type="text" id="planTitle" placeholder="План на месяц" maxlength="80">
       </div>
       <div>
         <label>Период до</label>
@@ -2421,7 +2325,7 @@ function renderPlanCard(plan) {
         </div>
       `).join('')}
     </div>
-    <form class="plan-add-form" data-plan-add="${plan.id}">
+    <form class="plan-add-form" data-plan-add="${plan.id}" novalidate>
       <input type="text" placeholder="Добавить пункт..." maxlength="100">
       <button type="submit" class="btn small">+</button>
     </form>
@@ -2437,18 +2341,18 @@ function renderGoals() {
   return `
   <div class="card">
     <h3>Новая цель</h3>
-    <form id="goalForm" class="tx-form" style="grid-template-columns: 1.4fr 1fr 1fr auto;">
+    <form id="goalForm" class="tx-form" style="grid-template-columns: 1.4fr 1fr 1fr auto;" novalidate>
       <div>
         <label>Название</label>
-        <input type="text" id="goalTitle" placeholder="Например: MacBook Pro" required maxlength="80">
+        <input type="text" id="goalTitle" placeholder="Например: MacBook Pro" maxlength="80">
       </div>
       <div>
         <label>Стоимость, ${state.currency}</label>
-        <input type="number" id="goalAmount" step="100" min="1" inputmode="numeric" placeholder="0" required>
+        <input type="number" id="goalAmount" step="any" min="0" inputmode="decimal" placeholder="0">
       </div>
       <div>
         <label>Срок (дней)</label>
-        <input type="number" id="goalPeriod" step="1" min="1" inputmode="numeric" placeholder="90" value="90">
+        <input type="number" id="goalPeriod" step="any" min="1" inputmode="numeric" placeholder="90" value="90">
       </div>
       <button class="btn" type="submit">Создать</button>
     </form>
@@ -2498,8 +2402,8 @@ function goalCardHTML(goal, withControls = false) {
     </div>
 
     ${withControls ? `
-    <form class="plan-add-form" data-goal-add="${goal.id}" style="margin-top:12px">
-      <input type="number" step="100" min="0" inputmode="numeric" placeholder="Сумма пополнения, ${state.currency}">
+    <form class="plan-add-form" data-goal-add="${goal.id}" style="margin-top:12px" novalidate>
+      <input type="number" step="any" min="0" inputmode="decimal" placeholder="Сумма пополнения, ${state.currency}">
       <button type="submit" class="btn small">Пополнить</button>
     </form>
     <button type="button" class="btn ghost small" data-goal-dist="${goal.id}" style="margin-top:8px">
@@ -2521,10 +2425,10 @@ function renderDebts() {
   return `
   <div class="card">
     <h3>Новый долг</h3>
-    <form id="debtForm" class="tx-form" style="grid-template-columns: 1.4fr 1fr 1fr auto;">
+    <form id="debtForm" class="tx-form" style="grid-template-columns: 1.4fr 1fr 1fr auto;" novalidate>
       <div>
         <label>Кому / название</label>
-        <input type="text" id="debtName" placeholder="Например: Займ у Ивана" required maxlength="80">
+        <input type="text" id="debtName" placeholder="Например: Займ у Ивана" maxlength="80">
       </div>
       <div>
         <label>Тип</label>
@@ -2536,7 +2440,7 @@ function renderDebts() {
       </div>
       <div>
         <label>Сумма, ${state.currency}</label>
-        <input type="number" id="debtAmount" step="100" min="1" inputmode="numeric" placeholder="0" required>
+        <input type="number" id="debtAmount" step="any" min="0" inputmode="decimal" placeholder="0">
       </div>
       <button class="btn" type="submit">Добавить</button>
     </form>
@@ -2585,8 +2489,8 @@ function renderDebtCard(debt, isClosed = false) {
       <span>${pct}%${isClosed ? ' · закрыт ✓' : ''}</span>
     </div>
     ${!isClosed ? `
-    <form class="plan-add-form" data-debt-add="${debt.id}" style="margin-top:10px">
-      <input type="number" step="100" min="1" inputmode="numeric" placeholder="Сумма платежа, ${state.currency}">
+    <form class="plan-add-form" data-debt-add="${debt.id}" style="margin-top:10px" novalidate>
+      <input type="number" step="any" min="0" inputmode="decimal" placeholder="Сумма платежа, ${state.currency}">
       <button type="submit" class="btn small">Оплатить</button>
     </form>
     ` : ''}
@@ -2628,7 +2532,7 @@ function renderPlanner() {
       <div class="planner-date">${title}</div>
     </div>
 
-    <form id="taskForm" class="task-form">
+    <form id="taskForm" class="task-form" novalidate>
       <div>
         <label>Время</label>
         <button type="button" class="time-trigger" data-time-for="taskTime" data-time-value="09:00">
@@ -2638,7 +2542,7 @@ function renderPlanner() {
       </div>
       <div>
         <label>Что делаем</label>
-        <input type="text" id="taskText" placeholder="Например: встреча с командой" required maxlength="120">
+        <input type="text" id="taskText" placeholder="Например: встреча с командой" maxlength="120">
       </div>
       <button class="btn" type="submit">Добавить</button>
     </form>
@@ -2869,7 +2773,8 @@ function attachHandlers() {
   const distBaseInput = document.getElementById('distBase');
   if (distBaseInput) {
     distBaseInput.addEventListener('input', () => {
-      ui.distBase = parseFloat(distBaseInput.value) || 0;
+      const v = parseFloat(distBaseInput.value);
+      ui.distBase = isNaN(v) ? 0 : v;
       refreshDistributionNumbers();
     });
   }
@@ -2926,6 +2831,11 @@ function refreshDistributionNumbers() {
 /* ============================ GLOBAL EVENTS ============================ */
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+
+// Глобально отключаем нативные подсказки валидации
+document.addEventListener('invalid', e => {
+  e.preventDefault();
+}, true);
 
 document.addEventListener('click', e => {
   const mobileBtn = e.target.closest('#mobileNav button');
