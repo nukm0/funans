@@ -11,6 +11,7 @@
   --bg: #0d0f14;
   --panel: #151922;
   --panel2: #1b2029;
+  --panel3: #222836;
   --border: #242b38;
   --text: #e8ecf4;
   --muted: #8892a6;
@@ -76,7 +77,7 @@ nav button.active { background: var(--accent); color: #fff; }
 
 /* Inputs */
 input, select, textarea, button { font-family: inherit; font-size: 14px; }
-input[type=text], input[type=number], input[type=date], input[type=time], select, textarea {
+input[type=text], input[type=number], input[type=date], select, textarea {
   background: var(--panel2); border: 1px solid var(--border); color: var(--text);
   padding: 10px 12px; border-radius: 10px; outline: none; transition: .15s;
   width: 100%;
@@ -87,13 +88,9 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
 /* Remove number spinners */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+  -webkit-appearance: none; margin: 0;
 }
-input[type=number] {
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
+input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 
 /* Buttons */
 .btn {
@@ -109,8 +106,8 @@ input[type=number] {
 .btn.small { padding: 7px 12px; font-size: 13px; }
 .btn.danger { background: transparent; border: 1px solid var(--red); color: var(--red); }
 
-/* Date & select triggers */
-.date-trigger, .select-trigger {
+/* Trigger buttons for calendar/select/time */
+.date-trigger, .select-trigger, .time-trigger {
   width: 100%; display: flex; align-items: center; gap: 10px;
   padding: 10px 12px; border-radius: 10px;
   background: var(--panel2); border: 1px solid var(--border);
@@ -118,11 +115,12 @@ input[type=number] {
   text-align: left; transition: .15s;
   font-family: inherit;
 }
-.date-trigger:hover, .select-trigger:hover { border-color: var(--accent); }
-.date-trigger.compact { padding: 7px 12px; font-size: 13px; width: auto; }
-.dt-icon, .st-arrow { margin-left: auto; opacity: .55; font-size: 15px; }
+.date-trigger:hover, .select-trigger:hover, .time-trigger:hover { border-color: var(--accent); }
+.date-trigger.compact, .time-trigger.compact { padding: 7px 12px; font-size: 13px; width: auto; }
+.dt-icon, .st-arrow, .tt-icon { margin-left: auto; opacity: .55; font-size: 15px; }
 .select-trigger .st-icon { font-size: 18px; }
 .select-trigger .st-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.time-trigger .tt-text { flex: 1; font-variant-numeric: tabular-nums; font-weight: 600; }
 
 /* Cards */
 .grid { display: grid; gap: 14px; }
@@ -196,14 +194,8 @@ input[type=number] {
 /* Donut */
 .donut-wrap { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
 .donut { width: 160px; height: 160px; border-radius: 50%; position: relative; flex-shrink: 0; }
-.donut::after {
-  content: ''; position: absolute; inset: 26px; background: var(--panel);
-  border-radius: 50%;
-}
-.donut-center {
-  position: absolute; inset: 0; display: grid; place-items: center;
-  z-index: 2; text-align: center; pointer-events: none;
-}
+.donut::after { content: ''; position: absolute; inset: 26px; background: var(--panel); border-radius: 50%; }
+.donut-center { position: absolute; inset: 0; display: grid; place-items: center; z-index: 2; text-align: center; pointer-events: none; }
 .donut-center .v { font-size: 16px; font-weight: 700; }
 .donut-center .l { font-size: 11px; color: var(--muted); }
 .legend { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 180px; }
@@ -213,10 +205,7 @@ input[type=number] {
 .legend-item .v { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* Daily chart */
-.daily-chart {
-  display: flex; align-items: flex-end; gap: 3px; height: 140px;
-  padding-top: 10px; overflow-x: auto;
-}
+.daily-chart { display: flex; align-items: flex-end; gap: 3px; height: 140px; padding-top: 10px; overflow-x: auto; }
 .daily-bar { flex: 1; min-width: 8px; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; height: 100%; position: relative; }
 .daily-bar .b { width: 100%; border-radius: 3px 3px 0 0; transition: height .3s; }
 .daily-bar .b.inc { background: var(--green); }
@@ -288,6 +277,21 @@ input[type=number] {
 .muted { color: var(--muted); font-size: 13px; }
 .hidden { display: none !important; }
 
+/* Alerts / warnings */
+.alert-list { display: flex; flex-direction: column; gap: 8px; }
+.alert-item {
+  display: flex; gap: 12px; padding: 12px 14px;
+  background: var(--panel2); border: 1px solid var(--border);
+  border-radius: 12px; border-left: 3px solid var(--orange);
+}
+.alert-item.critical { border-left-color: var(--red); }
+.alert-item.info { border-left-color: var(--accent); }
+.alert-icon { font-size: 18px; flex-shrink: 0; }
+.alert-body { flex: 1; min-width: 0; }
+.alert-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+.alert-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.alert-date { font-size: 11px; color: var(--muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
+
 /* ========== POPUPS ========== */
 .popup-overlay {
   position: fixed; inset: 0;
@@ -308,56 +312,101 @@ input[type=number] {
   border: 1px solid var(--border);
   border-radius: 20px;
   width: 100%;
-  max-width: 360px;
   box-shadow: 0 24px 60px rgba(0,0,0,.6);
   animation: popIn .2s ease;
   overflow: hidden;
 }
 
-/* Calendar */
-.calendar-popup { padding: 18px; }
+/* Calendar — compact */
+.calendar-popup { padding: 14px; max-width: 320px; }
 .cal-head {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 10px; gap: 6px;
 }
 .cal-nav {
-  width: 38px; height: 38px; border-radius: 11px;
+  width: 30px; height: 30px; border-radius: 9px;
   background: var(--panel2); border: 1px solid var(--border);
-  color: var(--text); font-size: 20px; cursor: pointer;
+  color: var(--text); font-size: 16px; cursor: pointer;
   display: grid; place-items: center;
   transition: .15s; font-family: inherit; line-height: 1;
+  flex-shrink: 0;
 }
 .cal-nav:hover { background: var(--border); color: var(--accent); }
-.cal-title { font-weight: 700; font-size: 15px; letter-spacing: -0.2px; }
+.cal-title { font-weight: 700; font-size: 13px; letter-spacing: -0.1px; white-space: nowrap; }
 
 .cal-week {
   display: grid; grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 6px;
-  color: var(--muted); font-size: 11px; text-align: center;
-  text-transform: uppercase; letter-spacing: .5px; font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--muted); font-size: 10px; text-align: center;
+  text-transform: uppercase; letter-spacing: .3px; font-weight: 600;
 }
-.cal-week span { padding: 4px 0; }
-.cal-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
-}
+.cal-week span { padding: 3px 0; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
 .cal-day {
   aspect-ratio: 1; border: none; background: transparent;
-  color: var(--text); font-size: 14px; cursor: pointer;
-  border-radius: 10px; font-weight: 500;
+  color: var(--text); font-size: 12px; cursor: pointer;
+  border-radius: 7px; font-weight: 500;
   display: grid; place-items: center;
   transition: .12s; font-family: inherit;
+  position: relative;
 }
 .cal-day:hover { background: var(--panel2); }
 .cal-day.empty { cursor: default; }
 .cal-day.today { color: var(--accent); font-weight: 700; box-shadow: inset 0 0 0 1px var(--accent); }
 .cal-day.selected { background: var(--accent); color: #fff; font-weight: 700; box-shadow: none; }
-.cal-day.selected:hover { background: var(--accent); }
+.cal-day.has-violation { background: rgba(239,68,68,.18); color: var(--red); }
+.cal-day.has-violation.selected { background: var(--red); color: #fff; }
+.cal-day.has-success { background: rgba(34,197,94,.15); color: var(--green); }
+.cal-day.has-success.selected { background: var(--green); color: #fff; }
+.cal-day .dot {
+  position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 3px; border-radius: 50%; background: currentColor;
+}
 
 .cal-foot {
   display: flex; justify-content: space-between; align-items: center;
-  margin-top: 14px; padding-top: 14px;
-  border-top: 1px solid var(--border);
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--border); gap: 8px;
 }
+.cal-foot .btn { padding: 7px 12px; font-size: 12px; }
+
+/* Time popup */
+.time-popup { padding: 16px; max-width: 280px; }
+.time-display {
+  text-align: center; font-size: 40px; font-weight: 700;
+  font-variant-numeric: tabular-nums; letter-spacing: -1px;
+  color: var(--accent); margin-bottom: 16px;
+  padding: 8px 0;
+}
+.time-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.time-col-label { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+.time-scroll {
+  height: 150px; overflow-y: auto; scroll-snap-type: y mandatory;
+  -ms-overflow-style: none; scrollbar-width: none;
+  border-radius: 10px; background: var(--panel2);
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 55px 0;
+}
+.time-scroll::-webkit-scrollbar { display: none; }
+.time-item {
+  scroll-snap-align: center;
+  text-align: center; padding: 8px 4px;
+  font-size: 20px; font-variant-numeric: tabular-nums;
+  color: var(--muted); cursor: pointer;
+  transition: .12s; font-weight: 500;
+  user-select: none;
+}
+.time-item:hover { color: var(--text); background: var(--panel3); }
+.time-item.active { color: var(--accent); font-weight: 700; font-size: 24px; }
+
+.time-quick { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; justify-content: center; }
+.time-quick button {
+  background: var(--panel2); border: 1px solid var(--border); color: var(--text);
+  padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 12px;
+  font-family: inherit; transition: .15s;
+}
+.time-quick button:hover { border-color: var(--accent); color: var(--accent); }
 
 /* Select popup */
 .select-popup { padding: 8px; max-height: 70vh; overflow-y: auto; }
@@ -382,6 +431,148 @@ input[type=number] {
   text-transform: uppercase; letter-spacing: .5px; font-weight: 600;
 }
 
+/* Progress bar (plans) */
+.plan-item {
+  padding: 14px; background: var(--panel2);
+  border: 1px solid var(--border); border-radius: 12px;
+  margin-bottom: 10px;
+}
+.plan-head {
+  display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;
+}
+.plan-title { flex: 1; font-weight: 600; font-size: 14px; word-break: break-word; }
+.plan-period { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.plan-pct { font-size: 15px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+.plan-bar { height: 10px; background: var(--panel); border-radius: 99px; overflow: hidden; margin-bottom: 12px; }
+.plan-bar-fill { height: 100%; border-radius: 99px; transition: width .3s; }
+
+.subtasks { display: flex; flex-direction: column; gap: 6px; }
+.subtask {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; background: var(--panel); border-radius: 9px;
+  font-size: 13px;
+}
+.subtask.done { opacity: .5; }
+.subtask.done .subtask-text { text-decoration: line-through; }
+.subtask-check {
+  width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border);
+  background: transparent; cursor: pointer; display: grid; place-items: center;
+  color: transparent; font-size: 12px; flex-shrink: 0;
+  font-family: inherit;
+}
+.subtask.done .subtask-check { background: var(--green); border-color: var(--green); color: #fff; }
+.subtask-text { flex: 1; word-break: break-word; }
+.subtask-del {
+  background: transparent; border: none; color: var(--muted); cursor: pointer;
+  font-size: 16px; padding: 2px 6px; border-radius: 6px; line-height: 1;
+  font-family: inherit;
+}
+.subtask-del:hover { color: var(--red); }
+
+.plan-add-form {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px;
+}
+.plan-add-form input { font-size: 13px; padding: 8px 10px; }
+
+/* Goals */
+.goal-card {
+  padding: 16px; background: var(--panel2);
+  border: 1px solid var(--border); border-radius: 12px;
+  margin-bottom: 12px; position: relative; overflow: hidden;
+}
+.goal-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+.goal-emoji { font-size: 28px; flex-shrink: 0; }
+.goal-info { flex: 1; min-width: 0; }
+.goal-title { font-weight: 700; font-size: 15px; word-break: break-word; }
+.goal-period { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.goal-amount { font-size: 20px; font-weight: 700; color: var(--accent); margin-top: 6px; }
+.goal-del {
+  background: transparent; border: none; color: var(--muted); cursor: pointer;
+  font-size: 18px; padding: 4px 8px; border-radius: 8px; line-height: 1;
+  font-family: inherit;
+}
+.goal-del:hover { color: var(--red); }
+
+.goal-progress {
+  height: 12px; background: var(--panel); border-radius: 99px; overflow: hidden;
+  margin: 10px 0 6px;
+}
+.goal-progress-fill { height: 100%; border-radius: 99px; transition: width .3s; }
+.goal-stats {
+  display: flex; justify-content: space-between; gap: 10px;
+  font-size: 12px; color: var(--muted); flex-wrap: wrap;
+}
+.goal-stats b { color: var(--text); }
+
+.goal-tip {
+  margin-top: 12px; padding: 10px 12px;
+  background: var(--panel); border-radius: 10px;
+  font-size: 12px; color: var(--muted); line-height: 1.6;
+  border-left: 3px solid var(--purple);
+}
+.goal-tip b { color: var(--purple); }
+
+/* Debts */
+.debt-card {
+  padding: 14px; background: var(--panel2);
+  border: 1px solid var(--border); border-radius: 12px;
+  margin-bottom: 10px;
+}
+.debt-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.debt-info { flex: 1; min-width: 0; }
+.debt-name { font-weight: 600; font-size: 14px; }
+.debt-type { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.debt-amount { font-size: 16px; font-weight: 700; color: var(--red); margin-top: 4px; }
+.debt-del {
+  background: transparent; border: none; color: var(--muted); cursor: pointer;
+  font-size: 18px; padding: 4px 8px; border-radius: 8px; line-height: 1;
+  font-family: inherit;
+}
+.debt-del:hover { color: var(--red); }
+.debt-progress { height: 8px; background: var(--panel); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
+.debt-progress-fill { height: 100%; background: var(--red); border-radius: 99px; transition: width .3s; }
+.debt-detail { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); flex-wrap: wrap; gap: 6px; }
+
+/* Day analytics modal */
+.day-popup { max-width: 460px; padding: 0; }
+.day-head {
+  padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.day-head-title { font-size: 17px; font-weight: 700; }
+.day-head-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.day-close {
+  background: transparent; border: none; color: var(--muted); cursor: pointer;
+  font-size: 24px; line-height: 1; padding: 2px 6px; border-radius: 8px;
+  font-family: inherit;
+}
+.day-close:hover { color: var(--text); background: var(--panel2); }
+.day-body { padding: 16px 20px 20px; max-height: 70vh; overflow-y: auto; }
+.day-section { margin-bottom: 18px; }
+.day-section:last-child { margin-bottom: 0; }
+.day-section-title {
+  font-size: 11px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: .5px; font-weight: 700; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.day-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+}
+.day-badge.ok { background: rgba(34,197,94,.15); color: var(--green); }
+.day-badge.bad { background: rgba(239,68,68,.15); color: var(--red); }
+
+.mini-tx {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; background: var(--panel2); border-radius: 9px;
+  margin-bottom: 6px; font-size: 13px;
+}
+.mini-tx-icon { font-size: 16px; flex-shrink: 0; }
+.mini-tx-info { flex: 1; min-width: 0; }
+.mini-tx-name { font-weight: 500; }
+.mini-tx-note { font-size: 11px; color: var(--muted); }
+.mini-tx-amt { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
 /* ========== MOBILE ========== */
 @media (max-width: 900px) {
   .tx-form { grid-template-columns: 1fr 1fr; }
@@ -390,30 +581,18 @@ input[type=number] {
 
 @media (max-width: 700px) {
   .app { padding: 10px; }
-  header {
-    padding: 12px 14px; gap: 12px;
-    flex-direction: column; align-items: stretch;
-  }
+  header { padding: 12px 14px; gap: 12px; flex-direction: column; align-items: stretch; }
   .brand { justify-content: center; font-size: 19px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-  nav {
-    overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px;
-    scrollbar-width: none; justify-content: flex-start;
-  }
+  nav { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; scrollbar-width: none; }
   nav::-webkit-scrollbar { display: none; }
   nav button { flex-shrink: 0; padding: 8px 12px; font-size: 13px; }
 
-  .period-bar {
-    flex-wrap: nowrap; overflow-x: auto; padding: 10px 12px;
-    scrollbar-width: none;
-  }
+  .period-bar { flex-wrap: nowrap; overflow-x: auto; padding: 10px 12px; scrollbar-width: none; }
   .period-bar::-webkit-scrollbar { display: none; }
   .period-bar > * { flex-shrink: 0; }
   .period-bar .range-note { display: none; }
 
-  /* Prevent iOS zoom */
-  input, select, textarea, .date-trigger, .select-trigger, .btn {
-    font-size: 16px;
-  }
+  input, select, textarea, .date-trigger, .select-trigger, .time-trigger, .btn { font-size: 16px; }
   .btn.small { font-size: 14px; }
   .chip { font-size: 13px; }
 
@@ -434,20 +613,17 @@ input[type=number] {
   .planner-head { gap: 8px; }
   .planner-date { font-size: 15px; flex: 1; min-width: 0; }
 
-  /* Bottom sheet style popups on mobile */
   .popup-overlay { padding: 0; place-items: end center; align-items: end; }
-  .popup {
-    max-width: 100%;
-    border-radius: 22px 22px 0 0;
-    max-height: 85vh;
-    animation: slideUp .22s ease;
-    padding-bottom: env(safe-area-inset-bottom, 0);
-  }
+  .popup { max-width: 100%; border-radius: 22px 22px 0 0; max-height: 90vh; animation: slideUp .22s ease; padding-bottom: env(safe-area-inset-bottom, 0); }
+  .calendar-popup { max-width: 100%; }
   .select-popup { max-height: 80vh; }
-  .cal-day { font-size: 15px; }
+  .cal-day { font-size: 13px; }
 
   .dist-card .amount { font-size: 22px; }
   .dist-card .pct-input input { font-size: 16px; }
+
+  .goal-amount { font-size: 18px; }
+  .day-body { max-height: 75vh; }
 }
 
 @media (max-width: 380px) {
@@ -463,6 +639,9 @@ input[type=number] {
       <button data-tab="dashboard" class="active">Обзор</button>
       <button data-tab="transactions">Операции</button>
       <button data-tab="analytics">Аналитика</button>
+      <button data-tab="plans">Планы</button>
+      <button data-tab="goals">Цели</button>
+      <button data-tab="debts">Долги</button>
       <button data-tab="distribution">Распределение</button>
       <button data-tab="planner">Дневник</button>
     </nav>
@@ -475,7 +654,7 @@ input[type=number] {
 <script>
 /* ============================ DATA ============================ */
 
-const LS_KEY = 'finansy_v2';
+const LS_KEY = 'finansy_v3';
 
 const CATEGORIES = {
   income: [
@@ -488,24 +667,20 @@ const CATEGORIES = {
     { id: 'other_inc',  name: 'Другое',                icon: '✨' }
   ],
   expense: [
-    // Обязательное
     { id: 'housing',     name: 'Жильё',         icon: '🏠', group: 'needs' },
     { id: 'utilities',   name: 'Коммуналка',    icon: '💡', group: 'needs' },
     { id: 'food',        name: 'Продукты',      icon: '🛒', group: 'needs' },
     { id: 'transport',   name: 'Транспорт',     icon: '🚌', group: 'needs' },
     { id: 'health',      name: 'Здоровье',      icon: '💊', group: 'needs' },
-    // Долги
     { id: 'debt_mfo',    name: 'МФО',           icon: '🏪', group: 'debts' },
     { id: 'debt_credit', name: 'Кредит',        icon: '🏦', group: 'debts' },
     { id: 'debt_friend', name: 'Долг близким',  icon: '🤝', group: 'debts' },
-    // Развлечения
     { id: 'cafe',        name: 'Кафе',          icon: '☕', group: 'wants' },
     { id: 'entertain',   name: 'Развлечения',   icon: '🎬', group: 'wants' },
     { id: 'shopping',    name: 'Покупки',       icon: '🛍️', group: 'wants' },
     { id: 'education',   name: 'Образование',   icon: '📚', group: 'wants' },
     { id: 'travel',      name: 'Путешествия',   icon: '✈️', group: 'wants' },
     { id: 'other_exp',   name: 'Другое',        icon: '📦', group: 'wants' },
-    // Сбережения
     { id: 'savings',     name: 'Сбережения',    icon: '🏆', group: 'savings' },
     { id: 'invest',      name: 'Инвестиции',    icon: '📊', group: 'savings' }
   ]
@@ -516,6 +691,13 @@ const GROUPS = {
   wants:   { name: 'Развлечения',  color: '#a06bff', desc: 'Кафе, кино, покупки, поездки' },
   savings: { name: 'Сбережения',   color: '#22c55e', desc: 'Накопления и инвестиции' },
   debts:   { name: 'Долги',        color: '#ef4444', desc: 'МФО, кредиты, займы у близких' }
+};
+
+const DEBT_TYPES = {
+  mfo:    { name: 'МФО',          icon: '🏪', color: '#ef4444' },
+  credit: { name: 'Кредит',       icon: '🏦', color: '#f59e0b' },
+  friend: { name: 'Долг близким', icon: '🤝', color: '#a06bff' },
+  other:  { name: 'Другое',       icon: '📌', color: '#8892a6' }
 };
 
 const PERIOD_LABELS = { day: 'День', week: 'Неделя', month: 'Месяц', year: 'Год', all: 'Всё', custom: 'Период' };
@@ -533,11 +715,20 @@ function fmtDateLocal(d) {
 let state = (() => {
   try {
     const raw = localStorage.getItem(LS_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      parsed.plans = parsed.plans || [];
+      parsed.goals = parsed.goals || [];
+      parsed.debts = parsed.debts || [];
+      return parsed;
+    }
   } catch(e) {}
   return {
     transactions: [],
     planner: {},
+    plans: [],
+    goals: [],
+    debts: [],
     distribution: { needs: 40, wants: 20, savings: 20, debts: 20 },
     currency: '₽'
   };
@@ -554,28 +745,35 @@ let ui = {
   distBase: null
 };
 
-function save() {
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-}
+function save() { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
 /* ============================ UTILS ============================ */
 
-function fmt(n) {
-  return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(n || 0);
-}
+function fmt(n) { return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(n || 0); }
 function money(n) { return fmt(n) + ' ' + state.currency; }
+
+const MONTHS_FULL = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MONTHS_SHORT = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+const WEEKDAYS_FULL = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+const WEEKDAYS_SHORT = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
 
 function fmtDateHuman(iso) {
   if (!iso) return '';
   const [y,m,d] = iso.split('-').map(Number);
-  const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
   const t = todayStr();
   if (iso === t) return 'Сегодня';
   const yest = new Date(); yest.setDate(yest.getDate()-1);
   if (iso === fmtDateLocal(yest)) return 'Вчера';
   const tom = new Date(); tom.setDate(tom.getDate()+1);
   if (iso === fmtDateLocal(tom)) return 'Завтра';
-  return `${d} ${months[m-1]} ${y}`;
+  return `${d} ${MONTHS_SHORT[m-1]} ${y}`;
+}
+
+function fmtDateFull(iso) {
+  if (!iso) return '';
+  const [y,m,d] = iso.split('-').map(Number);
+  const date = new Date(y, m-1, d);
+  return `${WEEKDAYS_FULL[date.getDay()]}, ${d} ${MONTHS_FULL[m-1].toLowerCase()} ${y}`;
 }
 
 function getRange() {
@@ -639,38 +837,27 @@ function escapeHtml(s) {
 /* ============================ POPUP SYSTEM ============================ */
 
 let activePopup = null;
-let activeCleanup = null;
-
 function closePopup() {
-  if (activePopup) {
-    activePopup.remove();
-    activePopup = null;
-  }
-  if (activeCleanup) {
-    activeCleanup();
-    activeCleanup = null;
-  }
+  if (activePopup) { activePopup.remove(); activePopup = null; }
 }
 
 /* ============================ CALENDAR ============================ */
 
-function getDaysInMonth(y, m) {
-  return new Date(y, m + 1, 0).getDate();
-}
-function getFirstWeekday(y, m) {
-  const d = new Date(y, m, 1).getDay();
-  return (d + 6) % 7; // 0 = Пн
-}
+function getDaysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
+function getFirstWeekday(y, m) { const d = new Date(y, m, 1).getDay(); return (d + 6) % 7; }
 
-const MONTH_NAMES = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-
-function openCalendarPopup(initialISO, onSelect) {
+/**
+ * Открывает компактный календарь.
+ * options.dayStatus(iso) → null | 'ok' | 'bad'
+ */
+function openCalendarPopup(initialISO, onSelect, options = {}) {
   closePopup();
 
   const init = initialISO ? new Date(initialISO + 'T00:00:00') : new Date();
   let viewYear = init.getFullYear();
   let viewMonth = init.getMonth();
   let selected = initialISO || todayStr();
+  const dayStatus = options.dayStatus || (() => null);
 
   const overlay = document.createElement('div');
   overlay.className = 'popup-overlay';
@@ -689,6 +876,9 @@ function openCalendarPopup(initialISO, onSelect) {
       const cls = ['cal-day'];
       if (iso === today) cls.push('today');
       if (iso === selected) cls.push('selected');
+      const st = dayStatus(iso);
+      if (st === 'bad') cls.push('has-violation');
+      else if (st === 'ok') cls.push('has-success');
       daysHTML += `<button type="button" class="${cls.join(' ')}" data-day="${iso}">${day}</button>`;
     }
 
@@ -696,11 +886,11 @@ function openCalendarPopup(initialISO, onSelect) {
       <div class="popup calendar-popup">
         <div class="cal-head">
           <button type="button" class="cal-nav" data-nav="-1">‹</button>
-          <div class="cal-title">${MONTH_NAMES[viewMonth]} ${viewYear}</div>
+          <div class="cal-title">${MONTHS_FULL[viewMonth]} ${viewYear}</div>
           <button type="button" class="cal-nav" data-nav="1">›</button>
         </div>
         <div class="cal-week">
-          <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+          ${WEEKDAYS_SHORT.map(w => `<span>${w}</span>`).join('')}
         </div>
         <div class="cal-grid">${daysHTML}</div>
         <div class="cal-foot">
@@ -713,7 +903,6 @@ function openCalendarPopup(initialISO, onSelect) {
 
   overlay.addEventListener('click', e => {
     if (e.target === overlay) { closePopup(); return; }
-
     const nav = e.target.closest('[data-nav]');
     if (nav) {
       viewMonth += parseInt(nav.dataset.nav);
@@ -722,25 +911,115 @@ function openCalendarPopup(initialISO, onSelect) {
       render();
       return;
     }
-
     const day = e.target.closest('[data-day]');
-    if (day) {
-      selected = day.dataset.day;
-      onSelect(selected);
-      closePopup();
-      return;
-    }
-
-    if (e.target.closest('[data-cal-today]')) {
-      onSelect(todayStr());
-      closePopup();
-      return;
-    }
-
-    if (e.target.closest('[data-cal-clear]')) {
-      closePopup();
-    }
+    if (day) { onSelect(day.dataset.day); closePopup(); return; }
+    if (e.target.closest('[data-cal-today]')) { onSelect(todayStr()); closePopup(); return; }
+    if (e.target.closest('[data-cal-clear]')) closePopup();
   });
+
+  render();
+}
+
+/* ============================ TIME PICKER ============================ */
+
+function openTimePicker(initial, onSelect) {
+  closePopup();
+
+  let [hh, mm] = (initial || '09:00').split(':').map(x => parseInt(x));
+  if (isNaN(hh)) hh = 9;
+  if (isNaN(mm)) mm = 0;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'popup-overlay';
+  document.body.appendChild(overlay);
+  activePopup = overlay;
+
+  const render = () => {
+    let hoursHTML = '';
+    for (let h = 0; h < 24; h++) {
+      hoursHTML += `<div class="time-item ${h === hh ? 'active' : ''}" data-h="${h}">${String(h).padStart(2,'0')}</div>`;
+    }
+    let minsHTML = '';
+    for (let m = 0; m < 60; m += 5) {
+      minsHTML += `<div class="time-item ${m === mm ? 'active' : ''}" data-m="${m}">${String(m).padStart(2,'0')}</div>`;
+    }
+
+    overlay.innerHTML = `
+      <div class="popup time-popup">
+        <div class="time-display">${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}</div>
+        <div class="time-cols">
+          <div>
+            <div class="time-col-label">Часы</div>
+            <div class="time-scroll" id="hoursScroll">${hoursHTML}</div>
+          </div>
+          <div>
+            <div class="time-col-label">Минуты</div>
+            <div class="time-scroll" id="minsScroll">${minsHTML}</div>
+          </div>
+        </div>
+        <div class="time-quick">
+          <button type="button" data-quick="08:00">08:00</button>
+          <button type="button" data-quick="09:00">09:00</button>
+          <button type="button" data-quick="12:00">12:00</button>
+          <button type="button" data-quick="18:00">18:00</button>
+          <button type="button" data-quick="21:00">21:00</button>
+        </div>
+        <div class="row" style="justify-content: space-between">
+          <button type="button" class="btn ghost small" data-time-cancel>Отмена</button>
+          <button type="button" class="btn small" data-time-ok>Готово</button>
+        </div>
+      </div>
+    `;
+
+    // центрируем активные элементы
+    setTimeout(() => {
+      const hs = document.getElementById('hoursScroll');
+      const ms = document.getElementById('minsScroll');
+      const activeH = hs?.querySelector('.active');
+      const activeM = ms?.querySelector('.active');
+      if (activeH && hs) hs.scrollTop = activeH.offsetTop - hs.clientHeight/2 + activeH.clientHeight/2;
+      if (activeM && ms) ms.scrollTop = activeM.offsetTop - ms.clientHeight/2 + activeM.clientHeight/2;
+    }, 30);
+  };
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { closePopup(); return; }
+
+    const hItem = e.target.closest('[data-h]');
+    if (hItem) {
+      hh = parseInt(hItem.dataset.h);
+      overlay.querySelectorAll('#hoursScroll .time-item').forEach(el => el.classList.toggle('active', parseInt(el.dataset.h) === hh));
+      updateDisplay();
+      return;
+    }
+    const mItem = e.target.closest('[data-m]');
+    if (mItem) {
+      mm = parseInt(mItem.dataset.m);
+      overlay.querySelectorAll('#minsScroll .time-item').forEach(el => el.classList.toggle('active', parseInt(el.dataset.m) === mm));
+      updateDisplay();
+      return;
+    }
+
+    const quick = e.target.closest('[data-quick]');
+    if (quick) {
+      const [qh, qm] = quick.dataset.quick.split(':').map(Number);
+      hh = qh; mm = qm;
+      render();
+      return;
+    }
+
+    if (e.target.closest('[data-time-ok]')) {
+      onSelect(`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`);
+      closePopup();
+      return;
+    }
+    if (e.target.closest('[data-time-cancel]')) closePopup();
+  });
+
+  const updateDisplay = () => {
+    const d = overlay.querySelector('.time-display');
+    if (d) d.textContent = `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+  };
 
   render();
 }
@@ -749,13 +1028,11 @@ function openCalendarPopup(initialISO, onSelect) {
 
 function openSelectPopup(title, options, selectedId, onSelect) {
   closePopup();
-
   const overlay = document.createElement('div');
   overlay.className = 'popup-overlay';
   document.body.appendChild(overlay);
   activePopup = overlay;
 
-  // Группировка опций по group (если есть)
   const hasGroups = options.some(o => o.group);
   let html = `<div class="select-head">${escapeHtml(title)}</div>`;
 
@@ -782,15 +1059,184 @@ function openSelectPopup(title, options, selectedId, onSelect) {
   }
 
   overlay.innerHTML = `<div class="popup select-popup">${html}</div>`;
-
   overlay.addEventListener('click', e => {
     if (e.target === overlay) { closePopup(); return; }
     const item = e.target.closest('[data-sel]');
-    if (item) {
-      onSelect(item.dataset.sel);
-      closePopup();
+    if (item) { onSelect(item.dataset.sel); closePopup(); }
+  });
+}
+
+/* ============================ VIOLATIONS / ANALYTICS PER DAY ============================ */
+
+/**
+ * Возвращает объект с нарушениями дня:
+ * { overDistribution: [...], unfinishedTasks: [...], planStatus: 'ok'|'bad'|null }
+ */
+function analyzeDay(iso) {
+  const dayTx = state.transactions.filter(t => t.date === iso);
+  const dayExpense = dayTx.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
+  const dayIncome = dayTx.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
+
+  // Выход за распределение: считаем по дневной норме
+  // Норма = (доход за месяц * pct / 100) / дней в месяце
+  const monthIncome = state.transactions
+    .filter(t => t.type === 'income' && t.date.slice(0,7) === iso.slice(0,7))
+    .reduce((s,t) => s + t.amount, 0);
+
+  const daysInMonth = new Date(parseInt(iso.slice(0,4)), parseInt(iso.slice(5,7)), 0).getDate();
+  const overDistribution = [];
+
+  if (monthIncome > 0) {
+    const dayExpByGroup = { needs: 0, wants: 0, savings: 0, debts: 0 };
+    dayTx.filter(t => t.type === 'expense').forEach(t => {
+      const c = CATEGORIES.expense.find(x => x.id === t.category);
+      if (c) dayExpByGroup[c.group] += t.amount;
+    });
+
+    Object.keys(GROUPS).forEach(g => {
+      const pct = state.distribution[g] / 100;
+      const dailyNorm = monthIncome * pct / daysInMonth;
+      if (dayExpByGroup[g] > dailyNorm && dailyNorm > 0) {
+        overDistribution.push({
+          group: g,
+          spent: dayExpByGroup[g],
+          norm: dailyNorm,
+          over: dayExpByGroup[g] - dailyNorm
+        });
+      }
+    });
+  }
+
+  // Незавершённые задачи в планере
+  const tasks = state.planner[iso] || [];
+  const unfinishedTasks = tasks.filter(t => !t.done);
+
+  // План-задачи — ищем планы, у которых истёк срок и не выполнен полностью
+  // Здесь: если есть план с периодом, и день = конец периода, и прогресс <100 — фиксируем
+  const brokenPlans = [];
+  state.plans.forEach(p => {
+    if (p.endDate && p.endDate === iso) {
+      const pct = planPct(p);
+      if (pct < 100) brokenPlans.push({ plan: p, pct });
     }
   });
+
+  const hasBad = overDistribution.length > 0 || unfinishedTasks.length > 0 || brokenPlans.length > 0;
+  const hasAny = dayTx.length > 0 || tasks.length > 0;
+
+  return {
+    dayTx, dayExpense, dayIncome,
+    overDistribution,
+    unfinishedTasks,
+    brokenPlans,
+    status: hasBad ? 'bad' : (hasAny ? 'ok' : null)
+  };
+}
+
+function planPct(plan) {
+  if (!plan.subtasks || !plan.subtasks.length) return 0;
+  const done = plan.subtasks.filter(s => s.done).length;
+  return Math.round(done / plan.subtasks.length * 100);
+}
+
+/* ============================ GOALS LOGIC ============================ */
+
+/**
+ * Вычисляет прогресс цели и прогноз даты.
+ * Прогноз: используем среднее пополнение в день из истории
+ * транзакций со category='savings' или 'invest' (за последние 3 мес).
+ * Если истории нет — берём распределение: savings% от среднего месячного дохода.
+ */
+function goalStats(goal) {
+  const saved = goal.saved || 0;
+  const total = goal.amount;
+  const pct = total > 0 ? Math.min(100, Math.round(saved / total * 100)) : 0;
+
+  // 1. Средние пополнения в день за последние 3 месяца
+  const now = new Date();
+  const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+  const fromIso = fmtDateLocal(threeMonthsAgo);
+
+  const savingsTx = state.transactions.filter(t =>
+    t.type === 'expense' &&
+    (t.category === 'savings' || t.category === 'invest') &&
+    t.date >= fromIso
+  );
+  const totalSaved = savingsTx.reduce((s,t) => s + t.amount, 0);
+  const daysSpan = Math.max(1, Math.round((now - threeMonthsAgo) / 86400000));
+  let dailyRate = totalSaved / daysSpan;
+
+  // 2. Если истории нет — прогноз от распределения
+  if (dailyRate < 1) {
+    // средний месячный доход за всё время
+    const incomeByMonth = {};
+    state.transactions.filter(t => t.type === 'income').forEach(t => {
+      const k = t.date.slice(0,7);
+      incomeByMonth[k] = (incomeByMonth[k] || 0) + t.amount;
+    });
+    const months = Object.keys(incomeByMonth);
+    const avgMonthIncome = months.length
+      ? Object.values(incomeByMonth).reduce((a,b) => a+b, 0) / months.length
+      : 0;
+
+    const savingsPct = state.distribution.savings / 100;
+    dailyRate = (avgMonthIncome * savingsPct) / 30;
+  }
+
+  const remaining = Math.max(0, total - saved);
+  let etaText = 'недостаточно данных';
+  if (dailyRate > 0 && remaining > 0) {
+    const daysLeft = Math.ceil(remaining / dailyRate);
+    const eta = new Date();
+    eta.setDate(eta.getDate() + daysLeft);
+    etaText = fmtDateLocal(eta).split('-').reverse().join('.');
+  } else if (remaining === 0) {
+    etaText = 'цель достигнута 🎉';
+  }
+
+  return { saved, total, pct, remaining, dailyRate, etaText };
+}
+
+/**
+ * Предлагаемое распределение под цель.
+ * Учитывает долги: если долгов много — уменьшаем savings, увеличиваем debts.
+ */
+function suggestedDistributionForGoal(goal) {
+  const base = { ...state.distribution };
+  const totalDebt = state.debts.reduce((s,d) => s + Math.max(0, d.amount - (d.paid || 0)), 0);
+  const goalAmount = goal.amount;
+  const daysToGoal = goal.periodDays || 90;
+
+  const neededPerMonth = goalAmount / (daysToGoal / 30);
+  // средний месячный доход
+  const incomeByMonth = {};
+  state.transactions.filter(t => t.type === 'income').forEach(t => {
+    const k = t.date.slice(0,7);
+    incomeByMonth[k] = (incomeByMonth[k] || 0) + t.amount;
+  });
+  const months = Object.keys(incomeByMonth);
+  const avgIncome = months.length
+    ? Object.values(incomeByMonth).reduce((a,b) => a+b, 0) / months.length
+    : 0;
+
+  // Корректируем
+  let suggested = { ...base };
+
+  if (totalDebt > 0 && avgIncome > 0) {
+    const debtShare = Math.min(45, Math.round(totalDebt / avgIncome * 100));
+    const shift = Math.min(20, Math.round(debtShare / 2));
+    suggested.debts = Math.min(50, base.debts + shift);
+    suggested.wants = Math.max(5, base.wants - Math.round(shift / 2));
+    suggested.savings = Math.max(5, base.savings - Math.ceil(shift / 2));
+    const sum = suggested.needs + suggested.wants + suggested.savings + suggested.debts;
+    if (sum !== 100) suggested.savings += 100 - sum;
+  }
+
+  // Проверка достижимости
+  const monthlyToGoal = avgIncome * suggested.savings / 100;
+  const monthsNeeded = monthlyToGoal > 0 ? goalAmount / monthlyToGoal : Infinity;
+
+  return { suggested, avgIncome, monthsNeeded, neededPerMonth, totalDebt };
 }
 
 /* ============================ RENDER: PERIOD BAR ============================ */
@@ -798,7 +1244,6 @@ function openSelectPopup(title, options, selectedId, onSelect) {
 function renderPeriodBar() {
   const el = document.getElementById('periodBar');
   const showDateInputs = ui.period === 'custom';
-
   const fromVal = ui.customFrom || todayStr();
   const toVal = ui.customTo || todayStr();
 
@@ -854,7 +1299,52 @@ function renderDashboard() {
   const todayTasks = (state.planner[todayStr()] || []).slice().sort((a,b) => a.time.localeCompare(b.time));
   const doneCount = todayTasks.filter(t => t.done).length;
 
-  const dist = calcDistribution(income);
+  // Нарушения за период
+  const [fromIso, toIso] = getRange();
+  const alerts = [];
+  const cursor = new Date(fromIso + 'T00:00:00');
+  const end = new Date(toIso + 'T00:00:00');
+  while (cursor <= end) {
+    const iso = fmtDateLocal(cursor);
+    const a = analyzeDay(iso);
+    if (a.status === 'bad') {
+      if (a.overDistribution.length) {
+        a.overDistribution.forEach(o => {
+          alerts.push({
+            type: 'bad',
+            icon: '📊',
+            title: `Выход за распределение: ${GROUPS[o.group].name}`,
+            desc: `Потрачено ${money(o.spent)} при норме ${money(o.norm)} (перерасход ${money(o.over)})`,
+            date: iso
+          });
+        });
+      }
+      if (a.unfinishedTasks.length) {
+        alerts.push({
+          type: 'bad',
+          icon: '📝',
+          title: `Не выполнен план на день`,
+          desc: `${a.unfinishedTasks.length} незавершённых задач: ${a.unfinishedTasks.slice(0,2).map(t => t.text).join(', ')}${a.unfinishedTasks.length > 2 ? '…' : ''}`,
+          date: iso
+        });
+      }
+      a.brokenPlans.forEach(bp => {
+        alerts.push({
+          type: 'bad',
+          icon: '🎯',
+          title: `План не выполнен: ${bp.plan.title}`,
+          desc: `Прогресс ${bp.pct}% на дату завершения`,
+          date: iso
+        });
+      });
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  alerts.sort((a,b) => b.date.localeCompare(a.date));
+
+  // активные цели
+  const activeGoals = state.goals.filter(g => (g.saved || 0) < g.amount);
+  const topGoal = activeGoals[0];
 
   return `
   <div class="grid cards-4">
@@ -897,20 +1387,33 @@ function renderDashboard() {
     </div>
   </div>
 
+  ${topGoal ? `
   <div class="card mt">
-    <h3>Распределение дохода за период</h3>
-    <div class="grid cards-3">
-      ${Object.keys(GROUPS).map(g => {
-        const d = dist[g];
-        return `
-        <div class="dist-card card" style="background:var(--panel2)">
-          <div class="stripe" style="background:${GROUPS[g].color}"></div>
-          <div class="dist-name" style="color:${GROUPS[g].color}">${GROUPS[g].name}</div>
-          <div class="amount" style="color:${GROUPS[g].color}">${money(d.plan)}</div>
-          <div class="muted" style="font-size:12px;margin-top:4px">${d.pct}% от ${money(dist.base)}</div>
-        </div>`;
-      }).join('')}
+    <h3>Активная цель</h3>
+    ${goalCardHTML(topGoal)}
+  </div>
+  ` : ''}
+
+  <div class="card mt">
+    <div class="card-head-row">
+      <h3>Нарушения за период</h3>
+      ${alerts.length ? `<span class="pct-badge warn">${alerts.length}</span>` : `<span class="pct-badge ok">Чисто ✓</span>`}
     </div>
+    ${alerts.length ? `
+      <div class="alert-list">
+        ${alerts.slice(0, 8).map(a => `
+          <div class="alert-item ${a.type === 'bad' ? 'critical' : 'info'}">
+            <div class="alert-icon">${a.icon}</div>
+            <div class="alert-body">
+              <div class="alert-title">${escapeHtml(a.title)}</div>
+              <div class="alert-desc">${escapeHtml(a.desc)}</div>
+              <div class="alert-date">${fmtDateHuman(a.date)} · ${a.date.split('-').reverse().join('.')}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      ${alerts.length > 8 ? `<div class="muted mt">… и ещё ${alerts.length - 8}</div>` : ''}
+    ` : `<div class="empty">Нарушений за период не найдено</div>`}
   </div>
   `;
 }
@@ -995,7 +1498,6 @@ function buildDailyChart(tx) {
   const [from, to] = getRange();
   const days = daysBetween(from, to);
   const mode = days > 62 ? 'month' : 'day';
-
   const map = {};
 
   if (mode === 'day') {
@@ -1076,7 +1578,6 @@ function renderAnalytics() {
     <div class="card stat">
       <div class="label">Норма сбережений</div>
       <div class="value">${income > 0 ? Math.round((income - expense) / income * 100) : 0}%</div>
-      <div class="sub">от дохода за период</div>
     </div>
   </div>
 
@@ -1211,6 +1712,8 @@ function renderDistribution() {
     if (c) actual[c.group] += t.amount;
   });
 
+  const totalDebt = state.debts.reduce((s,d) => s + Math.max(0, d.amount - (d.paid || 0)), 0);
+
   return `
   <div class="card">
     <h3>Доход для распределения</h3>
@@ -1219,7 +1722,8 @@ function renderDistribution() {
       <button type="button" class="btn ghost small" id="distAuto">Взять доход за период (${money(periodIncome)})</button>
     </div>
     <div class="muted mt" style="font-size:13px">
-      ${ui.distBase === null ? 'Значение берётся автоматически из доходов за выбранный период.' : 'Используется ручное значение. Нажмите «Взять доход за период», чтобы вернуть авто.'}
+      ${ui.distBase === null ? 'Значение берётся автоматически из доходов за выбранный период.' : 'Используется ручное значение.'}
+      ${totalDebt > 0 ? `<br>💡 Активных долгов на <b style="color:var(--red)">${money(totalDebt)}</b> — распределение учтёт это.` : ''}
     </div>
   </div>
 
@@ -1269,20 +1773,241 @@ function renderDistribution() {
   </div>
 
   <div class="card mt">
-    <h3>Как это работает</h3>
-    <div class="muted" style="line-height:1.8;font-size:14px">
-      <b style="color:var(--accent)">Обязательное</b> — то, без чего не прожить: жильё, еда, транспорт, здоровье.<br>
-      <b style="color:var(--accent)">Развлечения</b> — кафе, кино, покупки, поездки.<br>
-      <b style="color:var(--accent)">Сбережения</b> — то, что откладываем или инвестируем.<br>
-      <b style="color:var(--accent)">Долги</b> — МФО, кредиты и займы у близких.<br><br>
-      Начните с правила <b>40/20/20/20</b> и корректируйте проценты под свою ситуацию.
-      Сравнивайте «план» и «потрачено», чтобы видеть, где вы выходите за рамки.
+    <h3>Пресеты</h3>
+    <div class="row">
+      <button type="button" class="btn ghost small" id="preset1">40 / 20 / 20 / 20</button>
+      <button type="button" class="btn ghost small" id="preset2">50 / 20 / 20 / 10</button>
+      <button type="button" class="btn ghost small" id="preset3">35 / 15 / 30 / 20</button>
     </div>
-    <div class="row mt">
-      <button type="button" class="btn ghost small" id="preset1">40 / 20 / 20 / 20 · баланс</button>
-      <button type="button" class="btn ghost small" id="preset2">50 / 20 / 20 / 10 · фокус на обязательное</button>
-      <button type="button" class="btn ghost small" id="preset3">35 / 15 / 30 / 20 · фокус на сбережения</button>
+  </div>
+  `;
+}
+
+/* ============================ RENDER: PLANS ============================ */
+
+function renderPlans() {
+  const plans = state.plans;
+
+  return `
+  <div class="card">
+    <h3>Новый план</h3>
+    <form id="planForm" class="tx-form" style="grid-template-columns: 1fr 1fr auto;">
+      <div>
+        <label>Название</label>
+        <input type="text" id="planTitle" placeholder="План на месяц" required maxlength="80">
+      </div>
+      <div>
+        <label>Период до</label>
+        <button type="button" class="date-trigger" data-date-for="planEnd" data-date-value="${todayStr()}">
+          <span class="dt-text">${fmtDateHuman(todayStr())}</span>
+          <span class="dt-icon">📅</span>
+        </button>
+      </div>
+      <button class="btn" type="submit">Создать</button>
+    </form>
+  </div>
+
+  <div class="card mt">
+    <h3>Мои планы · ${plans.length}</h3>
+    ${plans.length ? plans.map(plan => renderPlanCard(plan)).join('')
+      : `<div class="empty"><div class="big">🎯</div>Планов пока нет. Создайте первый!</div>`}
+  </div>
+  `;
+}
+
+function renderPlanCard(plan) {
+  const pct = planPct(plan);
+  const done = plan.subtasks.filter(s => s.done).length;
+  const total = plan.subtasks.length;
+  const isDone = pct === 100 && total > 0;
+
+  return `
+  <div class="plan-item">
+    <div class="plan-head">
+      <div style="flex:1;min-width:0">
+        <div class="plan-title">${escapeHtml(plan.title)}</div>
+        <div class="plan-period">${plan.endDate ? 'до ' + fmtDateHuman(plan.endDate) : 'без срока'} · ${done}/${total} пунктов</div>
+      </div>
+      <div class="plan-pct" style="color:${isDone ? 'var(--green)' : 'var(--accent)'}">${pct}%</div>
+      <button type="button" class="goal-del" data-plan-del="${plan.id}" title="Удалить">×</button>
     </div>
+    <div class="plan-bar">
+      <div class="plan-bar-fill" style="width:${pct}%;background:${isDone ? 'var(--green)' : 'var(--accent)'}"></div>
+    </div>
+    <div class="subtasks">
+      ${plan.subtasks.map(s => `
+        <div class="subtask ${s.done ? 'done' : ''}">
+          <button type="button" class="subtask-check" data-plan-toggle="${plan.id}|${s.id}">✓</button>
+          <span class="subtask-text">${escapeHtml(s.text)}</span>
+          <button type="button" class="subtask-del" data-plan-sub-del="${plan.id}|${s.id}" title="Удалить">×</button>
+        </div>
+      `).join('')}
+    </div>
+    <form class="plan-add-form" data-plan-add="${plan.id}">
+      <input type="text" placeholder="Добавить пункт..." maxlength="100">
+      <button type="submit" class="btn small">+</button>
+    </form>
+  </div>
+  `;
+}
+
+/* ============================ RENDER: GOALS ============================ */
+
+function renderGoals() {
+  const goals = state.goals;
+
+  return `
+  <div class="card">
+    <h3>Новая цель</h3>
+    <form id="goalForm" class="tx-form" style="grid-template-columns: 1.4fr 1fr 1fr auto;">
+      <div>
+        <label>Название</label>
+        <input type="text" id="goalTitle" placeholder="Например: MacBook Pro" required maxlength="80">
+      </div>
+      <div>
+        <label>Стоимость, ${state.currency}</label>
+        <input type="number" id="goalAmount" step="100" min="1" inputmode="numeric" placeholder="0" required>
+      </div>
+      <div>
+        <label>Срок (дней)</label>
+        <input type="number" id="goalPeriod" step="1" min="1" inputmode="numeric" placeholder="90" value="90">
+      </div>
+      <button class="btn" type="submit">Создать</button>
+    </form>
+  </div>
+
+  <div class="card mt">
+    <h3>Мои цели · ${goals.length}</h3>
+    ${goals.length ? goals.map(g => goalCardHTML(g, true)).join('')
+      : `<div class="empty"><div class="big">🏆</div>Целей пока нет. Добавьте первую!</div>`}
+  </div>
+  `;
+}
+
+function goalCardHTML(goal, withControls = false) {
+  const st = goalStats(goal);
+  const pctColor = st.pct >= 100 ? 'var(--green)' : 'var(--accent)';
+  const sug = withControls ? suggestedDistributionForGoal(goal) : null;
+
+  return `
+  <div class="goal-card">
+    <div class="goal-head">
+      <div class="goal-emoji">🎯</div>
+      <div class="goal-info">
+        <div class="goal-title">${escapeHtml(goal.title)}</div>
+        <div class="goal-period">${goal.periodDays ? 'срок ' + goal.periodDays + ' дн.' : ''} ${goal.createdAt ? '· создано ' + fmtDateHuman(goal.createdAt) : ''}</div>
+        <div class="goal-amount">${money(goal.amount)}</div>
+      </div>
+      ${withControls ? `<button type="button" class="goal-del" data-goal-del="${goal.id}" title="Удалить">×</button>` : ''}
+    </div>
+
+    <div class="goal-progress">
+      <div class="goal-progress-fill" style="width:${st.pct}%;background:${pctColor}"></div>
+    </div>
+    <div class="goal-stats">
+      <span>Накоплено <b>${money(st.saved)}</b> из <b>${money(st.total)}</b></span>
+      <span>Выполнение <b style="color:${pctColor}">${st.pct}%</b></span>
+    </div>
+    <div class="goal-stats" style="margin-top:6px">
+      <span>Осталось <b>${money(st.remaining)}</b></span>
+      <span>Темп <b>${money(st.dailyRate)}</b>/день</span>
+    </div>
+
+    <div class="goal-tip">
+      📅 Прогноз достижения: <b>${st.etaText}</b>
+      ${sug ? `<br>💡 Рекомендуется: обязательное ${sug.suggested.needs}% · развлечения ${sug.suggested.wants}% · сбережения ${sug.suggested.savings}% · долги ${sug.suggested.debts}%` : ''}
+      ${sug && sug.totalDebt > 0 ? `<br>⚠️ Учтены долги: ${money(sug.totalDebt)} — приоритет закрытия.` : ''}
+    </div>
+
+    ${withControls ? `
+    <form class="plan-add-form" data-goal-add="${goal.id}" style="margin-top:12px">
+      <input type="number" step="100" min="0" inputmode="numeric" placeholder="Сумма пополнения, ${state.currency}">
+      <button type="submit" class="btn small">Пополнить</button>
+    </form>
+    <button type="button" class="btn ghost small" data-goal-dist="${goal.id}" style="margin-top:8px">
+      Применить рекомендованное распределение
+    </button>
+    ` : ''}
+  </div>
+  `;
+}
+
+/* ============================ RENDER: DEBTS ============================ */
+
+function renderDebts() {
+  const debts = state.debts;
+  const active = debts.filter(d => (d.paid || 0) < d.amount);
+  const closed = debts.filter(d => (d.paid || 0) >= d.amount);
+  const totalActive = active.reduce((s,d) => s + (d.amount - (d.paid || 0)), 0);
+
+  return `
+  <div class="card">
+    <h3>Новый долг</h3>
+    <form id="debtForm" class="tx-form" style="grid-template-columns: 1.4fr 1fr 1fr auto;">
+      <div>
+        <label>Кому / название</label>
+        <input type="text" id="debtName" placeholder="Например: Займ у Ивана" required maxlength="80">
+      </div>
+      <div>
+        <label>Тип</label>
+        <button type="button" class="select-trigger" data-select-for="debtType" data-select-value="mfo">
+          <span class="st-icon">🏪</span>
+          <span class="st-text">МФО</span>
+          <span class="st-arrow">▾</span>
+        </button>
+      </div>
+      <div>
+        <label>Сумма, ${state.currency}</label>
+        <input type="number" id="debtAmount" step="100" min="1" inputmode="numeric" placeholder="0" required>
+      </div>
+      <button class="btn" type="submit">Добавить</button>
+    </form>
+    ${totalActive > 0 ? `<div class="muted mt">💡 Активных долгов на <b style="color:var(--red)">${money(totalActive)}</b></div>` : ''}
+  </div>
+
+  <div class="card mt">
+    <h3>Активные долги · ${active.length}</h3>
+    ${active.length ? active.map(d => renderDebtCard(d)).join('')
+      : `<div class="empty"><div class="big">✨</div>Активных долгов нет</div>`}
+  </div>
+
+  ${closed.length ? `
+  <div class="card mt">
+    <h3>Закрытые · ${closed.length}</h3>
+    ${closed.map(d => renderDebtCard(d, true)).join('')}
+  </div>
+  ` : ''}
+  `;
+}
+
+function renderDebtCard(debt, isClosed = false) {
+  const paid = debt.paid || 0;
+  const pct = debt.amount > 0 ? Math.min(100, Math.round(paid / debt.amount * 100)) : 0;
+  const type = DEBT_TYPES[debt.type] || DEBT_TYPES.other;
+
+  return `
+  <div class="debt-card" style="${isClosed ? 'opacity:.6' : ''}">
+    <div class="debt-head">
+      <div class="debt-info">
+        <div class="debt-name">${escapeHtml(debt.name)}</div>
+        <div class="debt-type">${type.icon} ${type.name}</div>
+        <div class="debt-amount" style="color:${isClosed ? 'var(--green)' : 'var(--red)'}">${money(debt.amount)}</div>
+      </div>
+      <button type="button" class="debt-del" data-debt-del="${debt.id}" title="Удалить">×</button>
+    </div>
+    <div class="debt-progress">
+      <div class="debt-progress-fill" style="width:${pct}%;background:${isClosed ? 'var(--green)' : 'var(--red)'}"></div>
+    </div>
+    <div class="debt-detail">
+      <span>Выплачено <b>${money(paid)}</b> из <b>${money(debt.amount)}</b></span>
+      <span>${pct}%${isClosed ? ' · закрыт ✓' : ''}</span>
+    </div>
+    ${!isClosed ? `
+    <form class="plan-add-form" data-debt-add="${debt.id}" style="margin-top:10px">
+      <input type="number" step="100" min="1" inputmode="numeric" placeholder="Сумма платежа, ${state.currency}">
+      <button type="submit" class="btn small">Оплатить</button>
+    </form>
+    ` : ''}
   </div>
   `;
 }
@@ -1304,10 +2029,8 @@ function renderPlanner() {
   const tasks = (state.planner[date] || []).slice().sort((a,b) => a.time.localeCompare(b.time));
   const done = tasks.filter(t => t.done).length;
 
-  const d = new Date(date + 'T00:00:00');
-  const weekdays = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
-  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-  const title = `${weekdays[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+  const [y,m,d] = date.split('-').map(Number);
+  const title = `${WEEKDAYS_FULL[new Date(y,m-1,d).getDay()]}, ${d} ${MONTHS_FULL[m-1].toLowerCase()}`;
 
   return `
   <div class="card">
@@ -1320,12 +2043,16 @@ function renderPlanner() {
         <span class="dt-text">${fmtDateHuman(date)}</span>
         <span class="dt-icon">📅</span>
       </button>
+      <button type="button" class="btn ghost small" data-day-view="${date}">Аналитика дня</button>
     </div>
 
     <form id="taskForm" class="task-form">
       <div>
         <label>Время</label>
-        <input type="time" id="taskTime" required value="09:00">
+        <button type="button" class="time-trigger" data-time-for="taskTime" data-time-value="09:00">
+          <span class="tt-text">09:00</span>
+          <span class="tt-icon">⏱</span>
+        </button>
       </div>
       <div>
         <label>Что делаем</label>
@@ -1371,6 +2098,148 @@ function renderUpcoming() {
   </div>`;
 }
 
+/* ============================ DAY ANALYTICS MODAL ============================ */
+
+function openDayAnalytics(iso) {
+  closePopup();
+  const a = analyzeDay(iso);
+
+  const overlay = document.createElement('div');
+  overlay.className = 'popup-overlay';
+  document.body.appendChild(overlay);
+  activePopup = overlay;
+
+  const hasContent = a.dayTx.length || (state.planner[iso] || []).length || a.overDistribution.length || a.brokenPlans.length;
+
+  let bodyHTML = '';
+
+  // 1. Статус
+  if (a.status === 'bad') {
+    bodyHTML += `<div class="day-section">
+      <div class="day-section-title">Статус дня</div>
+      <span class="day-badge bad">⚠️ Есть нарушения</span>
+    </div>`;
+  } else if (a.status === 'ok') {
+    bodyHTML += `<div class="day-section">
+      <div class="day-section-title">Статус дня</div>
+      <span class="day-badge ok">✓ Чисто, без нарушений</span>
+    </div>`;
+  }
+
+  // 2. Выход за распределение
+  if (a.overDistribution.length) {
+    bodyHTML += `<div class="day-section">
+      <div class="day-section-title">📊 Выход за распределение</div>
+      ${a.overDistribution.map(o => `
+        <div class="alert-item critical" style="margin-bottom:6px">
+          <div class="alert-icon">${GROUPS[o.group].color ? '⚠️' : '⚠️'}</div>
+          <div class="alert-body">
+            <div class="alert-title">${GROUPS[o.group].name}</div>
+            <div class="alert-desc">Потрачено ${money(o.spent)} при дневной норме ${money(o.norm)}. Перерасход: <b style="color:var(--red)">${money(o.over)}</b></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  // 3. Незавершённые задачи
+  if (a.unfinishedTasks.length) {
+    bodyHTML += `<div class="day-section">
+      <div class="day-section-title">📝 Не выполнено в дневнике (${a.unfinishedTasks.length})</div>
+      ${a.unfinishedTasks.map(t => `
+        <div class="mini-tx">
+          <span class="mini-tx-icon">⏱</span>
+          <div class="mini-tx-info">
+            <div class="mini-tx-name">${escapeHtml(t.text)}</div>
+            <div class="mini-tx-note">запланировано на ${t.time}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  // 4. Невыполненные планы
+  if (a.brokenPlans.length) {
+    bodyHTML += `<div class="day-section">
+      <div class="day-section-title">🎯 Не выполнен план</div>
+      ${a.brokenPlans.map(bp => `
+        <div class="alert-item critical">
+          <div class="alert-icon">🎯</div>
+          <div class="alert-body">
+            <div class="alert-title">${escapeHtml(bp.plan.title)}</div>
+            <div class="alert-desc">Прогресс ${bp.pct}% · дедлайн был ${fmtDateHuman(bp.plan.endDate)}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  // 5. Транзакции
+  if (a.dayTx.length) {
+    bodyHTML += `<div class="day-section">
+      <div class="day-section-title">💰 Операции (${a.dayTx.length})</div>
+      ${a.dayTx.map(t => {
+        const c = catById(t.type, t.category);
+        return `
+        <div class="mini-tx">
+          <span class="mini-tx-icon">${c.icon}</span>
+          <div class="mini-tx-info">
+            <div class="mini-tx-name">${escapeHtml(c.name)}</div>
+            ${t.note ? `<div class="mini-tx-note">${escapeHtml(t.note)}</div>` : ''}
+          </div>
+          <span class="mini-tx-amt ${t.type === 'income' ? 'income' : 'expense'}">
+            ${t.type === 'income' ? '+' : '−'}${money(t.amount)}
+          </span>
+        </div>`;
+      }).join('')}
+      <div class="goal-stats" style="margin-top:10px">
+        <span>Доход: <b class="income">${money(a.dayIncome)}</b></span>
+        <span>Расход: <b class="expense">${money(a.dayExpense)}</b></span>
+        <span>Баланс: <b>${money(a.dayIncome - a.dayExpense)}</b></span>
+      </div>
+    </div>`;
+  }
+
+  // 6. Выполненные задачи
+  const dayTasks = state.planner[iso] || [];
+  const doneTasks = dayTasks.filter(t => t.done);
+  if (doneTasks.length) {
+    bodyHTML += `<div class="day-section">
+      <div class="day-section-title">✅ Выполнено (${doneTasks.length})</div>
+      ${doneTasks.map(t => `
+        <div class="mini-tx">
+          <span class="mini-tx-icon">✓</span>
+          <div class="mini-tx-info">
+            <div class="mini-tx-name">${escapeHtml(t.text)}</div>
+          </div>
+          <span class="mini-tx-amt">${t.time}</span>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  if (!hasContent) {
+    bodyHTML = `<div class="empty"><div class="big">📅</div>За этот день нет данных</div>`;
+  }
+
+  overlay.innerHTML = `
+    <div class="popup day-popup">
+      <div class="day-head">
+        <div>
+          <div class="day-head-title">${fmtDateFull(iso)}</div>
+          <div class="day-head-sub">${iso.split('-').reverse().join('.')}</div>
+        </div>
+        <button type="button" class="day-close" data-day-close>×</button>
+      </div>
+      <div class="day-body">${bodyHTML}</div>
+    </div>
+  `;
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay || e.target.closest('[data-day-close]')) closePopup();
+  });
+}
+
 /* ============================ MAIN RENDER ============================ */
 
 function render() {
@@ -1378,13 +2247,17 @@ function render() {
     b.classList.toggle('active', b.dataset.tab === ui.tab);
   });
 
-  document.getElementById('periodBar').classList.toggle('hidden', ui.tab === 'planner');
-  if (ui.tab !== 'planner') renderPeriodBar();
+  const hidePeriod = ['planner', 'plans', 'goals', 'debts'].includes(ui.tab);
+  document.getElementById('periodBar').classList.toggle('hidden', hidePeriod);
+  if (!hidePeriod) renderPeriodBar();
 
   const main = document.getElementById('main');
   if (ui.tab === 'dashboard') main.innerHTML = renderDashboard();
   else if (ui.tab === 'transactions') main.innerHTML = renderTransactions();
   else if (ui.tab === 'analytics') main.innerHTML = renderAnalytics();
+  else if (ui.tab === 'plans') main.innerHTML = renderPlans();
+  else if (ui.tab === 'goals') main.innerHTML = renderGoals();
+  else if (ui.tab === 'debts') main.innerHTML = renderDebts();
   else if (ui.tab === 'distribution') main.innerHTML = renderDistribution();
   else if (ui.tab === 'planner') main.innerHTML = renderPlanner();
 
@@ -1403,7 +2276,6 @@ function updateCatTrigger() {
 }
 
 function attachHandlers() {
-  // ---- distribution inline inputs
   document.querySelectorAll('[data-dist-input]').forEach(inp => {
     inp.addEventListener('input', () => {
       const g = inp.dataset.distInput;
@@ -1450,12 +2322,10 @@ function refreshDistributionNumbers() {
           ${diff > 0 ? '▲ перерасход ' + money(diff) : '▼ остаток ' + money(-diff)}
         </span>`;
     }
-
     const barEl = card.querySelector('.bar-fill');
     if (barEl) barEl.style.width = (plan > 0 ? Math.min(100, actual/plan*100) : 0) + '%';
   });
 
-  // обновить прогресс-бар и бейдж суммы
   const totalPct = state.distribution.needs + state.distribution.wants + state.distribution.savings + state.distribution.debts;
   const progTotal = document.querySelector('.progress-total');
   if (progTotal) {
@@ -1472,19 +2342,18 @@ function refreshDistributionNumbers() {
 
 /* ============================ GLOBAL EVENTS ============================ */
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closePopup();
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
 document.addEventListener('click', e => {
-  // ---- brand → dashboard
+  // brand → dashboard
   if (e.target.closest('#brand')) {
     ui.tab = 'dashboard';
+    closePopup();
     render();
     return;
   }
 
-  // ---- nav tabs
+  // nav
   const navBtn = e.target.closest('#nav button');
   if (navBtn) {
     ui.tab = navBtn.dataset.tab;
@@ -1493,7 +2362,7 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ---- period chips
+  // period chips
   const chip = e.target.closest('[data-period]');
   if (chip) {
     ui.period = chip.dataset.period;
@@ -1505,22 +2374,16 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ---- date triggers
+  // date triggers
   const dateTrig = e.target.closest('[data-date-for]');
   if (dateTrig) {
     const key = dateTrig.dataset.dateFor;
     const current = dateTrig.dataset.dateValue || todayStr();
     openCalendarPopup(current, v => {
-      if (key === 'periodFrom') {
-        ui.customFrom = v;
-        render();
-      } else if (key === 'periodTo') {
-        ui.customTo = v;
-        render();
-      } else if (key === 'plannerDate') {
-        ui.plannerDate = v;
-        render();
-      } else {
+      if (key === 'periodFrom') { ui.customFrom = v; render(); }
+      else if (key === 'periodTo') { ui.customTo = v; render(); }
+      else if (key === 'plannerDate') { ui.plannerDate = v; render(); }
+      else {
         dateTrig.dataset.dateValue = v;
         dateTrig.querySelector('.dt-text').textContent = fmtDateHuman(v);
       }
@@ -1528,25 +2391,45 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ---- select triggers
-  const selTrig = e.target.closest('[data-select-for]');
-  if (selTrig && selTrig.dataset.selectFor === 'txCat') {
-    const cats = CATEGORIES[ui.txType];
-    openSelectPopup('Категория', cats, ui.txCat, v => {
-      ui.txCat = v;
-      updateCatTrigger();
+  // time triggers
+  const timeTrig = e.target.closest('[data-time-for]');
+  if (timeTrig) {
+    const key = timeTrig.dataset.timeFor;
+    const current = timeTrig.dataset.timeValue || '09:00';
+    openTimePicker(current, v => {
+      timeTrig.dataset.timeValue = v;
+      timeTrig.querySelector('.tt-text').textContent = v;
     });
     return;
   }
 
-  // ---- type toggle
+  // select triggers
+  const selTrig = e.target.closest('[data-select-for]');
+  if (selTrig) {
+    const key = selTrig.dataset.selectFor;
+    if (key === 'txCat') {
+      openSelectPopup('Категория', CATEGORIES[ui.txType], ui.txCat, v => {
+        ui.txCat = v;
+        updateCatTrigger();
+      });
+    } else if (key === 'debtType') {
+      const opts = Object.entries(DEBT_TYPES).map(([id, t]) => ({ id, name: t.name, icon: t.icon }));
+      openSelectPopup('Тип долга', opts, selTrig.dataset.selectValue, v => {
+        selTrig.dataset.selectValue = v;
+        selTrig.querySelector('.st-icon').textContent = DEBT_TYPES[v].icon;
+        selTrig.querySelector('.st-text').textContent = DEBT_TYPES[v].name;
+      });
+    }
+    return;
+  }
+
+  // type toggle
   const typeBtn = e.target.closest('#typeToggle button');
   if (typeBtn) {
     const newType = typeBtn.dataset.type;
     if (newType === ui.txType) return;
     ui.txType = newType;
     ui.txCat = CATEGORIES[newType][0].id;
-
     document.querySelectorAll('#typeToggle button').forEach(b => {
       if (b.dataset.type === 'income') b.className = newType === 'income' ? 'active inc' : '';
       if (b.dataset.type === 'expense') b.className = newType === 'expense' ? 'active exp' : '';
@@ -1555,19 +2438,14 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ---- submit transaction
-  const txForm = e.target.closest('#txForm');
-  // handled in submit, not click
-
-  // ---- delete transaction
+  // delete transaction
   const delTx = e.target.closest('[data-del-tx]');
   if (delTx) {
-    const id = delTx.dataset.delTx;
-    state.transactions = state.transactions.filter(t => t.id !== id);
+    state.transactions = state.transactions.filter(t => t.id !== delTx.dataset.delTx);
     save(); render(); return;
   }
 
-  // ---- toggle task
+  // task toggle
   const toggle = e.target.closest('[data-task-toggle]');
   if (toggle) {
     const [date, id] = toggle.dataset.taskToggle.split('|');
@@ -1575,8 +2453,6 @@ document.addEventListener('click', e => {
     if (t) { t.done = !t.done; save(); render(); }
     return;
   }
-
-  // ---- delete task
   const delTask = e.target.closest('[data-task-del]');
   if (delTask) {
     const [date, id] = delTask.dataset.taskDel.split('|');
@@ -1585,14 +2461,11 @@ document.addEventListener('click', e => {
     save(); render(); return;
   }
 
-  // ---- goto date from upcoming
+  // goto date
   const goto = e.target.closest('[data-goto-date]');
-  if (goto) {
-    ui.plannerDate = goto.dataset.gotoDate;
-    render(); return;
-  }
+  if (goto) { ui.plannerDate = goto.dataset.gotoDate; render(); return; }
 
-  // ---- planner shifts
+  // planner shifts
   const shift = e.target.closest('[data-planner-shift]');
   if (shift) {
     const d = new Date(ui.plannerDate + 'T00:00:00');
@@ -1600,71 +2473,222 @@ document.addEventListener('click', e => {
     ui.plannerDate = fmtDateLocal(d);
     render(); return;
   }
-  if (e.target.closest('[data-planner-today]')) {
-    ui.plannerDate = todayStr();
-    render(); return;
+  if (e.target.closest('[data-planner-today]')) { ui.plannerDate = todayStr(); render(); return; }
+
+  // day view
+  const dayView = e.target.closest('[data-day-view]');
+  if (dayView) { openDayAnalytics(dayView.dataset.dayView); return; }
+
+  // distribution presets
+  if (e.target.closest('#distAuto')) { ui.distBase = null; render(); return; }
+  if (e.target.closest('#preset1')) { state.distribution = { needs: 40, wants: 20, savings: 20, debts: 20 }; save(); render(); return; }
+  if (e.target.closest('#preset2')) { state.distribution = { needs: 50, wants: 20, savings: 20, debts: 10 }; save(); render(); return; }
+  if (e.target.closest('#preset3')) { state.distribution = { needs: 35, wants: 15, savings: 30, debts: 20 }; save(); render(); return; }
+
+  // plan delete
+  const planDel = e.target.closest('[data-plan-del]');
+  if (planDel) {
+    state.plans = state.plans.filter(p => p.id !== planDel.dataset.planDel);
+    save(); render(); return;
   }
 
-  // ---- distribution presets
-  if (e.target.closest('#distAuto')) {
-    ui.distBase = null;
-    render(); return;
+  // plan subtask toggle
+  const planToggle = e.target.closest('[data-plan-toggle]');
+  if (planToggle) {
+    const [planId, subId] = planToggle.dataset.planToggle.split('|');
+    const plan = state.plans.find(p => p.id === planId);
+    if (plan) {
+      const s = plan.subtasks.find(x => x.id === subId);
+      if (s) { s.done = !s.done; save(); render(); }
+    }
+    return;
   }
-  if (e.target.closest('#preset1')) {
-    state.distribution = { needs: 40, wants: 20, savings: 20, debts: 20 };
+
+  // plan subtask delete
+  const planSubDel = e.target.closest('[data-plan-sub-del]');
+  if (planSubDel) {
+    const [planId, subId] = planSubDel.dataset.planSubDel.split('|');
+    const plan = state.plans.find(p => p.id === planId);
+    if (plan) {
+      plan.subtasks = plan.subtasks.filter(x => x.id !== subId);
+      save(); render();
+    }
+    return;
+  }
+
+  // goal delete
+  const goalDel = e.target.closest('[data-goal-del]');
+  if (goalDel) {
+    state.goals = state.goals.filter(g => g.id !== goalDel.dataset.goalDel);
     save(); render(); return;
   }
-  if (e.target.closest('#preset2')) {
-    state.distribution = { needs: 50, wants: 20, savings: 20, debts: 10 };
-    save(); render(); return;
+
+  // goal dist apply
+  const goalDist = e.target.closest('[data-goal-dist]');
+  if (goalDist) {
+    const g = state.goals.find(x => x.id === goalDist.dataset.goalDist);
+    if (g) {
+      const sug = suggestedDistributionForGoal(g);
+      state.distribution = { ...sug.suggested };
+      save();
+      alert('Распределение обновлено на основе цели и долгов!');
+      ui.tab = 'distribution';
+      render();
+    }
+    return;
   }
-  if (e.target.closest('#preset3')) {
-    state.distribution = { needs: 35, wants: 15, savings: 30, debts: 20 };
+
+  // debt delete
+  const debtDel = e.target.closest('[data-debt-del]');
+  if (debtDel) {
+    state.debts = state.debts.filter(d => d.id !== debtDel.dataset.debtDel);
     save(); render(); return;
   }
 });
 
-// ---- form submissions
+// Forms
 document.addEventListener('submit', e => {
-  // transaction form
+  // tx
   if (e.target.id === 'txForm') {
     e.preventDefault();
     const amount = parseFloat(document.getElementById('txAmount').value);
     if (!amount || amount <= 0) return;
-
     const dateTrig = document.querySelector('[data-date-for="txDate"]');
     const date = dateTrig ? dateTrig.dataset.dateValue : todayStr();
-
     state.transactions.push({
-      id: uid(),
-      type: ui.txType,
-      amount,
-      category: ui.txCat,
-      date,
+      id: uid(), type: ui.txType, amount,
+      category: ui.txCat, date,
       note: document.getElementById('txNote').value.trim()
     });
-    save();
-    render();
+    save(); render();
     return;
   }
 
-  // task form
+  // task
   if (e.target.id === 'taskForm') {
     e.preventDefault();
-    const time = document.getElementById('taskTime').value;
+    const timeTrig = document.querySelector('[data-time-for="taskTime"]');
+    const time = timeTrig ? timeTrig.dataset.timeValue : '09:00';
     const text = document.getElementById('taskText').value.trim();
-    if (!time || !text) return;
+    if (!text) return;
     const d = ui.plannerDate;
     if (!state.planner[d]) state.planner[d] = [];
     state.planner[d].push({ id: uid(), time, text, done: false });
-    save();
-    render();
+    save(); render();
+    return;
+  }
+
+  // plan
+  if (e.target.id === 'planForm') {
+    e.preventDefault();
+    const title = document.getElementById('planTitle').value.trim();
+    if (!title) return;
+    const dateTrig = document.querySelector('[data-date-for="planEnd"]');
+    const endDate = dateTrig ? dateTrig.dataset.dateValue : null;
+    state.plans.push({
+      id: uid(), title, endDate,
+      subtasks: [],
+      createdAt: todayStr()
+    });
+    save(); render();
+    return;
+  }
+
+  // plan subtask add
+  const planAddAttr = e.target.dataset.planAdd;
+  if (planAddAttr) {
+    e.preventDefault();
+    const input = e.target.querySelector('input');
+    const text = input.value.trim();
+    if (!text) return;
+    const plan = state.plans.find(p => p.id === planAddAttr);
+    if (plan) {
+      plan.subtasks.push({ id: uid(), text, done: false });
+      save(); render();
+    }
+    return;
+  }
+
+  // goal
+  if (e.target.id === 'goalForm') {
+    e.preventDefault();
+    const title = document.getElementById('goalTitle').value.trim();
+    const amount = parseFloat(document.getElementById('goalAmount').value);
+    const periodDays = parseInt(document.getElementById('goalPeriod').value) || 90;
+    if (!title || !amount) return;
+    state.goals.push({
+      id: uid(), title, amount, periodDays,
+      saved: 0,
+      createdAt: todayStr()
+    });
+    save(); render();
+    return;
+  }
+
+  // goal add savings
+  const goalAddAttr = e.target.dataset.goalAdd;
+  if (goalAddAttr) {
+    e.preventDefault();
+    const input = e.target.querySelector('input');
+    const amount = parseFloat(input.value);
+    if (!amount || amount <= 0) return;
+    const g = state.goals.find(x => x.id === goalAddAttr);
+    if (g) {
+      g.saved = (g.saved || 0) + amount;
+      // также добавим транзакцию
+      state.transactions.push({
+        id: uid(), type: 'expense', amount,
+        category: 'savings',
+        date: todayStr(),
+        note: `Пополнение цели: ${g.title}`
+      });
+      save(); render();
+    }
+    return;
+  }
+
+  // debt
+  if (e.target.id === 'debtForm') {
+    e.preventDefault();
+    const name = document.getElementById('debtName').value.trim();
+    const amount = parseFloat(document.getElementById('debtAmount').value);
+    const typeTrig = document.querySelector('[data-select-for="debtType"]');
+    const type = typeTrig ? typeTrig.dataset.selectValue : 'mfo';
+    if (!name || !amount) return;
+    state.debts.push({
+      id: uid(), name, type, amount,
+      paid: 0,
+      createdAt: todayStr()
+    });
+    save(); render();
+    return;
+  }
+
+  // debt payment
+  const debtAddAttr = e.target.dataset.debtAdd;
+  if (debtAddAttr) {
+    e.preventDefault();
+    const input = e.target.querySelector('input');
+    const amount = parseFloat(input.value);
+    if (!amount || amount <= 0) return;
+    const d = state.debts.find(x => x.id === debtAddAttr);
+    if (d) {
+      d.paid = Math.min(d.amount, (d.paid || 0) + amount);
+      // добавим транзакцию
+      const catMap = { mfo: 'debt_mfo', credit: 'debt_credit', friend: 'debt_friend', other: 'debt_mfo' };
+      state.transactions.push({
+        id: uid(), type: 'expense', amount,
+        category: catMap[d.type] || 'debt_mfo',
+        date: todayStr(),
+        note: `Платёж по долгу: ${d.name}`
+      });
+      save(); render();
+    }
     return;
   }
 });
 
 /* ============================ INIT ============================ */
-
 render();
 </script>
 </body>
