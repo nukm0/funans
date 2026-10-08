@@ -2,10 +2,11 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ФинПлан — финансы и дневник</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d0f14">
+<title>Финансы</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 :root {
   --bg: #0d0f14;
   --panel: #151922;
@@ -20,31 +21,38 @@
   --orange: #f59e0b;
   --radius: 14px;
 }
+html, body { height: 100%; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
   font-size: 15px;
   line-height: 1.5;
+  overflow-x: hidden;
 }
-.app { max-width: 1280px; margin: 0 auto; padding: 20px; }
+.app { max-width: 1280px; margin: 0 auto; padding: 20px; padding-bottom: env(safe-area-inset-bottom, 20px); }
 
 /* Header */
 header {
   display: flex; flex-wrap: wrap; gap: 16px;
   align-items: center; justify-content: space-between;
-  padding: 16px 20px; background: var(--panel);
+  padding: 14px 20px; background: var(--panel);
   border: 1px solid var(--border); border-radius: var(--radius);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
-.brand { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
-.brand span { color: var(--accent); }
+.brand {
+  font-size: 20px; font-weight: 700; letter-spacing: -0.3px;
+  cursor: pointer; user-select: none; transition: .15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.brand::before { content: '💰'; font-size: 22px; }
+.brand:hover { color: var(--accent); }
 nav { display: flex; gap: 4px; flex-wrap: wrap; }
 nav button {
   background: transparent; border: 1px solid transparent; color: var(--muted);
   padding: 8px 14px; border-radius: 10px; cursor: pointer;
   font-size: 14px; font-weight: 500; transition: .15s;
+  font-family: inherit;
 }
 nav button:hover { color: var(--text); background: var(--panel2); }
 nav button.active { background: var(--accent); color: #fff; }
@@ -54,41 +62,70 @@ nav button.active { background: var(--accent); color: #fff; }
   display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
   padding: 12px 16px; background: var(--panel);
   border: 1px solid var(--border); border-radius: var(--radius);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 .period-bar .label { color: var(--muted); font-size: 13px; margin-right: 4px; }
 .chip {
   background: var(--panel2); border: 1px solid var(--border); color: var(--muted);
-  padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px;
-  transition: .15s;
+  padding: 7px 13px; border-radius: 999px; cursor: pointer; font-size: 13px;
+  transition: .15s; font-family: inherit; font-weight: 500;
 }
 .chip:hover { color: var(--text); }
 .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-.period-bar input[type=date] { margin-left: 4px; }
+.period-bar .range-note { margin-left: auto; color: var(--muted); font-size: 13px; }
 
 /* Inputs */
 input, select, textarea, button { font-family: inherit; font-size: 14px; }
 input[type=text], input[type=number], input[type=date], input[type=time], select, textarea {
   background: var(--panel2); border: 1px solid var(--border); color: var(--text);
-  padding: 9px 12px; border-radius: 10px; outline: none; transition: .15s;
+  padding: 10px 12px; border-radius: 10px; outline: none; transition: .15s;
   width: 100%;
 }
 input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+
+/* Remove number spinners */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
 
 /* Buttons */
 .btn {
   background: var(--accent); color: #fff; border: none;
   padding: 10px 18px; border-radius: 10px; cursor: pointer;
   font-weight: 600; font-size: 14px; transition: .15s;
+  font-family: inherit;
 }
 .btn:hover { filter: brightness(1.1); }
+.btn:active { transform: scale(.98); }
 .btn.ghost { background: var(--panel2); border: 1px solid var(--border); color: var(--text); }
+.btn.ghost:hover { border-color: var(--accent); }
+.btn.small { padding: 7px 12px; font-size: 13px; }
 .btn.danger { background: transparent; border: 1px solid var(--red); color: var(--red); }
-.btn.small { padding: 6px 10px; font-size: 13px; }
+
+/* Date & select triggers */
+.date-trigger, .select-trigger {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  background: var(--panel2); border: 1px solid var(--border);
+  color: var(--text); cursor: pointer; font-size: 14px;
+  text-align: left; transition: .15s;
+  font-family: inherit;
+}
+.date-trigger:hover, .select-trigger:hover { border-color: var(--accent); }
+.date-trigger.compact { padding: 7px 12px; font-size: 13px; width: auto; }
+.dt-icon, .st-arrow { margin-left: auto; opacity: .55; font-size: 15px; }
+.select-trigger .st-icon { font-size: 18px; }
+.select-trigger .st-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Cards */
-.grid { display: grid; gap: 16px; }
+.grid { display: grid; gap: 14px; }
 .cards-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 .cards-3 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
 .two-col { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
@@ -97,7 +134,10 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
   background: var(--panel); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 18px;
 }
-.card h3 { font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .4px; }
+.card h3 {
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  margin-bottom: 14px; text-transform: uppercase; letter-spacing: .5px;
+}
 
 .stat .label { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
 .stat .value { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
@@ -108,13 +148,12 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
 .balance-neg { color: var(--orange); }
 
 /* Transactions */
-.tx-form { display: grid; grid-template-columns: 1fr 1fr 1.2fr 1fr 1.5fr auto; gap: 10px; align-items: end; }
-@media (max-width: 900px) { .tx-form { grid-template-columns: 1fr 1fr; } }
-
+.tx-form { display: grid; grid-template-columns: 1fr 1fr 1.3fr 1fr 1.5fr auto; gap: 10px; align-items: end; }
 .type-toggle { display: flex; gap: 6px; }
 .type-toggle button {
-  flex: 1; padding: 9px; border-radius: 10px; border: 1px solid var(--border);
+  flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--border);
   background: var(--panel2); color: var(--muted); cursor: pointer; font-weight: 600;
+  transition: .15s; font-family: inherit;
 }
 .type-toggle button.active.inc { background: rgba(34,197,94,.15); border-color: var(--green); color: var(--green); }
 .type-toggle button.active.exp { background: rgba(239,68,68,.15); border-color: var(--red); color: var(--red); }
@@ -126,8 +165,8 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
   border: 1px solid var(--border); border-radius: 12px;
 }
 .tx-icon {
-  width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center;
-  font-size: 18px; background: var(--panel); flex-shrink: 0;
+  width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center;
+  font-size: 19px; background: var(--panel); flex-shrink: 0;
 }
 .tx-info { flex: 1; min-width: 0; }
 .tx-info .t { font-weight: 600; font-size: 14px; }
@@ -135,7 +174,8 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
 .tx-amount { font-weight: 700; font-size: 15px; white-space: nowrap; }
 .tx-del {
   background: transparent; border: none; color: var(--muted); cursor: pointer;
-  font-size: 18px; padding: 4px 8px; border-radius: 8px;
+  font-size: 20px; padding: 4px 8px; border-radius: 8px; line-height: 1;
+  font-family: inherit;
 }
 .tx-del:hover { color: var(--red); background: rgba(239,68,68,.1); }
 
@@ -147,9 +187,9 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
 
 /* Bars */
 .bar-row { margin-bottom: 14px; }
-.bar-top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+.bar-top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; gap: 8px; }
 .bar-top .name { color: var(--text); font-weight: 500; }
-.bar-top .val { color: var(--muted); }
+.bar-top .val { color: var(--muted); white-space: nowrap; }
 .bar-bg { height: 8px; background: var(--panel2); border-radius: 99px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 99px; transition: width .4s ease; }
 
@@ -169,8 +209,8 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
 .legend { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 180px; }
 .legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
 .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-.legend-item .n { flex: 1; }
-.legend-item .v { color: var(--muted); font-variant-numeric: tabular-nums; }
+.legend-item .n { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.legend-item .v { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* Daily chart */
 .daily-chart {
@@ -189,21 +229,34 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
 
 /* Distribution */
 .dist-card { position: relative; overflow: hidden; }
-.dist-card .pct-input { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
-.dist-card .pct-input input { width: 70px; text-align: center; }
-.dist-card .amount { font-size: 24px; font-weight: 700; margin-top: 12px; }
-.dist-card .actual { font-size: 12px; margin-top: 8px; color: var(--muted); }
 .dist-card .stripe { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+.dist-card .dist-name { font-weight: 700; font-size: 15px; }
+.dist-card .dist-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.dist-card .pct-input { display: flex; align-items: center; gap: 6px; margin-top: 12px; }
+.dist-card .pct-input input { width: 74px; text-align: center; font-weight: 700; }
+.dist-card .amount { font-size: 24px; font-weight: 700; margin-top: 12px; letter-spacing: -0.5px; }
+.dist-card .actual { font-size: 12px; margin-top: 10px; color: var(--muted); line-height: 1.6; }
 
-.progress-total { height: 10px; background: var(--panel2); border-radius: 99px; overflow: hidden; display: flex; margin: 8px 0 4px; }
+.card-head-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.card-head-row h3 { margin-bottom: 0; }
+.pct-badge {
+  font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  background: var(--panel2); border: 1px solid var(--border); color: var(--muted);
+}
+.pct-badge.ok { color: var(--green); border-color: rgba(34,197,94,.4); background: rgba(34,197,94,.1); }
+.pct-badge.warn { color: var(--orange); border-color: rgba(245,158,11,.4); background: rgba(245,158,11,.1); }
+
+.progress-total { height: 10px; background: var(--panel2); border-radius: 99px; overflow: hidden; display: flex; margin: 8px 0 12px; }
 
 /* Planner */
-.planner-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-.planner-date { font-size: 18px; font-weight: 700; }
-.task-form { display: grid; grid-template-columns: 130px 1fr auto; gap: 10px; align-items: end; }
-@media (max-width: 600px) { .task-form { grid-template-columns: 1fr; } }
+.planner-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.planner-date { font-size: 17px; font-weight: 700; }
+.task-form { display: grid; grid-template-columns: 140px 1fr auto; gap: 10px; align-items: end; }
 
-.task-list { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+.task-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
 .task {
   display: flex; align-items: center; gap: 12px; padding: 12px 14px;
   background: var(--panel2); border: 1px solid var(--border); border-radius: 12px;
@@ -215,37 +268,197 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
   font-variant-numeric: tabular-nums; font-weight: 700; font-size: 14px;
   color: var(--accent); min-width: 52px;
 }
-.task-text { flex: 1; font-size: 14px; }
+.task-text { flex: 1; font-size: 14px; word-break: break-word; }
 .task-check {
-  width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border);
+  width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--border);
   background: transparent; cursor: pointer; display: grid; place-items: center;
   color: transparent; font-size: 13px; flex-shrink: 0;
+  font-family: inherit;
 }
 .task-check:hover { border-color: var(--accent); }
 .task.done .task-check { background: var(--green); border-color: var(--green); color: #fff; }
 
+/* Empty */
 .empty { text-align: center; color: var(--muted); padding: 40px 20px; font-size: 14px; }
 .empty .big { font-size: 40px; margin-bottom: 10px; opacity: .5; }
 
-/* Misc */
+/* Row / misc */
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-.mt { margin-top: 16px; }
+.mt { margin-top: 14px; }
 .muted { color: var(--muted); font-size: 13px; }
 .hidden { display: none !important; }
 
+/* ========== POPUPS ========== */
+.popup-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.7);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  display: grid; place-items: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes popIn { from { opacity: 0; transform: scale(.95) } to { opacity: 1; transform: scale(1) } }
+@keyframes slideUp { from { transform: translateY(100%) } to { transform: translateY(0) } }
+
+.popup {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  animation: popIn .2s ease;
+  overflow: hidden;
+}
+
+/* Calendar */
+.calendar-popup { padding: 18px; }
+.cal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.cal-nav {
+  width: 38px; height: 38px; border-radius: 11px;
+  background: var(--panel2); border: 1px solid var(--border);
+  color: var(--text); font-size: 20px; cursor: pointer;
+  display: grid; place-items: center;
+  transition: .15s; font-family: inherit; line-height: 1;
+}
+.cal-nav:hover { background: var(--border); color: var(--accent); }
+.cal-title { font-weight: 700; font-size: 15px; letter-spacing: -0.2px; }
+
+.cal-week {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+  color: var(--muted); font-size: 11px; text-align: center;
+  text-transform: uppercase; letter-spacing: .5px; font-weight: 600;
+}
+.cal-week span { padding: 4px 0; }
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
+}
+.cal-day {
+  aspect-ratio: 1; border: none; background: transparent;
+  color: var(--text); font-size: 14px; cursor: pointer;
+  border-radius: 10px; font-weight: 500;
+  display: grid; place-items: center;
+  transition: .12s; font-family: inherit;
+}
+.cal-day:hover { background: var(--panel2); }
+.cal-day.empty { cursor: default; }
+.cal-day.today { color: var(--accent); font-weight: 700; box-shadow: inset 0 0 0 1px var(--accent); }
+.cal-day.selected { background: var(--accent); color: #fff; font-weight: 700; box-shadow: none; }
+.cal-day.selected:hover { background: var(--accent); }
+
+.cal-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+/* Select popup */
+.select-popup { padding: 8px; max-height: 70vh; overflow-y: auto; }
+.select-head {
+  padding: 12px 14px 6px;
+  font-size: 12px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px; font-weight: 600;
+}
+.sel-item {
+  width: 100%; display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; background: transparent; border: none;
+  color: var(--text); cursor: pointer; border-radius: 12px;
+  text-align: left; font-size: 15px;
+  transition: .12s; font-family: inherit;
+}
+.sel-item:hover { background: var(--panel2); }
+.sel-item.selected { background: rgba(79,140,255,.15); color: var(--accent); font-weight: 600; }
+.sel-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+.sel-name { flex: 1; }
+.sel-group-label {
+  padding: 12px 14px 4px; font-size: 11px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px; font-weight: 600;
+}
+
+/* ========== MOBILE ========== */
+@media (max-width: 900px) {
+  .tx-form { grid-template-columns: 1fr 1fr; }
+  .tx-form > *:nth-child(2) { grid-column: 2; }
+}
+
 @media (max-width: 700px) {
-  .app { padding: 12px; }
-  header { padding: 14px; }
-  .brand { font-size: 17px; }
-  nav button { padding: 7px 10px; font-size: 13px; }
-  .stat .value { font-size: 22px; }
+  .app { padding: 10px; }
+  header {
+    padding: 12px 14px; gap: 12px;
+    flex-direction: column; align-items: stretch;
+  }
+  .brand { justify-content: center; font-size: 19px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  nav {
+    overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px;
+    scrollbar-width: none; justify-content: flex-start;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav button { flex-shrink: 0; padding: 8px 12px; font-size: 13px; }
+
+  .period-bar {
+    flex-wrap: nowrap; overflow-x: auto; padding: 10px 12px;
+    scrollbar-width: none;
+  }
+  .period-bar::-webkit-scrollbar { display: none; }
+  .period-bar > * { flex-shrink: 0; }
+  .period-bar .range-note { display: none; }
+
+  /* Prevent iOS zoom */
+  input, select, textarea, .date-trigger, .select-trigger, .btn {
+    font-size: 16px;
+  }
+  .btn.small { font-size: 14px; }
+  .chip { font-size: 13px; }
+
+  .cards-4 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .cards-3 { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .stat .value { font-size: 18px; }
+  .stat .label { font-size: 12px; }
+  .card { padding: 15px; }
+  .card h3 { font-size: 12px; margin-bottom: 12px; }
+
+  .tx-form { grid-template-columns: 1fr !important; }
+  .task-form { grid-template-columns: 1fr !important; }
+
+  .donut-wrap { flex-direction: column; align-items: stretch; gap: 16px; }
+  .donut { margin: 0 auto; }
+
+  .planner-head { gap: 8px; }
+  .planner-date { font-size: 15px; flex: 1; min-width: 0; }
+
+  /* Bottom sheet style popups on mobile */
+  .popup-overlay { padding: 0; place-items: end center; align-items: end; }
+  .popup {
+    max-width: 100%;
+    border-radius: 22px 22px 0 0;
+    max-height: 85vh;
+    animation: slideUp .22s ease;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .select-popup { max-height: 80vh; }
+  .cal-day { font-size: 15px; }
+
+  .dist-card .amount { font-size: 22px; }
+  .dist-card .pct-input input { font-size: 16px; }
+}
+
+@media (max-width: 380px) {
+  .cards-4 { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <div class="brand">💰 Фин<span>План</span></div>
+    <div class="brand" id="brand">Финансы</div>
     <nav id="nav">
       <button data-tab="dashboard" class="active">Обзор</button>
       <button data-tab="transactions">Операции</button>
@@ -256,49 +469,56 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px
   </header>
 
   <div class="period-bar" id="periodBar"></div>
-
   <main id="main"></main>
 </div>
 
 <script>
 /* ============================ DATA ============================ */
 
-const LS_KEY = 'finplan_v1';
+const LS_KEY = 'finansy_v2';
 
 const CATEGORIES = {
   income: [
-    { id: 'salary',      name: 'Зарплата',   icon: '💼' },
-    { id: 'advance',     name: 'Аванс',      icon: '💵' },
-    { id: 'freelance',   name: 'Фриланс',    icon: '💻' },
-    { id: 'gift',        name: 'Подарок',    icon: '🎁' },
-    { id: 'investment',  name: 'Инвестиции', icon: '📈' },
-    { id: 'other_inc',   name: 'Другое',     icon: '💰' }
+    { id: 'salary',     name: 'Зарплата',              icon: '💼' },
+    { id: 'advance',    name: 'Аванс',                 icon: '💵' },
+    { id: 'freelance',  name: 'Фриланс',               icon: '💻' },
+    { id: 'additional', name: 'Дополнительный доход',  icon: '💰' },
+    { id: 'gift',       name: 'Подарок',               icon: '🎁' },
+    { id: 'investment', name: 'Инвестиции',            icon: '📈' },
+    { id: 'other_inc',  name: 'Другое',                icon: '✨' }
   ],
   expense: [
-    { id: 'housing',     name: 'Жильё',        icon: '🏠', group: 'needs' },
-    { id: 'utilities',   name: 'Коммуналка',   icon: '💡', group: 'needs' },
-    { id: 'food',        name: 'Продукты',     icon: '🛒', group: 'needs' },
-    { id: 'transport',   name: 'Транспорт',    icon: '🚌', group: 'needs' },
-    { id: 'health',      name: 'Здоровье',     icon: '💊', group: 'needs' },
-    { id: 'debt',        name: 'Кредиты',      icon: '🏦', group: 'needs' },
-    { id: 'cafe',        name: 'Кафе',         icon: '☕', group: 'wants' },
-    { id: 'entertain',   name: 'Развлечения',  icon: '🎬', group: 'wants' },
-    { id: 'shopping',    name: 'Покупки',      icon: '🛍️', group: 'wants' },
-    { id: 'education',   name: 'Образование',  icon: '📚', group: 'wants' },
-    { id: 'travel',      name: 'Путешествия',  icon: '✈️', group: 'wants' },
-    { id: 'other_exp',   name: 'Другое',       icon: '📦', group: 'wants' },
-    { id: 'savings',     name: 'Сбережения',   icon: '🏆', group: 'savings' },
-    { id: 'invest',      name: 'Инвестиции',   icon: '📊', group: 'savings' }
+    // Обязательное
+    { id: 'housing',     name: 'Жильё',         icon: '🏠', group: 'needs' },
+    { id: 'utilities',   name: 'Коммуналка',    icon: '💡', group: 'needs' },
+    { id: 'food',        name: 'Продукты',      icon: '🛒', group: 'needs' },
+    { id: 'transport',   name: 'Транспорт',     icon: '🚌', group: 'needs' },
+    { id: 'health',      name: 'Здоровье',      icon: '💊', group: 'needs' },
+    // Долги
+    { id: 'debt_mfo',    name: 'МФО',           icon: '🏪', group: 'debts' },
+    { id: 'debt_credit', name: 'Кредит',        icon: '🏦', group: 'debts' },
+    { id: 'debt_friend', name: 'Долг близким',  icon: '🤝', group: 'debts' },
+    // Развлечения
+    { id: 'cafe',        name: 'Кафе',          icon: '☕', group: 'wants' },
+    { id: 'entertain',   name: 'Развлечения',   icon: '🎬', group: 'wants' },
+    { id: 'shopping',    name: 'Покупки',       icon: '🛍️', group: 'wants' },
+    { id: 'education',   name: 'Образование',   icon: '📚', group: 'wants' },
+    { id: 'travel',      name: 'Путешествия',   icon: '✈️', group: 'wants' },
+    { id: 'other_exp',   name: 'Другое',        icon: '📦', group: 'wants' },
+    // Сбережения
+    { id: 'savings',     name: 'Сбережения',    icon: '🏆', group: 'savings' },
+    { id: 'invest',      name: 'Инвестиции',    icon: '📊', group: 'savings' }
   ]
 };
 
 const GROUPS = {
   needs:   { name: 'Обязательное', color: '#4f8cff', desc: 'Жильё, еда, транспорт, здоровье' },
-  wants:   { name: 'Желания',      color: '#a06bff', desc: 'Развлечения, кафе, покупки' },
-  savings: { name: 'Сбережения',   color: '#22c55e', desc: 'Накопления и инвестиции' }
+  wants:   { name: 'Развлечения',  color: '#a06bff', desc: 'Кафе, кино, покупки, поездки' },
+  savings: { name: 'Сбережения',   color: '#22c55e', desc: 'Накопления и инвестиции' },
+  debts:   { name: 'Долги',        color: '#ef4444', desc: 'МФО, кредиты, займы у близких' }
 };
 
-const PERIOD_LABELS = { day: 'Сегодня', week: 'Неделя', month: 'Месяц', year: 'Год', all: 'Всё время', custom: 'Период' };
+const PERIOD_LABELS = { day: 'День', week: 'Неделя', month: 'Месяц', year: 'Год', all: 'Всё', custom: 'Период' };
 
 /* ============================ STATE ============================ */
 
@@ -306,31 +526,32 @@ function todayStr() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
+function fmtDateLocal(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 
-function loadState() {
+let state = (() => {
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (raw) return JSON.parse(raw);
   } catch(e) {}
-  return null;
-}
+  return {
+    transactions: [],
+    planner: {},
+    distribution: { needs: 40, wants: 20, savings: 20, debts: 20 },
+    currency: '₽'
+  };
+})();
 
-let state = loadState() || {
-  transactions: [],
-  planner: {},
-  distribution: { needs: 50, wants: 30, savings: 20 },
-  currency: '₽'
-};
-
-// UI-only state (not persisted)
 let ui = {
   tab: 'dashboard',
   period: 'month',
   customFrom: '',
   customTo: '',
   txType: 'expense',
+  txCat: 'housing',
   plannerDate: todayStr(),
-  distBase: null   // null = авто из дохода за период
+  distBase: null
 };
 
 function save() {
@@ -345,17 +566,16 @@ function fmt(n) {
 function money(n) { return fmt(n) + ' ' + state.currency; }
 
 function fmtDateHuman(iso) {
+  if (!iso) return '';
   const [y,m,d] = iso.split('-').map(Number);
-  const date = new Date(y, m-1, d);
   const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
   const t = todayStr();
   if (iso === t) return 'Сегодня';
   const yest = new Date(); yest.setDate(yest.getDate()-1);
   if (iso === fmtDateLocal(yest)) return 'Вчера';
+  const tom = new Date(); tom.setDate(tom.getDate()+1);
+  if (iso === fmtDateLocal(tom)) return 'Завтра';
   return `${d} ${months[m-1]} ${y}`;
-}
-function fmtDateLocal(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
 function getRange() {
@@ -365,7 +585,7 @@ function getRange() {
     case 'day': return [t, t];
     case 'week': {
       const d = new Date(now);
-      const wd = (d.getDay() + 6) % 7; // Пн = 0
+      const wd = (d.getDay() + 6) % 7;
       const s = new Date(d); s.setDate(d.getDate() - wd);
       const e = new Date(s); e.setDate(s.getDate() + 6);
       return [fmtDateLocal(s), fmtDateLocal(e)];
@@ -392,6 +612,7 @@ function rangeLabel() {
   const [from, to] = getRange();
   if (ui.period === 'day') return fmtDateHuman(from);
   if (ui.period === 'all') return 'Всё время';
+  if (from === to) return fmtDateHuman(from);
   return `${fmtDateHuman(from)} — ${fmtDateHuman(to)}`;
 }
 
@@ -411,31 +632,213 @@ function catById(type, id) {
 
 function uid() { return Math.random().toString(36).slice(2, 10); }
 
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ============================ POPUP SYSTEM ============================ */
+
+let activePopup = null;
+let activeCleanup = null;
+
+function closePopup() {
+  if (activePopup) {
+    activePopup.remove();
+    activePopup = null;
+  }
+  if (activeCleanup) {
+    activeCleanup();
+    activeCleanup = null;
+  }
+}
+
+/* ============================ CALENDAR ============================ */
+
+function getDaysInMonth(y, m) {
+  return new Date(y, m + 1, 0).getDate();
+}
+function getFirstWeekday(y, m) {
+  const d = new Date(y, m, 1).getDay();
+  return (d + 6) % 7; // 0 = Пн
+}
+
+const MONTH_NAMES = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+function openCalendarPopup(initialISO, onSelect) {
+  closePopup();
+
+  const init = initialISO ? new Date(initialISO + 'T00:00:00') : new Date();
+  let viewYear = init.getFullYear();
+  let viewMonth = init.getMonth();
+  let selected = initialISO || todayStr();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'popup-overlay';
+  document.body.appendChild(overlay);
+  activePopup = overlay;
+
+  const render = () => {
+    const today = todayStr();
+    const firstWd = getFirstWeekday(viewYear, viewMonth);
+    const daysInMonth = getDaysInMonth(viewYear, viewMonth);
+
+    let daysHTML = '';
+    for (let i = 0; i < firstWd; i++) daysHTML += '<span class="cal-day empty"></span>';
+    for (let day = 1; day <= daysInMonth; day++) {
+      const iso = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const cls = ['cal-day'];
+      if (iso === today) cls.push('today');
+      if (iso === selected) cls.push('selected');
+      daysHTML += `<button type="button" class="${cls.join(' ')}" data-day="${iso}">${day}</button>`;
+    }
+
+    overlay.innerHTML = `
+      <div class="popup calendar-popup">
+        <div class="cal-head">
+          <button type="button" class="cal-nav" data-nav="-1">‹</button>
+          <div class="cal-title">${MONTH_NAMES[viewMonth]} ${viewYear}</div>
+          <button type="button" class="cal-nav" data-nav="1">›</button>
+        </div>
+        <div class="cal-week">
+          <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+        </div>
+        <div class="cal-grid">${daysHTML}</div>
+        <div class="cal-foot">
+          <button type="button" class="btn ghost small" data-cal-clear>Отмена</button>
+          <button type="button" class="btn small" data-cal-today>Сегодня</button>
+        </div>
+      </div>
+    `;
+  };
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { closePopup(); return; }
+
+    const nav = e.target.closest('[data-nav]');
+    if (nav) {
+      viewMonth += parseInt(nav.dataset.nav);
+      if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+      if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+      render();
+      return;
+    }
+
+    const day = e.target.closest('[data-day]');
+    if (day) {
+      selected = day.dataset.day;
+      onSelect(selected);
+      closePopup();
+      return;
+    }
+
+    if (e.target.closest('[data-cal-today]')) {
+      onSelect(todayStr());
+      closePopup();
+      return;
+    }
+
+    if (e.target.closest('[data-cal-clear]')) {
+      closePopup();
+    }
+  });
+
+  render();
+}
+
+/* ============================ CUSTOM SELECT ============================ */
+
+function openSelectPopup(title, options, selectedId, onSelect) {
+  closePopup();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'popup-overlay';
+  document.body.appendChild(overlay);
+  activePopup = overlay;
+
+  // Группировка опций по group (если есть)
+  const hasGroups = options.some(o => o.group);
+  let html = `<div class="select-head">${escapeHtml(title)}</div>`;
+
+  if (hasGroups) {
+    const order = ['needs', 'debts', 'wants', 'savings'];
+    order.forEach(g => {
+      const items = options.filter(o => o.group === g);
+      if (!items.length) return;
+      html += `<div class="sel-group-label">${GROUPS[g].name}</div>`;
+      html += items.map(o => `
+        <button type="button" class="sel-item ${o.id === selectedId ? 'selected' : ''}" data-sel="${o.id}">
+          <span class="sel-icon">${o.icon}</span>
+          <span class="sel-name">${escapeHtml(o.name)}</span>
+        </button>
+      `).join('');
+    });
+  } else {
+    html += options.map(o => `
+      <button type="button" class="sel-item ${o.id === selectedId ? 'selected' : ''}" data-sel="${o.id}">
+        <span class="sel-icon">${o.icon}</span>
+        <span class="sel-name">${escapeHtml(o.name)}</span>
+      </button>
+    `).join('');
+  }
+
+  overlay.innerHTML = `<div class="popup select-popup">${html}</div>`;
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { closePopup(); return; }
+    const item = e.target.closest('[data-sel]');
+    if (item) {
+      onSelect(item.dataset.sel);
+      closePopup();
+    }
+  });
+}
+
 /* ============================ RENDER: PERIOD BAR ============================ */
 
 function renderPeriodBar() {
   const el = document.getElementById('periodBar');
   const showDateInputs = ui.period === 'custom';
+
+  const fromVal = ui.customFrom || todayStr();
+  const toVal = ui.customTo || todayStr();
+
   el.innerHTML = `
     <span class="label">Период:</span>
     ${Object.keys(PERIOD_LABELS).map(k =>
-      `<button class="chip ${ui.period===k?'active':''}" data-period="${k}">${PERIOD_LABELS[k]}</button>`
+      `<button type="button" class="chip ${ui.period===k?'active':''}" data-period="${k}">${PERIOD_LABELS[k]}</button>`
     ).join('')}
     ${showDateInputs ? `
-      <input type="date" id="cf" value="${ui.customFrom || todayStr()}" style="width:auto">
+      <button type="button" class="date-trigger compact" data-date-for="periodFrom" data-date-value="${fromVal}">
+        <span class="dt-text">${fmtDateHuman(fromVal)}</span>
+        <span class="dt-icon">📅</span>
+      </button>
       <span class="muted">—</span>
-      <input type="date" id="ct" value="${ui.customTo || todayStr()}" style="width:auto">
+      <button type="button" class="date-trigger compact" data-date-for="periodTo" data-date-value="${toVal}">
+        <span class="dt-text">${fmtDateHuman(toVal)}</span>
+        <span class="dt-icon">📅</span>
+      </button>
     ` : ''}
-    <span style="flex:1"></span>
-    <span class="muted" style="font-size:13px">${rangeLabel()}</span>
+    <span class="range-note">${rangeLabel()}</span>
   `;
-  if (showDateInputs) {
-    document.getElementById('cf').onchange = e => { ui.customFrom = e.target.value; render(); };
-    document.getElementById('ct').onchange = e => { ui.customTo = e.target.value; render(); };
-  }
 }
 
 /* ============================ RENDER: DASHBOARD ============================ */
+
+function txItemHTML(t) {
+  const c = catById(t.type, t.category);
+  return `
+  <div class="tx-item">
+    <div class="tx-icon">${c.icon}</div>
+    <div class="tx-info">
+      <div class="t">${escapeHtml(c.name)}</div>
+      <div class="d">${fmtDateHuman(t.date)}${t.note ? ' · ' + escapeHtml(t.note) : ''}</div>
+    </div>
+    <div class="tx-amount ${t.type === 'income' ? 'income' : 'expense'}">
+      ${t.type === 'income' ? '+' : '−'}${money(t.amount)}
+    </div>
+    <button type="button" class="tx-del" data-del-tx="${t.id}" title="Удалить">×</button>
+  </div>`;
+}
 
 function renderDashboard() {
   const tx = filteredTx();
@@ -447,14 +850,10 @@ function renderDashboard() {
   const days = Math.max(1, daysBetween(from, to));
   const avgPerDay = expense / days;
 
-  // последние операции
   const recent = [...tx].sort((a,b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id)).slice(0, 6);
-
-  // задачи на сегодня
   const todayTasks = (state.planner[todayStr()] || []).slice().sort((a,b) => a.time.localeCompare(b.time));
   const doneCount = todayTasks.filter(t => t.done).length;
 
-  // распределение
   const dist = calcDistribution(income);
 
   return `
@@ -475,7 +874,7 @@ function renderDashboard() {
       <div class="sub">${income > 0 ? Math.round(balance/income*100) : 0}% от дохода</div>
     </div>
     <div class="card stat">
-      <div class="label">Расход в день</div>
+      <div class="label">В день</div>
       <div class="value">${money(avgPerDay)}</div>
       <div class="sub">в среднем за ${days} дн.</div>
     </div>
@@ -484,14 +883,14 @@ function renderDashboard() {
   <div class="grid two-col mt">
     <div class="card">
       <h3>Последние операции</h3>
-      ${recent.length ? `<div class="tx-list">${recent.map(t => txItemHTML(t)).join('')}</div>`
+      ${recent.length ? `<div class="tx-list">${recent.map(txItemHTML).join('')}</div>`
         : `<div class="empty"><div class="big">📭</div>Операций за период нет</div>`}
     </div>
 
     <div class="card">
       <h3>Задачи на сегодня ${todayTasks.length ? `(${doneCount}/${todayTasks.length})` : ''}</h3>
       ${todayTasks.length ? `
-        <div class="task-list" style="margin-top:0">
+        <div class="task-list">
           ${todayTasks.map(t => taskHTML(t, todayStr())).join('')}
         </div>
       ` : `<div class="empty"><div class="big">📝</div>На сегодня планов нет</div>`}
@@ -506,9 +905,9 @@ function renderDashboard() {
         return `
         <div class="dist-card card" style="background:var(--panel2)">
           <div class="stripe" style="background:${GROUPS[g].color}"></div>
-          <div class="muted">${GROUPS[g].name}</div>
+          <div class="dist-name" style="color:${GROUPS[g].color}">${GROUPS[g].name}</div>
           <div class="amount" style="color:${GROUPS[g].color}">${money(d.plan)}</div>
-          <div class="muted" style="font-size:12px">${d.pct}% от ${money(dist.base)}</div>
+          <div class="muted" style="font-size:12px;margin-top:4px">${d.pct}% от ${money(dist.base)}</div>
         </div>`;
       }).join('')}
     </div>
@@ -518,28 +917,14 @@ function renderDashboard() {
 
 /* ============================ RENDER: TRANSACTIONS ============================ */
 
-function txItemHTML(t) {
-  const c = catById(t.type, t.category);
-  return `
-  <div class="tx-item">
-    <div class="tx-icon">${c.icon}</div>
-    <div class="tx-info">
-      <div class="t">${c.name}</div>
-      <div class="d">${fmtDateHuman(t.date)}${t.note ? ' · ' + escapeHtml(t.note) : ''}</div>
-    </div>
-    <div class="tx-amount ${t.type === 'income' ? 'income' : 'expense'}">
-      ${t.type === 'income' ? '+' : '−'}${money(t.amount)}
-    </div>
-    <button class="tx-del" data-del-tx="${t.id}" title="Удалить">×</button>
-  </div>`;
-}
-
 function renderTransactions() {
   const tx = [...filteredTx()].sort((a,b) => b.date.localeCompare(a.date));
   const groups = {};
   tx.forEach(t => { (groups[t.date] = groups[t.date] || []).push(t); });
 
   const cats = CATEGORIES[ui.txType];
+  const currentCat = cats.find(c => c.id === ui.txCat) || cats[0];
+  if (!cats.find(c => c.id === ui.txCat)) ui.txCat = cats[0].id;
 
   return `
   <div class="card">
@@ -554,21 +939,26 @@ function renderTransactions() {
       </div>
       <div>
         <label>Сумма</label>
-        <input type="number" id="txAmount" step="0.01" min="0.01" placeholder="0" required>
+        <input type="number" id="txAmount" step="0.01" min="0.01" inputmode="decimal" placeholder="0" required>
       </div>
       <div>
         <label>Категория</label>
-        <select id="txCat" required>
-          ${cats.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('')}
-        </select>
+        <button type="button" class="select-trigger" data-select-for="txCat" data-select-value="${currentCat.id}">
+          <span class="st-icon">${currentCat.icon}</span>
+          <span class="st-text">${escapeHtml(currentCat.name)}</span>
+          <span class="st-arrow">▾</span>
+        </button>
       </div>
       <div>
         <label>Дата</label>
-        <input type="date" id="txDate" value="${todayStr()}" required>
+        <button type="button" class="date-trigger" data-date-for="txDate" data-date-value="${todayStr()}">
+          <span class="dt-text">${fmtDateHuman(todayStr())}</span>
+          <span class="dt-icon">📅</span>
+        </button>
       </div>
       <div>
         <label>Заметка</label>
-        <input type="text" id="txNote" placeholder="необязательно">
+        <input type="text" id="txNote" placeholder="необязательно" maxlength="80">
       </div>
       <button class="btn" type="submit">Добавить</button>
     </form>
@@ -588,13 +978,68 @@ function renderTransactions() {
 
 /* ============================ RENDER: ANALYTICS ============================ */
 
+function buildDonut(items) {
+  const total = items.reduce((s,i) => s + i.value, 0);
+  if (!total) return 'var(--panel2)';
+  let acc = 0;
+  const stops = items.map(i => {
+    const start = acc / total * 100;
+    acc += i.value;
+    const end = acc / total * 100;
+    return `${i.color} ${start}% ${end}%`;
+  });
+  return `conic-gradient(${stops.join(',')})`;
+}
+
+function buildDailyChart(tx) {
+  const [from, to] = getRange();
+  const days = daysBetween(from, to);
+  const mode = days > 62 ? 'month' : 'day';
+
+  const map = {};
+
+  if (mode === 'day') {
+    for (let i = 0; i < days; i++) {
+      const d = new Date(from); d.setDate(d.getDate() + i);
+      const k = fmtDateLocal(d);
+      map[k] = { inc: 0, exp: 0, label: `${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')}` };
+    }
+  } else {
+    const start = new Date(from);
+    const end = new Date(to);
+    const cur = new Date(start.getFullYear(), start.getMonth(), 1);
+    while (cur <= end) {
+      const k = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}`;
+      map[k] = { inc: 0, exp: 0, label: `${cur.getMonth()+1}.${String(cur.getFullYear()).slice(2)}` };
+      cur.setMonth(cur.getMonth() + 1);
+    }
+  }
+
+  tx.forEach(t => {
+    const k = mode === 'day' ? t.date : t.date.slice(0, 7);
+    if (!map[k]) return;
+    if (t.type === 'income') map[k].inc += t.amount;
+    else map[k].exp += t.amount;
+  });
+
+  const entries = Object.entries(map);
+  const maxVal = Math.max(1, ...entries.map(([,v]) => Math.max(v.inc, v.exp)));
+  const bars = entries.map(([k, v]) => ({
+    label: v.label,
+    inc: v.inc, exp: v.exp,
+    incH: v.inc / maxVal * 100,
+    expH: v.exp / maxVal * 100
+  }));
+
+  return { mode, bars };
+}
+
 function renderAnalytics() {
   const tx = filteredTx();
   const income = tx.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
   const expense = tx.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
   const balance = income - expense;
 
-  // по категориям
   const expByCat = {}, incByCat = {};
   tx.forEach(t => {
     const map = t.type === 'expense' ? expByCat : incByCat;
@@ -606,20 +1051,12 @@ function renderAnalytics() {
 
   const palette = ['#4f8cff','#a06bff','#22c55e','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#8b5cf6','#f97316'];
 
-  // donut
-  const donutItems = expList.map(([id, val], i) => ({
-    value: val, color: palette[i % palette.length]
-  }));
-  const donutGrad = buildDonut(donutItems);
-
-  // группы
-  const groupTotals = { needs: 0, wants: 0, savings: 0 };
+  const groupTotals = { needs: 0, wants: 0, savings: 0, debts: 0 };
   tx.filter(t => t.type === 'expense').forEach(t => {
     const c = CATEGORIES.expense.find(x => x.id === t.category);
     if (c) groupTotals[c.group] += t.amount;
   });
 
-  // график по дням/месяцам
   const chart = buildDailyChart(tx);
 
   return `
@@ -648,7 +1085,7 @@ function renderAnalytics() {
       <h3>Структура расходов</h3>
       ${expList.length ? `
         <div class="donut-wrap">
-          <div class="donut" style="background:${donutGrad}">
+          <div class="donut" style="background:${buildDonut(expList.map(([id,val],i)=>({value:val,color:palette[i%palette.length]})))}">
             <div class="donut-center">
               <div>
                 <div class="v">${money(expense)}</div>
@@ -662,7 +1099,7 @@ function renderAnalytics() {
               const pct = Math.round(val / expense * 100);
               return `<div class="legend-item">
                 <span class="legend-dot" style="background:${palette[i % palette.length]}"></span>
-                <span class="n">${c.icon} ${c.name}</span>
+                <span class="n">${c.icon} ${escapeHtml(c.name)}</span>
                 <span class="v">${pct}% · ${money(val)}</span>
               </div>`;
             }).join('')}
@@ -689,7 +1126,7 @@ function renderAnalytics() {
               const pct = Math.round(val / income * 100);
               return `<div class="legend-item">
                 <span class="legend-dot" style="background:${palette[i % palette.length]}"></span>
-                <span class="n">${c.icon} ${c.name}</span>
+                <span class="n">${c.icon} ${escapeHtml(c.name)}</span>
                 <span class="v">${pct}% · ${money(val)}</span>
               </div>`;
             }).join('')}
@@ -740,7 +1177,7 @@ function renderAnalytics() {
       return `
         <div class="bar-row">
           <div class="bar-top">
-            <span class="name">${c.icon} ${c.name}</span>
+            <span class="name">${c.icon} ${escapeHtml(c.name)}</span>
             <span class="val">${money(val)}</span>
           </div>
           <div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${palette[i % palette.length]}"></div></div>
@@ -750,86 +1187,25 @@ function renderAnalytics() {
   `;
 }
 
-function buildDonut(items) {
-  const total = items.reduce((s,i) => s + i.value, 0);
-  if (!total) return 'var(--panel2)';
-  let acc = 0;
-  const stops = items.map(i => {
-    const start = acc / total * 100;
-    acc += i.value;
-    const end = acc / total * 100;
-    return `${i.color} ${start}% ${end}%`;
-  });
-  return `conic-gradient(${stops.join(',')})`;
-}
-
-function buildDailyChart(tx) {
-  const [from, to] = getRange();
-  const days = daysBetween(from, to);
-  const mode = days > 62 ? 'month' : 'day';
-
-  const map = {};
-  const labels = [];
-
-  if (mode === 'day') {
-    for (let i = 0; i < days; i++) {
-      const d = new Date(from); d.setDate(d.getDate() + i);
-      const k = fmtDateLocal(d);
-      map[k] = { inc: 0, exp: 0, label: `${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')}` };
-    }
-  } else {
-    const start = new Date(from);
-    const end = new Date(to);
-    const cur = new Date(start.getFullYear(), start.getMonth(), 1);
-    while (cur <= end) {
-      const k = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}`;
-      map[k] = { inc: 0, exp: 0, label: `${cur.getMonth()+1}.${String(cur.getFullYear()).slice(2)}` };
-      cur.setMonth(cur.getMonth() + 1);
-    }
-  }
-
-  tx.forEach(t => {
-    const k = mode === 'day' ? t.date : t.date.slice(0, 7);
-    if (!map[k]) return;
-    if (t.type === 'income') map[k].inc += t.amount;
-    else map[k].exp += t.amount;
-  });
-
-  const entries = Object.entries(map);
-  const maxVal = Math.max(1, ...entries.map(([,v]) => Math.max(v.inc, v.exp)));
-
-  const bars = entries.map(([k, v]) => ({
-    label: v.label,
-    inc: v.inc,
-    exp: v.exp,
-    incH: v.inc / maxVal * 100,
-    expH: v.exp / maxVal * 100
-  }));
-
-  return { mode, bars };
-}
-
 /* ============================ RENDER: DISTRIBUTION ============================ */
 
 function calcDistribution(baseIncome) {
   const base = ui.distBase !== null ? ui.distBase : baseIncome;
   const d = state.distribution;
-  return {
-    base,
-    needs:   { pct: d.needs,   plan: base * d.needs / 100 },
-    wants:   { pct: d.wants,   plan: base * d.wants / 100 },
-    savings: { pct: d.savings, plan: base * d.savings / 100 }
-  };
+  const out = { base };
+  ['needs','wants','savings','debts'].forEach(g => {
+    out[g] = { pct: d[g], plan: base * d[g] / 100 };
+  });
+  return out;
 }
 
 function renderDistribution() {
   const tx = filteredTx();
   const periodIncome = tx.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
   const dist = calcDistribution(periodIncome);
-  const totalPct = state.distribution.needs + state.distribution.wants + state.distribution.savings;
+  const totalPct = state.distribution.needs + state.distribution.wants + state.distribution.savings + state.distribution.debts;
 
-  // фактические расходы по группам
-  const actual = { needs: 0, wants: 0, savings: 0 };
+  const actual = { needs: 0, wants: 0, savings: 0, debts: 0 };
   tx.filter(t => t.type === 'expense').forEach(t => {
     const c = CATEGORIES.expense.find(x => x.id === t.category);
     if (c) actual[c.group] += t.amount;
@@ -839,11 +1215,8 @@ function renderDistribution() {
   <div class="card">
     <h3>Доход для распределения</h3>
     <div class="row">
-      <input type="number" id="distBase" value="${Math.round(dist.base)}" style="max-width:220px" step="100">
-      <button class="btn ghost small" id="distAuto">Взять доход за период (${money(periodIncome)})</button>
-      <button class="btn ghost small" id="dist5020">Правило 50/30/20</button>
-      <button class="btn ghost small" id="dist6040">Правило 60/30/10</button>
-      <button class="btn ghost small" id="dist7030">Правило 70/20/10</button>
+      <input type="number" id="distBase" value="${Math.round(dist.base)}" style="max-width:220px" step="100" inputmode="numeric" placeholder="0">
+      <button type="button" class="btn ghost small" id="distAuto">Взять доход за период (${money(periodIncome)})</button>
     </div>
     <div class="muted mt" style="font-size:13px">
       ${ui.distBase === null ? 'Значение берётся автоматически из доходов за выбранный период.' : 'Используется ручное значение. Нажмите «Взять доход за период», чтобы вернуть авто.'}
@@ -851,14 +1224,16 @@ function renderDistribution() {
   </div>
 
   <div class="card mt">
-    <h3>Проценты распределения · сумма ${totalPct}%</h3>
+    <div class="card-head-row">
+      <h3>Проценты распределения</h3>
+      <span class="pct-badge ${totalPct === 100 ? 'ok' : 'warn'}">Сумма: ${totalPct}%</span>
+    </div>
     <div class="progress-total">
       ${Object.keys(GROUPS).map(g => {
         const p = state.distribution[g];
         return `<div style="width:${p}%;background:${GROUPS[g].color}"></div>`;
       }).join('')}
     </div>
-    ${totalPct !== 100 ? `<div class="muted" style="color:var(--orange)">⚠️ Сумма процентов должна быть 100%. Сейчас: ${totalPct}%</div>` : `<div class="muted">✓ Распределение корректно</div>`}
 
     <div class="grid cards-3 mt">
       ${Object.keys(GROUPS).map(g => {
@@ -869,11 +1244,11 @@ function renderDistribution() {
         return `
         <div class="dist-card card" style="background:var(--panel2);border-color:${GROUPS[g].color}33">
           <div class="stripe" style="background:${GROUPS[g].color}"></div>
-          <div style="font-weight:700;font-size:15px;color:${GROUPS[g].color}">${GROUPS[g].name}</div>
-          <div class="muted" style="font-size:12px;margin-top:2px">${GROUPS[g].desc}</div>
+          <div class="dist-name" style="color:${GROUPS[g].color}">${GROUPS[g].name}</div>
+          <div class="dist-desc">${GROUPS[g].desc}</div>
 
           <div class="pct-input">
-            <input type="number" min="0" max="100" value="${pct}" data-dist-input="${g}">
+            <input type="number" min="0" max="100" value="${pct}" data-dist-input="${g}" inputmode="numeric">
             <span class="muted">%</span>
           </div>
 
@@ -881,7 +1256,7 @@ function renderDistribution() {
           <div class="actual">
             Потрачено: <b>${money(fact)}</b><br>
             <span style="color:${diff > 0 ? 'var(--red)' : 'var(--green)'}">
-              ${diff > 0 ? '▲ перерасход на ' + money(diff) : '▼ остаток ' + money(-diff)}
+              ${diff > 0 ? '▲ перерасход ' + money(diff) : '▼ остаток ' + money(-diff)}
             </span>
           </div>
 
@@ -896,12 +1271,17 @@ function renderDistribution() {
   <div class="card mt">
     <h3>Как это работает</h3>
     <div class="muted" style="line-height:1.8;font-size:14px">
-      <b style="color:var(--accent)">50/30/20</b> — классическое правило: 50% на обязательные нужды,
-      30% на желания, 20% в сбережения.<br>
-      <b style="color:var(--accent)">60/30/10</b> — если много обязательных расходов (аренда, кредиты).<br>
-      <b style="color:var(--accent)">70/20/10</b> — мягкий вариант для начала: больше на жизнь, меньше в накопления.<br><br>
-      Меняйте проценты вручную под свою ситуацию — суммы пересчитаются мгновенно.
-      Сравнивайте «план» с «потрачено», чтобы видеть, где вы выходите за рамки.
+      <b style="color:var(--accent)">Обязательное</b> — то, без чего не прожить: жильё, еда, транспорт, здоровье.<br>
+      <b style="color:var(--accent)">Развлечения</b> — кафе, кино, покупки, поездки.<br>
+      <b style="color:var(--accent)">Сбережения</b> — то, что откладываем или инвестируем.<br>
+      <b style="color:var(--accent)">Долги</b> — МФО, кредиты и займы у близких.<br><br>
+      Начните с правила <b>40/20/20/20</b> и корректируйте проценты под свою ситуацию.
+      Сравнивайте «план» и «потрачено», чтобы видеть, где вы выходите за рамки.
+    </div>
+    <div class="row mt">
+      <button type="button" class="btn ghost small" id="preset1">40 / 20 / 20 / 20 · баланс</button>
+      <button type="button" class="btn ghost small" id="preset2">50 / 20 / 20 / 10 · фокус на обязательное</button>
+      <button type="button" class="btn ghost small" id="preset3">35 / 15 / 30 / 20 · фокус на сбережения</button>
     </div>
   </div>
   `;
@@ -912,10 +1292,10 @@ function renderDistribution() {
 function taskHTML(t, date) {
   return `
   <div class="task ${t.done ? 'done' : ''}">
-    <button class="task-check" data-task-toggle="${date}|${t.id}">✓</button>
+    <button type="button" class="task-check" data-task-toggle="${date}|${t.id}">✓</button>
     <div class="task-time">${t.time}</div>
     <div class="task-text">${escapeHtml(t.text)}</div>
-    <button class="tx-del" data-task-del="${date}|${t.id}" title="Удалить">×</button>
+    <button type="button" class="tx-del" data-task-del="${date}|${t.id}" title="Удалить">×</button>
   </div>`;
 }
 
@@ -924,20 +1304,22 @@ function renderPlanner() {
   const tasks = (state.planner[date] || []).slice().sort((a,b) => a.time.localeCompare(b.time));
   const done = tasks.filter(t => t.done).length;
 
-  const d = new Date(date);
+  const d = new Date(date + 'T00:00:00');
   const weekdays = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
   const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-  const title = `${weekdays[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  const title = `${weekdays[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
 
   return `
   <div class="card">
     <div class="planner-head">
-      <button class="btn ghost small" data-planner-shift="-1">←</button>
+      <button type="button" class="btn ghost small" data-planner-shift="-1">‹</button>
       <div class="planner-date">${title}</div>
-      <button class="btn ghost small" data-planner-shift="1">→</button>
-      <button class="btn ghost small" data-planner-today">Сегодня</button>
-      <span style="flex:1"></span>
-      <input type="date" id="plannerDateInput" value="${date}" style="width:auto">
+      <button type="button" class="btn ghost small" data-planner-shift="1">›</button>
+      <button type="button" class="btn ghost small" data-planner-today>Сегодня</button>
+      <button type="button" class="date-trigger compact" data-date-for="plannerDate" data-date-value="${date}">
+        <span class="dt-text">${fmtDateHuman(date)}</span>
+        <span class="dt-icon">📅</span>
+      </button>
     </div>
 
     <form id="taskForm" class="task-form">
@@ -947,7 +1329,7 @@ function renderPlanner() {
       </div>
       <div>
         <label>Что делаем</label>
-        <input type="text" id="taskText" placeholder="Например: встреча с командой" required>
+        <input type="text" id="taskText" placeholder="Например: встреча с командой" required maxlength="120">
       </div>
       <button class="btn" type="submit">Добавить</button>
     </form>
@@ -983,27 +1365,19 @@ function renderUpcoming() {
         <div class="task" data-goto-date="${t.date}" style="cursor:pointer">
           <div class="task-time">${t.time}</div>
           <div class="task-text">${escapeHtml(t.text)}</div>
-          <div class="muted" style="font-size:12px">${fmtDateHuman(t.date)}</div>
+          <div class="muted" style="font-size:12px;white-space:nowrap">${fmtDateHuman(t.date)}</div>
         </div>`).join('')}
     </div>` : `<div class="empty">Других запланированных задач нет</div>`}
   </div>`;
 }
 
-/* ============================ HELPERS ============================ */
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
 /* ============================ MAIN RENDER ============================ */
 
 function render() {
-  // nav
   document.querySelectorAll('#nav button').forEach(b => {
     b.classList.toggle('active', b.dataset.tab === ui.tab);
   });
 
-  // period bar — скрываем в дневнике
   document.getElementById('periodBar').classList.toggle('hidden', ui.tab === 'planner');
   if (ui.tab !== 'planner') renderPeriodBar();
 
@@ -1017,137 +1391,109 @@ function render() {
   attachHandlers();
 }
 
-/* ============================ EVENT HANDLERS ============================ */
+/* ============================ HANDLERS ============================ */
+
+function updateCatTrigger() {
+  const trigger = document.querySelector('[data-select-for="txCat"]');
+  if (!trigger) return;
+  const cat = catById(ui.txType, ui.txCat);
+  trigger.querySelector('.st-icon').textContent = cat.icon;
+  trigger.querySelector('.st-text').textContent = cat.name;
+  trigger.dataset.selectValue = ui.txCat;
+}
 
 function attachHandlers() {
-  // ---- transactions: type toggle
-  const tt = document.getElementById('typeToggle');
-  if (tt) {
-    tt.querySelectorAll('button').forEach(b => {
-      b.onclick = () => {
-        ui.txType = b.dataset.type;
-        render();
-      };
-    });
-  }
-
-  // ---- tx form
-  const txForm = document.getElementById('txForm');
-  if (txForm) {
-    txForm.onsubmit = e => {
-      e.preventDefault();
-      const amount = parseFloat(document.getElementById('txAmount').value);
-      if (!amount || amount <= 0) return;
-      state.transactions.push({
-        id: uid(),
-        type: ui.txType,
-        amount,
-        category: document.getElementById('txCat').value,
-        date: document.getElementById('txDate').value,
-        note: document.getElementById('txNote').value.trim()
-      });
-      save();
-      render();
-    };
-  }
-
-  // ---- distribution inputs
+  // ---- distribution inline inputs
   document.querySelectorAll('[data-dist-input]').forEach(inp => {
-    inp.oninput = () => {
+    inp.addEventListener('input', () => {
       const g = inp.dataset.distInput;
-      const v = Math.max(0, Math.min(100, parseFloat(inp.value) || 0));
+      const v = Math.max(0, Math.min(100, parseInt(inp.value) || 0));
       state.distribution[g] = v;
       save();
-      // мягкое обновление без потери фокуса: пересчитываем суммы
       refreshDistributionNumbers();
-    };
-    inp.onchange = () => render();
+    });
+    inp.addEventListener('blur', () => render());
   });
 
   const distBaseInput = document.getElementById('distBase');
   if (distBaseInput) {
-    distBaseInput.oninput = () => {
+    distBaseInput.addEventListener('input', () => {
       ui.distBase = parseFloat(distBaseInput.value) || 0;
       refreshDistributionNumbers();
-    };
-  }
-
-  const distAuto = document.getElementById('distAuto');
-  if (distAuto) distAuto.onclick = () => { ui.distBase = null; render(); };
-
-  const presets = { dist5020: [50,30,20], dist6040: [60,30,10], dist7030: [70,20,10] };
-  Object.keys(presets).forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.onclick = () => {
-      const [n,w,s] = presets[id];
-      state.distribution = { needs: n, wants: w, savings: s };
-      save(); render();
-    };
-  });
-
-  // ---- planner date nav
-  document.querySelectorAll('[data-planner-shift]').forEach(b => {
-    b.onclick = () => {
-      const d = new Date(ui.plannerDate);
-      d.setDate(d.getDate() + parseInt(b.dataset.plannerShift));
-      ui.plannerDate = fmtDateLocal(d);
-      render();
-    };
-  });
-  const pt = document.querySelector('[data-planner-today]');
-  if (pt) pt.onclick = () => { ui.plannerDate = todayStr(); render(); };
-
-  const pdi = document.getElementById('plannerDateInput');
-  if (pdi) pdi.onchange = e => { ui.plannerDate = e.target.value; render(); };
-
-  // ---- task form
-  const taskForm = document.getElementById('taskForm');
-  if (taskForm) {
-    taskForm.onsubmit = e => {
-      e.preventDefault();
-      const time = document.getElementById('taskTime').value;
-      const text = document.getElementById('taskText').value.trim();
-      if (!time || !text) return;
-      const d = ui.plannerDate;
-      if (!state.planner[d]) state.planner[d] = [];
-      state.planner[d].push({ id: uid(), time, text, done: false });
-      save(); render();
-    };
+    });
   }
 }
 
 function refreshDistributionNumbers() {
-  // пересчёт сумм без полного ререндера (чтобы не терять фокус)
   const tx = filteredTx();
   const periodIncome = tx.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
   const dist = calcDistribution(periodIncome);
 
-  Object.keys(GROUPS).forEach(g => {
-    const card = document.querySelector(`[data-dist-input="${g}"]`)?.closest('.dist-card');
+  document.querySelectorAll('[data-dist-input]').forEach(inp => {
+    const g = inp.dataset.distInput;
+    const card = inp.closest('.dist-card');
     if (!card) return;
     const amtEl = card.querySelector('.amount');
     if (amtEl) amtEl.textContent = money(dist[g].plan);
-    const noteEl = card.querySelector('.muted[style*="font-size:12px"]');
-    // обновляем подпись "X% от ..."
-    const pctNote = card.querySelector('.pct-note');
+
+    const actual = tx.filter(t => t.type === 'expense').filter(t => {
+      const c = CATEGORIES.expense.find(x => x.id === t.category);
+      return c && c.group === g;
+    }).reduce((s,t) => s + t.amount, 0);
+
+    const plan = dist[g].plan;
+    const diff = actual - plan;
+    const actualEl = card.querySelector('.actual');
+    if (actualEl) {
+      actualEl.innerHTML = `Потрачено: <b>${money(actual)}</b><br>
+        <span style="color:${diff > 0 ? 'var(--red)' : 'var(--green)'}">
+          ${diff > 0 ? '▲ перерасход ' + money(diff) : '▼ остаток ' + money(-diff)}
+        </span>`;
+    }
+
+    const barEl = card.querySelector('.bar-fill');
+    if (barEl) barEl.style.width = (plan > 0 ? Math.min(100, actual/plan*100) : 0) + '%';
   });
 
-  // обновляем индикатор суммы процентов
-  const totalPct = state.distribution.needs + state.distribution.wants + state.distribution.savings;
-  const head = document.querySelector('#main .card.mt h3');
-  if (head && head.textContent.includes('Проценты распределения')) {
-    head.textContent = `Проценты распределения · сумма ${totalPct}%`;
+  // обновить прогресс-бар и бейдж суммы
+  const totalPct = state.distribution.needs + state.distribution.wants + state.distribution.savings + state.distribution.debts;
+  const progTotal = document.querySelector('.progress-total');
+  if (progTotal) {
+    progTotal.innerHTML = Object.keys(GROUPS).map(g =>
+      `<div style="width:${state.distribution[g]}%;background:${GROUPS[g].color}"></div>`
+    ).join('');
+  }
+  const badge = document.querySelector('.pct-badge');
+  if (badge) {
+    badge.textContent = `Сумма: ${totalPct}%`;
+    badge.className = `pct-badge ${totalPct === 100 ? 'ok' : 'warn'}`;
   }
 }
 
 /* ============================ GLOBAL EVENTS ============================ */
 
-document.addEventListener('click', e => {
-  // nav tabs
-  const navBtn = e.target.closest('#nav button');
-  if (navBtn) { ui.tab = navBtn.dataset.tab; render(); return; }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePopup();
+});
 
-  // period chips
+document.addEventListener('click', e => {
+  // ---- brand → dashboard
+  if (e.target.closest('#brand')) {
+    ui.tab = 'dashboard';
+    render();
+    return;
+  }
+
+  // ---- nav tabs
+  const navBtn = e.target.closest('#nav button');
+  if (navBtn) {
+    ui.tab = navBtn.dataset.tab;
+    closePopup();
+    render();
+    return;
+  }
+
+  // ---- period chips
   const chip = e.target.closest('[data-period]');
   if (chip) {
     ui.period = chip.dataset.period;
@@ -1155,10 +1501,65 @@ document.addEventListener('click', e => {
       if (!ui.customFrom) ui.customFrom = todayStr();
       if (!ui.customTo) ui.customTo = todayStr();
     }
-    render(); return;
+    render();
+    return;
   }
 
-  // delete transaction
+  // ---- date triggers
+  const dateTrig = e.target.closest('[data-date-for]');
+  if (dateTrig) {
+    const key = dateTrig.dataset.dateFor;
+    const current = dateTrig.dataset.dateValue || todayStr();
+    openCalendarPopup(current, v => {
+      if (key === 'periodFrom') {
+        ui.customFrom = v;
+        render();
+      } else if (key === 'periodTo') {
+        ui.customTo = v;
+        render();
+      } else if (key === 'plannerDate') {
+        ui.plannerDate = v;
+        render();
+      } else {
+        dateTrig.dataset.dateValue = v;
+        dateTrig.querySelector('.dt-text').textContent = fmtDateHuman(v);
+      }
+    });
+    return;
+  }
+
+  // ---- select triggers
+  const selTrig = e.target.closest('[data-select-for]');
+  if (selTrig && selTrig.dataset.selectFor === 'txCat') {
+    const cats = CATEGORIES[ui.txType];
+    openSelectPopup('Категория', cats, ui.txCat, v => {
+      ui.txCat = v;
+      updateCatTrigger();
+    });
+    return;
+  }
+
+  // ---- type toggle
+  const typeBtn = e.target.closest('#typeToggle button');
+  if (typeBtn) {
+    const newType = typeBtn.dataset.type;
+    if (newType === ui.txType) return;
+    ui.txType = newType;
+    ui.txCat = CATEGORIES[newType][0].id;
+
+    document.querySelectorAll('#typeToggle button').forEach(b => {
+      if (b.dataset.type === 'income') b.className = newType === 'income' ? 'active inc' : '';
+      if (b.dataset.type === 'expense') b.className = newType === 'expense' ? 'active exp' : '';
+    });
+    updateCatTrigger();
+    return;
+  }
+
+  // ---- submit transaction
+  const txForm = e.target.closest('#txForm');
+  // handled in submit, not click
+
+  // ---- delete transaction
   const delTx = e.target.closest('[data-del-tx]');
   if (delTx) {
     const id = delTx.dataset.delTx;
@@ -1166,7 +1567,7 @@ document.addEventListener('click', e => {
     save(); render(); return;
   }
 
-  // toggle task
+  // ---- toggle task
   const toggle = e.target.closest('[data-task-toggle]');
   if (toggle) {
     const [date, id] = toggle.dataset.taskToggle.split('|');
@@ -1175,7 +1576,7 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // delete task
+  // ---- delete task
   const delTask = e.target.closest('[data-task-del]');
   if (delTask) {
     const [date, id] = delTask.dataset.taskDel.split('|');
@@ -1184,42 +1585,85 @@ document.addEventListener('click', e => {
     save(); render(); return;
   }
 
-  // goto date from upcoming
+  // ---- goto date from upcoming
   const goto = e.target.closest('[data-goto-date]');
   if (goto) {
     ui.plannerDate = goto.dataset.gotoDate;
     render(); return;
   }
+
+  // ---- planner shifts
+  const shift = e.target.closest('[data-planner-shift]');
+  if (shift) {
+    const d = new Date(ui.plannerDate + 'T00:00:00');
+    d.setDate(d.getDate() + parseInt(shift.dataset.plannerShift));
+    ui.plannerDate = fmtDateLocal(d);
+    render(); return;
+  }
+  if (e.target.closest('[data-planner-today]')) {
+    ui.plannerDate = todayStr();
+    render(); return;
+  }
+
+  // ---- distribution presets
+  if (e.target.closest('#distAuto')) {
+    ui.distBase = null;
+    render(); return;
+  }
+  if (e.target.closest('#preset1')) {
+    state.distribution = { needs: 40, wants: 20, savings: 20, debts: 20 };
+    save(); render(); return;
+  }
+  if (e.target.closest('#preset2')) {
+    state.distribution = { needs: 50, wants: 20, savings: 20, debts: 10 };
+    save(); render(); return;
+  }
+  if (e.target.closest('#preset3')) {
+    state.distribution = { needs: 35, wants: 15, savings: 30, debts: 20 };
+    save(); render(); return;
+  }
+});
+
+// ---- form submissions
+document.addEventListener('submit', e => {
+  // transaction form
+  if (e.target.id === 'txForm') {
+    e.preventDefault();
+    const amount = parseFloat(document.getElementById('txAmount').value);
+    if (!amount || amount <= 0) return;
+
+    const dateTrig = document.querySelector('[data-date-for="txDate"]');
+    const date = dateTrig ? dateTrig.dataset.dateValue : todayStr();
+
+    state.transactions.push({
+      id: uid(),
+      type: ui.txType,
+      amount,
+      category: ui.txCat,
+      date,
+      note: document.getElementById('txNote').value.trim()
+    });
+    save();
+    render();
+    return;
+  }
+
+  // task form
+  if (e.target.id === 'taskForm') {
+    e.preventDefault();
+    const time = document.getElementById('taskTime').value;
+    const text = document.getElementById('taskText').value.trim();
+    if (!time || !text) return;
+    const d = ui.plannerDate;
+    if (!state.planner[d]) state.planner[d] = [];
+    state.planner[d].push({ id: uid(), time, text, done: false });
+    save();
+    render();
+    return;
+  }
 });
 
 /* ============================ INIT ============================ */
-
-// начальный демо-пример, если совсем пусто
-if (!state.transactions.length && !localStorage.getItem(LS_KEY)) {
-  const t = todayStr();
-  const d = new Date(); d.setDate(d.getDate() - 3);
-  const d2 = new Date(); d2.setDate(d2.getDate() - 7);
-
-  state.transactions = [
-    { id: uid(), type: 'income',  amount: 90000, category: 'salary',    date: fmtDateLocal(d2), note: 'Зарплата' },
-    { id: uid(), type: 'expense', amount: 25000, category: 'housing',   date: fmtDateLocal(d2), note: 'Аренда' },
-    { id: uid(), type: 'expense', amount: 6400,  category: 'food',      date: fmtDateLocal(d),  note: 'Продукты' },
-    { id: uid(), type: 'expense', amount: 1800,  category: 'transport', date: t, note: 'Метро' },
-    { id: uid(), type: 'expense', amount: 3200,  category: 'cafe',      date: t, note: 'Обед с коллегами' },
-    { id: uid(), type: 'expense', amount: 10000, category: 'savings',   date: t, note: 'В накопления' },
-    { id: uid(), type: 'income',  amount: 15000, category: 'freelance', date: t, note: 'Проект' }
-  ];
-
-  state.planner[t] = [
-    { id: uid(), time: '09:00', text: 'Утренняя зарядка и завтрак', done: true },
-    { id: uid(), time: '10:00', text: 'Созвон с командой', done: false },
-    { id: uid(), time: '13:00', text: 'Обед', done: false },
-    { id: uid(), time: '15:00', text: 'Работа над проектом', done: false },
-    { id: uid(), time: '19:00', text: 'Тренировка', done: false }
-  ];
-
-  save();
-}
 
 render();
 </script>
