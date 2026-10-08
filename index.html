@@ -238,7 +238,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .dist-card .dist-name { font-weight: 700; font-size: 15px; }
 .dist-card .dist-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .dist-card .pct-input { display: flex; align-items: center; gap: 6px; margin-top: 12px; }
-.dist-card .pct-input input { width: 74px; text-align: center; font-weight: 700; }
+.dist-card .pct-input input { width: 80px; text-align: center; font-weight: 700; }
 .dist-card .amount { font-size: 24px; font-weight: 700; margin-top: 12px; letter-spacing: -0.5px; word-break: break-word; }
 .dist-card .actual { font-size: 12px; margin-top: 10px; color: var(--muted); line-height: 1.6; }
 
@@ -251,8 +251,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
   background: var(--panel2); border: 1px solid var(--border); color: var(--muted);
 }
-.pct-badge.ok { color: var(--green); border-color: rgba(34,197,94,.4); background: rgba(34,197,94,.1); }
-.pct-badge.warn { color: var(--orange); border-color: rgba(245,158,11,.4); background: rgba(245,158,11,.1); }
 
 .progress-total { height: 10px; background: var(--panel2); border-radius: 99px; overflow: hidden; display: flex; margin: 8px 0 12px; }
 
@@ -260,17 +258,38 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .preset-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .preset-chip {
   background: var(--panel2); border: 1px solid var(--border);
-  color: var(--text); padding: 8px 14px; border-radius: 10px;
+  color: var(--text); padding: 8px 30px 8px 14px; border-radius: 10px;
   cursor: pointer; font-size: 13px; font-family: inherit;
   transition: .15s; font-weight: 500;
   display: inline-flex; flex-direction: column; align-items: flex-start;
   line-height: 1.3; text-align: left;
+  position: relative;
 }
 .preset-chip:hover { border-color: var(--accent); }
 .preset-chip.active { background: rgba(79,140,255,.15); border-color: var(--accent); color: var(--accent); }
 .preset-chip .p-name { font-weight: 700; font-size: 13px; }
 .preset-chip .p-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
 .preset-chip.active .p-desc { color: var(--accent); opacity: .8; }
+.preset-chip.user-preset { border-style: dashed; }
+.preset-chip.user-preset .p-name::before {
+  content: '★ '; color: var(--purple); font-size: 11px;
+}
+.preset-chip .p-del {
+  position: absolute; top: 50%; right: 6px; transform: translateY(-50%);
+  width: 20px; height: 20px; border-radius: 6px;
+  background: transparent; border: none; color: var(--muted);
+  cursor: pointer; font-size: 15px; line-height: 1;
+  padding: 0; display: grid; place-items: center;
+  font-family: inherit;
+  transition: .15s;
+}
+.preset-chip .p-del:hover { color: var(--red); background: rgba(239,68,68,.15); }
+
+/* Save current as preset */
+.save-preset-form {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px;
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+}
 
 /* Fixed expenses */
 .fixed-row {
@@ -279,7 +298,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   padding: 12px; background: var(--panel2); border-radius: 12px;
   border: 1px solid var(--border);
 }
-.fixed-row .fixed-amount { font-variant-numeric: tabular-nums; text-align: right; padding-right: 6px; }
 .fixed-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .fixed-item {
   display: flex; align-items: center; gap: 12px;
@@ -307,7 +325,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .fixed-summary .fs-label { font-size: 13px; color: var(--orange); font-weight: 600; }
 .fixed-summary .fs-value { font-size: 16px; font-weight: 700; color: var(--orange); font-variant-numeric: tabular-nums; }
 
-/* Distribution + fixed */
 .dist-remaining {
   padding: 14px; background: rgba(79,140,255,.1);
   border: 1px solid rgba(79,140,255,.3); border-radius: 12px;
@@ -394,8 +411,13 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   overflow: hidden;
 }
 
-/* ============ CALENDAR — COMPACT ============ */
-.calendar-popup { padding: 12px; max-width: 290px; width: 100%; }
+/* ============ CALENDAR — COMPACT & FIXED ============ */
+.calendar-popup {
+  padding: 12px;
+  max-width: 300px;
+  width: 100%;
+  box-sizing: border-box;
+}
 .cal-head {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 8px; gap: 6px;
@@ -410,25 +432,49 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .cal-nav:hover { background: var(--border); color: var(--accent); }
 .cal-title { font-weight: 700; font-size: 13px; letter-spacing: -0.1px; white-space: nowrap; }
+
+/* Сетка: используем фиксированную ширину, никаких aspect-ratio */
 .cal-week {
-  display: grid; grid-template-columns: repeat(7, 1fr);
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
   margin-bottom: 3px;
-  color: var(--muted); font-size: 10px; text-align: center;
-  text-transform: uppercase; letter-spacing: .3px; font-weight: 600;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  font-weight: 600;
 }
-.cal-week span { padding: 2px 0; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+.cal-week span { padding: 2px 0; overflow: hidden; }
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
 .cal-day {
-  aspect-ratio: 1; border: none; background: transparent;
-  color: var(--text); font-size: 12px; cursor: pointer;
-  border-radius: 6px; font-weight: 500;
-  display: grid; place-items: center;
-  transition: .12s; font-family: inherit;
-  position: relative;
-  min-height: 0;
+  width: 100%;
+  height: 34px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: .12s;
+  font-family: inherit;
+  padding: 0;
+  min-width: 0;
+  box-sizing: border-box;
 }
 .cal-day:hover { background: var(--panel2); }
-.cal-day.empty { cursor: default; }
+.cal-day.empty { cursor: default; pointer-events: none; }
 .cal-day.today { color: var(--accent); font-weight: 700; box-shadow: inset 0 0 0 1px var(--accent); }
 .cal-day.selected { background: var(--accent); color: #fff; font-weight: 700; box-shadow: none; }
 .cal-day.has-violation { background: rgba(239,68,68,.18); color: var(--red); }
@@ -800,7 +846,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   .daily-bar { min-width: 6px; }
 
   .dist-card .amount { font-size: 20px; }
-  .dist-card .pct-input input { font-size: 16px; width: 68px; }
+  .dist-card .pct-input input { font-size: 16px; width: 72px; }
 
   .planner-head { gap: 6px; }
   .planner-head .btn { padding: 8px 10px; font-size: 13px; }
@@ -831,20 +877,21 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* Compact calendar on mobile */
+  /* Calendar on mobile: same fix — full width, proper grid */
   .calendar-popup {
     max-width: 100%;
     border-radius: 22px 22px 0 0;
-    padding: 12px 14px 14px;
+    padding: 14px 12px 16px;
   }
   .cal-day {
-    font-size: 12px;
-    border-radius: 6px;
+    height: 38px;
+    font-size: 13px;
   }
-  .cal-nav { width: 30px; height: 30px; font-size: 14px; }
-  .cal-title { font-size: 12px; }
-  .cal-week { font-size: 9px; }
-  .cal-foot .btn { padding: 6px 10px; font-size: 12px; }
+  .cal-nav { width: 32px; height: 32px; font-size: 16px; }
+  .cal-title { font-size: 13px; }
+  .cal-week { font-size: 10px; }
+  .cal-grid { gap: 2px; }
+  .cal-foot .btn { padding: 8px 14px; font-size: 13px; }
 
   .time-popup { max-width: 100%; }
   .select-popup { max-height: 82vh; border-radius: 22px 22px 0 0; }
@@ -861,7 +908,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   }
   .fixed-row > button { grid-column: 1 / -1; }
 
-  .preset-chip { font-size: 12px; padding: 7px 11px; }
+  .preset-chip { font-size: 12px; padding: 7px 26px 7px 11px; }
   .preset-chip .p-name { font-size: 12px; }
   .preset-chip .p-desc { font-size: 10px; }
 
@@ -875,12 +922,11 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 @media (max-width: 360px) {
   .cards-4 { grid-template-columns: 1fr; }
   .stat .value { font-size: 16px; }
-  .cal-day { font-size: 11px; }
+  .cal-day { height: 34px; font-size: 12px; }
 }
 
 .mobile-nav { display: none; }
 
-/* ============ PRINT ============ */
 @media print {
   .mobile-nav, header nav, .period-bar, .btn { display: none !important; }
 }
@@ -940,7 +986,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 <script>
 /* ============================ DATA ============================ */
 
-const LS_KEY = 'finansy_v4';
+const LS_KEY = 'finansy_v5';
 
 const CATEGORIES = {
   income: [
@@ -988,18 +1034,15 @@ const DEBT_TYPES = {
 
 const PERIOD_LABELS = { day: 'День', week: 'Неделя', month: 'Месяц', year: 'Год', all: 'Всё', custom: 'Период' };
 
-/**
- * Пресеты распределения.
- * Каждый пресет — это 4 процента (needs/wants/savings/debts) + название и описание.
- */
-const PRESETS = {
-  balanced:   { name: 'Баланс',           desc: '40 / 20 / 20 / 20',   values: { needs: 40, wants: 20, savings: 20, debts: 20 } },
-  needsFocus: { name: 'Обязательное',     desc: '50 / 20 / 20 / 10',   values: { needs: 50, wants: 20, savings: 20, debts: 10 } },
-  savingsFocus: { name: 'Сбережения',     desc: '35 / 15 / 30 / 20',   values: { needs: 35, wants: 15, savings: 30, debts: 20 } },
-  debtFocus:  { name: 'Долги',            desc: '35 / 15 / 15 / 35',   values: { needs: 35, wants: 15, savings: 15, debts: 35 } },
-  debtMax:    { name: 'Сначала долги',    desc: '35 / 10 / 10 / 45',   values: { needs: 35, wants: 10, savings: 10, debts: 45 } },
-  frugal:     { name: 'Жёсткая экономия', desc: '50 / 10 / 30 / 10',   values: { needs: 50, wants: 10, savings: 30, debts: 10 } },
-  youth:      { name: 'Молодой',          desc: '45 / 30 / 15 / 10',   values: { needs: 45, wants: 30, savings: 15, debts: 10 } }
+/** Встроенные пресеты (нельзя удалить) */
+const BUILTIN_PRESETS = {
+  balanced:    { name: 'Баланс',           values: { needs: 40, wants: 20, savings: 20, debts: 20 } },
+  needsFocus:  { name: 'Обязательное',     values: { needs: 50, wants: 20, savings: 20, debts: 10 } },
+  savingsFocus:{ name: 'Сбережения',       values: { needs: 35, wants: 15, savings: 30, debts: 20 } },
+  debtFocus:   { name: 'Долги',            values: { needs: 35, wants: 15, savings: 15, debts: 35 } },
+  debtMax:     { name: 'Сначала долги',    values: { needs: 35, wants: 10, savings: 10, debts: 45 } },
+  frugal:      { name: 'Жёсткая экономия', values: { needs: 50, wants: 10, savings: 30, debts: 10 } },
+  youth:       { name: 'Молодой',          values: { needs: 45, wants: 30, savings: 15, debts: 10 } }
 };
 
 /* ============================ STATE ============================ */
@@ -1021,6 +1064,7 @@ let state = (() => {
       parsed.goals = parsed.goals || [];
       parsed.debts = parsed.debts || [];
       parsed.fixedExpenses = parsed.fixedExpenses || [];
+      parsed.userPresets = parsed.userPresets || [];
       parsed.activePreset = parsed.activePreset || null;
       return parsed;
     }
@@ -1032,6 +1076,7 @@ let state = (() => {
     goals: [],
     debts: [],
     fixedExpenses: [],
+    userPresets: [],
     distribution: { needs: 40, wants: 20, savings: 20, debts: 20 },
     activePreset: 'balanced',
     currency: '₽'
@@ -1046,8 +1091,7 @@ let ui = {
   txType: 'expense',
   txCat: 'housing',
   plannerDate: todayStr(),
-  distBase: null,
-  fixedType: 'housing'
+  distBase: null
 };
 
 function save() { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
@@ -1141,21 +1185,15 @@ function escapeHtml(s) {
 
 /* ============================ FIXED EXPENSES ============================ */
 
-/**
- * Возвращает сумму фиксированных расходов, которые надо вычесть из дохода
- * перед распределением по группам.
- */
 function getFixedExpensesTotal() {
   return state.fixedExpenses.reduce((s, f) => s + (f.amount || 0), 0);
 }
 
-/** Группа фиксированного расхода */
 function getFixedGroup(categoryId) {
   const c = CATEGORIES.expense.find(x => x.id === categoryId);
   return c ? c.group : 'needs';
 }
 
-/** Разбивка фиксированных расходов по группам */
 function getFixedByGroup() {
   const byGroup = { needs: 0, wants: 0, savings: 0, debts: 0 };
   state.fixedExpenses.forEach(f => {
@@ -1169,8 +1207,7 @@ function getFixedByGroup() {
 
 /**
  * Считаем распределение с учётом фиксированных расходов.
- * Из дохода сначала вычитается сумма фиксированных, потом распределяется по группам,
- * и к каждой группе прибавляется её фиксированная часть.
+ * Проценты могут быть любыми — никаких ограничений и предупреждений.
  */
 function calcDistribution(baseIncome) {
   const base = ui.distBase !== null ? ui.distBase : baseIncome;
@@ -1186,9 +1223,9 @@ function calcDistribution(baseIncome) {
     const fixed = fixedByGroup[g] || 0;
     out[g] = {
       pct: d[g],
-      plan: fromFree + fixed,      // итоговая сумма в группе
-      fromFree,                     // часть от свободных денег
-      fixed,                        // фиксированная часть
+      plan: fromFree + fixed,
+      fromFree,
+      fixed,
       planFromBase: base > 0 ? ((fromFree + fixed) / base * 100) : 0
     };
   });
@@ -1197,39 +1234,24 @@ function calcDistribution(baseIncome) {
 
 /* ============================ EXPORT ============================ */
 
-/** CSV-экранирование */
 function csvCell(v) {
   const s = String(v ?? '');
   if (/[",;\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
   return s;
 }
 
-/**
- * Экспорт операций в CSV.
- * scope: 'period' — только за выбранный период, 'all' — все
- */
 function exportTransactionsCSV(scope = 'period') {
   const rows = [];
   rows.push(['Дата', 'Тип', 'Категория', 'Группа', 'Сумма', 'Валюта', 'Заметка']);
-
   const list = scope === 'all' ? state.transactions : filteredTx();
   const sorted = [...list].sort((a, b) => a.date.localeCompare(b.date));
 
   sorted.forEach(t => {
     const c = catById(t.type, t.category);
     const group = t.type === 'expense' && c.group ? GROUPS[c.group].name : '';
-    rows.push([
-      t.date,
-      t.type === 'income' ? 'Доход' : 'Расход',
-      c.name,
-      group,
-      t.amount,
-      state.currency,
-      t.note || ''
-    ]);
+    rows.push([t.date, t.type === 'income' ? 'Доход' : 'Расход', c.name, group, t.amount, state.currency, t.note || '']);
   });
 
-  // Итоги
   const totalInc = sorted.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
   const totalExp = sorted.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
   rows.push([]);
@@ -1238,21 +1260,19 @@ function exportTransactionsCSV(scope = 'period') {
   rows.push(['Баланс', totalInc - totalExp]);
 
   const csv = rows.map(r => r.map(csvCell).join(';')).join('\n');
-  const BOM = '\uFEFF'; // чтобы Excel открывал UTF-8
+  const BOM = '\uFEFF';
   const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   const scopeName = scope === 'all' ? 'all' : 'period';
-  const stamp = todayStr();
   a.href = url;
-  a.download = `finance_${scopeName}_${stamp}.csv`;
+  a.download = `finance_${scopeName}_${todayStr()}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-/** Экспорт всей базы в JSON (для бэкапа) */
 function exportFullJSON() {
   const data = JSON.stringify(state, null, 2);
   const blob = new Blob([data], { type: 'application/json' });
@@ -1266,22 +1286,13 @@ function exportFullJSON() {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-/** Экспорт плана долгов в CSV */
 function exportDebtsCSV() {
   const rows = [];
   rows.push(['Название', 'Тип', 'Сумма', 'Выплачено', 'Остаток', '% закрытия', 'Создан']);
   state.debts.forEach(d => {
     const paid = d.paid || 0;
     const pct = d.amount > 0 ? Math.round(paid / d.amount * 100) : 0;
-    rows.push([
-      d.name,
-      (DEBT_TYPES[d.type] || DEBT_TYPES.other).name,
-      d.amount,
-      paid,
-      Math.max(0, d.amount - paid),
-      pct,
-      d.createdAt || ''
-    ]);
+    rows.push([d.name, (DEBT_TYPES[d.type] || DEBT_TYPES.other).name, d.amount, paid, Math.max(0, d.amount - paid), pct, d.createdAt || '']);
   });
   const total = state.debts.reduce((s, d) => s + d.amount, 0);
   const totalPaid = state.debts.reduce((s, d) => s + (d.paid || 0), 0);
@@ -1310,7 +1321,7 @@ function closePopup() {
   if (activePopup) { activePopup.remove(); activePopup = null; }
 }
 
-/* ============================ CALENDAR ============================ */
+/* ============================ CALENDAR — FIXED ============================ */
 
 function getDaysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
 function getFirstWeekday(y, m) { const d = new Date(y, m, 1).getDay(); return (d + 6) % 7; }
@@ -1334,7 +1345,11 @@ function openCalendarPopup(initialISO, onSelect, options = {}) {
     const daysInMonth = getDaysInMonth(viewYear, viewMonth);
 
     let daysHTML = '';
-    for (let i = 0; i < firstWd; i++) daysHTML += '<span class="cal-day empty"></span>';
+    // Пустые ячейки в начале (только до первого дня)
+    for (let i = 0; i < firstWd; i++) {
+      daysHTML += '<span class="cal-day empty"></span>';
+    }
+    // Все дни месяца — ровно 7 колонок
     for (let day = 1; day <= daysInMonth; day++) {
       const iso = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
       const cls = ['cal-day'];
@@ -1658,6 +1673,32 @@ function suggestedDistributionForGoal(goal) {
   return { suggested, avgIncome, monthsNeeded, totalDebt };
 }
 
+/* ============================ PRESETS HELPERS ============================ */
+
+function getAllPresets() {
+  const out = [];
+  Object.keys(BUILTIN_PRESETS).forEach(k => {
+    out.push({ id: k, name: BUILTIN_PRESETS[k].name, values: BUILTIN_PRESETS[k].values, builtin: true });
+  });
+  state.userPresets.forEach(p => {
+    out.push({ id: p.id, name: p.name, values: p.values, builtin: false });
+  });
+  return out;
+}
+
+function findActivePreset() {
+  const all = getAllPresets();
+  for (const p of all) {
+    if (p.values.needs === state.distribution.needs &&
+        p.values.wants === state.distribution.wants &&
+        p.values.savings === state.distribution.savings &&
+        p.values.debts === state.distribution.debts) {
+      return p.id;
+    }
+  }
+  return null;
+}
+
 /* ============================ RENDER: PERIOD BAR ============================ */
 
 function renderPeriodBar() {
@@ -1819,7 +1860,7 @@ function renderDashboard() {
   <div class="card mt">
     <div class="card-head-row">
       <h3>Нарушения за период</h3>
-      ${alerts.length ? `<span class="pct-badge warn">${alerts.length}</span>` : `<span class="pct-badge ok">Чисто ✓</span>`}
+      ${alerts.length ? `<span class="pct-badge">${alerts.length}</span>` : `<span class="pct-badge">Чисто ✓</span>`}
     </div>
     ${alerts.length ? `
       <div class="alert-list">
@@ -2138,17 +2179,8 @@ function renderDistribution() {
 
   const totalDebt = state.debts.reduce((s,d) => s + Math.max(0, d.amount - (d.paid || 0)), 0);
   const fixedTotal = getFixedExpensesTotal();
-
-  // Найти активный пресет, если проценты точно совпадают
-  let matchedPreset = state.activePreset;
-  if (matchedPreset && PRESETS[matchedPreset]) {
-    const p = PRESETS[matchedPreset].values;
-    const same = p.needs === state.distribution.needs &&
-                 p.wants === state.distribution.wants &&
-                 p.savings === state.distribution.savings &&
-                 p.debts === state.distribution.debts;
-    if (!same) matchedPreset = null;
-  }
+  const activePresetId = findActivePreset();
+  const allPresets = getAllPresets();
 
   return `
   <div class="card">
@@ -2174,23 +2206,32 @@ function renderDistribution() {
   <div class="card mt">
     <h3>Пресеты распределения</h3>
     <div class="preset-row">
-      ${Object.keys(PRESETS).map(k => {
-        const p = PRESETS[k];
-        const active = matchedPreset === k;
+      ${allPresets.map(p => {
+        const active = activePresetId === p.id;
+        const v = p.values;
         return `
-        <button type="button" class="preset-chip ${active ? 'active' : ''}" data-preset="${k}">
-          <span class="p-name">${p.name}</span>
-          <span class="p-desc">${p.desc}</span>
+        <button type="button" class="preset-chip ${active ? 'active' : ''} ${p.builtin ? '' : 'user-preset'}" data-preset="${p.id}">
+          <span class="p-name">${escapeHtml(p.name)}</span>
+          <span class="p-desc">${v.needs} / ${v.wants} / ${v.savings} / ${v.debts}</span>
+          ${p.builtin ? '' : `<span class="p-del" data-preset-del="${p.id}" title="Удалить пресет">×</span>`}
         </button>`;
       }).join('')}
     </div>
-    <div class="muted mt" style="font-size:12px">Нажмите на пресет, чтобы применить его. Затем корректируйте проценты вручную под свою ситуацию.</div>
+
+    <form class="save-preset-form" id="savePresetForm">
+      <input type="text" id="presetName" placeholder="Название своего пресета" maxlength="40" required>
+      <button type="submit" class="btn small">💾 Сохранить текущее</button>
+    </form>
+    <div class="muted mt" style="font-size:12px">
+      Текущие проценты: <b>${state.distribution.needs} / ${state.distribution.wants} / ${state.distribution.savings} / ${state.distribution.debts}</b>.
+      Введите название и нажмите — сохранится как ваш личный пресет.
+    </div>
   </div>
 
   <div class="card mt">
     <div class="card-head-row">
       <h3>Проценты распределения</h3>
-      <span class="pct-badge ${totalPct === 100 ? 'ok' : 'warn'}">Сумма: ${totalPct}%</span>
+      <span class="pct-badge">Сумма: ${totalPct}%</span>
     </div>
     <div class="progress-total">
       ${Object.keys(GROUPS).map(g => {
@@ -2214,7 +2255,7 @@ function renderDistribution() {
           <div class="dist-desc">${GROUPS[g].desc}</div>
 
           <div class="pct-input">
-            <input type="number" min="0" max="100" value="${pct}" data-dist-input="${g}" inputmode="numeric">
+            <input type="number" min="0" value="${pct}" data-dist-input="${g}" inputmode="numeric">
             <span class="muted">%</span>
           </div>
 
@@ -2246,7 +2287,6 @@ function renderFixedExpenses() {
   const list = state.fixedExpenses;
   const total = getFixedExpensesTotal();
 
-  // Предустановленные варианты для быстрого выбора
   const quickOptions = [
     { cat: 'housing',    label: '🏠 Квартира' },
     { cat: 'utilities',  label: '💡 Коммуналка' },
@@ -2818,9 +2858,8 @@ function attachHandlers() {
   document.querySelectorAll('[data-dist-input]').forEach(inp => {
     inp.addEventListener('input', () => {
       const g = inp.dataset.distInput;
-      const v = Math.max(0, Math.min(100, parseInt(inp.value) || 0));
-      state.distribution[g] = v;
-      state.activePreset = null;
+      const v = parseFloat(inp.value);
+      state.distribution[g] = isNaN(v) ? 0 : Math.max(0, v);
       save();
       refreshDistributionNumbers();
     });
@@ -2874,13 +2913,13 @@ function refreshDistributionNumbers() {
   const progTotal = document.querySelector('.progress-total');
   if (progTotal) {
     progTotal.innerHTML = Object.keys(GROUPS).map(g =>
-      `<div style="width:${state.distribution[g]}%;background:${GROUPS[g].color}"></div>`
+      `<div style="width:${Math.max(0, state.distribution[g])}%;background:${GROUPS[g].color}"></div>`
     ).join('');
   }
   const badge = document.querySelector('.pct-badge');
   if (badge) {
     badge.textContent = `Сумма: ${totalPct}%`;
-    badge.className = `pct-badge ${totalPct === 100 ? 'ok' : 'warn'}`;
+    badge.className = 'pct-badge';
   }
 }
 
@@ -2889,7 +2928,6 @@ function refreshDistributionNumbers() {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
 document.addEventListener('click', e => {
-  // Mobile nav
   const mobileBtn = e.target.closest('#mobileNav button');
   if (mobileBtn) {
     if (mobileBtn.id === 'mobileMoreBtn' || mobileBtn.dataset.tab === 'more') {
@@ -2902,7 +2940,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // brand
   if (e.target.closest('#brand')) {
     ui.tab = 'dashboard';
     closePopup();
@@ -2910,7 +2947,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // desktop nav
   const navBtn = e.target.closest('#nav button');
   if (navBtn) {
     ui.tab = navBtn.dataset.tab;
@@ -2919,7 +2955,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // Export buttons
   const exportBtn = e.target.closest('[data-export]');
   if (exportBtn) {
     const kind = exportBtn.dataset.export;
@@ -2930,7 +2965,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // period chips
   const chip = e.target.closest('[data-period]');
   if (chip) {
     ui.period = chip.dataset.period;
@@ -2942,7 +2976,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // date triggers
   const dateTrig = e.target.closest('[data-date-for]');
   if (dateTrig) {
     const key = dateTrig.dataset.dateFor;
@@ -2959,7 +2992,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // time triggers
   const timeTrig = e.target.closest('[data-time-for]');
   if (timeTrig) {
     const current = timeTrig.dataset.timeValue || '09:00';
@@ -2970,7 +3002,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // select triggers
   const selTrig = e.target.closest('[data-select-for]');
   if (selTrig) {
     const key = selTrig.dataset.selectFor;
@@ -2997,7 +3028,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // Quick fixed expense button — prefill form
   const quickFixed = e.target.closest('[data-quick-fixed]');
   if (quickFixed) {
     const cat = quickFixed.dataset.quickFixed;
@@ -3016,26 +3046,35 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // Delete fixed expense
   const fixedDel = e.target.closest('[data-fixed-del]');
   if (fixedDel) {
     state.fixedExpenses = state.fixedExpenses.filter(f => f.id !== fixedDel.dataset.fixedDel);
     save(); render(); return;
   }
 
-  // Preset apply
+  const presetDel = e.target.closest('[data-preset-del]');
+  if (presetDel) {
+    e.stopPropagation();
+    const id = presetDel.dataset.presetDel;
+    state.userPresets = state.userPresets.filter(p => p.id !== id);
+    if (state.activePreset === id) state.activePreset = null;
+    save(); render();
+    return;
+  }
+
   const presetBtn = e.target.closest('[data-preset]');
   if (presetBtn) {
     const key = presetBtn.dataset.preset;
-    if (PRESETS[key]) {
-      state.distribution = { ...PRESETS[key].values };
+    const all = getAllPresets();
+    const p = all.find(x => x.id === key);
+    if (p) {
+      state.distribution = { ...p.values };
       state.activePreset = key;
       save(); render();
     }
     return;
   }
 
-  // type toggle
   const typeBtn = e.target.closest('#typeToggle button');
   if (typeBtn) {
     const newType = typeBtn.dataset.type;
@@ -3050,14 +3089,12 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // delete transaction
   const delTx = e.target.closest('[data-del-tx]');
   if (delTx) {
     state.transactions = state.transactions.filter(t => t.id !== delTx.dataset.delTx);
     save(); render(); return;
   }
 
-  // task toggle
   const toggle = e.target.closest('[data-task-toggle]');
   if (toggle) {
     const [date, id] = toggle.dataset.taskToggle.split('|');
@@ -3073,11 +3110,9 @@ document.addEventListener('click', e => {
     save(); render(); return;
   }
 
-  // goto date
   const goto = e.target.closest('[data-goto-date]');
   if (goto) { ui.plannerDate = goto.dataset.gotoDate; ui.tab = 'planner'; render(); return; }
 
-  // planner shifts
   const shift = e.target.closest('[data-planner-shift]');
   if (shift) {
     const d = new Date(ui.plannerDate + 'T00:00:00');
@@ -3087,21 +3122,17 @@ document.addEventListener('click', e => {
   }
   if (e.target.closest('[data-planner-today]')) { ui.plannerDate = todayStr(); render(); return; }
 
-  // day view
   const dayView = e.target.closest('[data-day-view]');
   if (dayView) { openDayAnalytics(dayView.dataset.dayView); return; }
 
-  // distribution presets old buttons — removed
   if (e.target.closest('#distAuto')) { ui.distBase = null; render(); return; }
 
-  // plan delete
   const planDel = e.target.closest('[data-plan-del]');
   if (planDel) {
     state.plans = state.plans.filter(p => p.id !== planDel.dataset.planDel);
     save(); render(); return;
   }
 
-  // plan subtask toggle
   const planToggle = e.target.closest('[data-plan-toggle]');
   if (planToggle) {
     const [planId, subId] = planToggle.dataset.planToggle.split('|');
@@ -3113,7 +3144,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // plan subtask delete
   const planSubDel = e.target.closest('[data-plan-sub-del]');
   if (planSubDel) {
     const [planId, subId] = planSubDel.dataset.planSubDel.split('|');
@@ -3125,14 +3155,12 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // goal delete
   const goalDel = e.target.closest('[data-goal-del]');
   if (goalDel) {
     state.goals = state.goals.filter(g => g.id !== goalDel.dataset.goalDel);
     save(); render(); return;
   }
 
-  // goal dist apply
   const goalDist = e.target.closest('[data-goal-dist]');
   if (goalDist) {
     const g = state.goals.find(x => x.id === goalDist.dataset.goalDist);
@@ -3148,7 +3176,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // debt delete
   const debtDel = e.target.closest('[data-debt-del]');
   if (debtDel) {
     state.debts = state.debts.filter(d => d.id !== debtDel.dataset.debtDel);
@@ -3156,7 +3183,6 @@ document.addEventListener('click', e => {
   }
 });
 
-// Mobile "More" sheet
 function openMobileMoreSheet() {
   closePopup();
   const overlay = document.createElement('div');
@@ -3198,7 +3224,6 @@ function openMobileMoreSheet() {
   });
 }
 
-// Forms
 document.addEventListener('submit', e => {
   if (e.target.id === 'txForm') {
     e.preventDefault();
@@ -3215,6 +3240,22 @@ document.addEventListener('submit', e => {
     return;
   }
 
+  if (e.target.id === 'savePresetForm') {
+    e.preventDefault();
+    const name = document.getElementById('presetName').value.trim();
+    if (!name) return;
+    const newPreset = {
+      id: 'user_' + uid(),
+      name,
+      values: { ...state.distribution }
+    };
+    state.userPresets.push(newPreset);
+    state.activePreset = newPreset.id;
+    save();
+    render();
+    return;
+  }
+
   if (e.target.id === 'fixedForm') {
     e.preventDefault();
     const name = document.getElementById('fixedName').value.trim();
@@ -3222,9 +3263,7 @@ document.addEventListener('submit', e => {
     const catTrig = document.querySelector('[data-select-for="fixedCat"]');
     const category = catTrig ? catTrig.dataset.selectValue : 'housing';
     if (!name || !amount || amount <= 0) return;
-    state.fixedExpenses.push({
-      id: uid(), name, category, amount
-    });
+    state.fixedExpenses.push({ id: uid(), name, category, amount });
     save(); render();
     return;
   }
