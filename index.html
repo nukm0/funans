@@ -2,8 +2,11 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0d0f14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Финансы</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -21,24 +24,36 @@
   --purple: #a06bff;
   --orange: #f59e0b;
   --radius: 14px;
+  --header-h: 60px;
 }
-html, body { height: 100%; }
+html, body { height: 100%; width: 100%; overflow-x: hidden; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   background: var(--bg);
   color: var(--text);
   font-size: 15px;
   line-height: 1.5;
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
 }
-.app { max-width: 1280px; margin: 0 auto; padding: 20px; padding-bottom: env(safe-area-inset-bottom, 20px); }
 
-/* Header */
+/* ============ APP LAYOUT ============ */
+.app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  min-height: 100vh;
+}
+
+/* ============ HEADER ============ */
 header {
   display: flex; flex-wrap: wrap; gap: 16px;
   align-items: center; justify-content: space-between;
-  padding: 14px 20px; background: var(--panel);
-  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   margin-bottom: 14px;
 }
 .brand {
@@ -54,15 +69,18 @@ nav button {
   padding: 8px 14px; border-radius: 10px; cursor: pointer;
   font-size: 14px; font-weight: 500; transition: .15s;
   font-family: inherit;
+  white-space: nowrap;
 }
 nav button:hover { color: var(--text); background: var(--panel2); }
 nav button.active { background: var(--accent); color: #fff; }
 
-/* Period bar */
+/* ============ PERIOD BAR ============ */
 .period-bar {
   display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-  padding: 12px 16px; background: var(--panel);
-  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 12px 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   margin-bottom: 14px;
 }
 .period-bar .label { color: var(--muted); font-size: 13px; margin-right: 4px; }
@@ -70,12 +88,13 @@ nav button.active { background: var(--accent); color: #fff; }
   background: var(--panel2); border: 1px solid var(--border); color: var(--muted);
   padding: 7px 13px; border-radius: 999px; cursor: pointer; font-size: 13px;
   transition: .15s; font-family: inherit; font-weight: 500;
+  white-space: nowrap;
 }
 .chip:hover { color: var(--text); }
 .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .period-bar .range-note { margin-left: auto; color: var(--muted); font-size: 13px; }
 
-/* Inputs */
+/* ============ INPUTS ============ */
 input, select, textarea, button { font-family: inherit; font-size: 14px; }
 input[type=text], input[type=number], input[type=date], select, textarea {
   background: var(--panel2); border: 1px solid var(--border); color: var(--text);
@@ -85,19 +104,17 @@ input[type=text], input[type=number], input[type=date], select, textarea {
 input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
 
-/* Remove number spinners */
 input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
-  -webkit-appearance: none; margin: 0;
-}
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 
-/* Buttons */
+/* ============ BUTTONS ============ */
 .btn {
   background: var(--accent); color: #fff; border: none;
   padding: 10px 18px; border-radius: 10px; cursor: pointer;
   font-weight: 600; font-size: 14px; transition: .15s;
   font-family: inherit;
+  white-space: nowrap;
 }
 .btn:hover { filter: brightness(1.1); }
 .btn:active { transform: scale(.98); }
@@ -106,7 +123,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .btn.small { padding: 7px 12px; font-size: 13px; }
 .btn.danger { background: transparent; border: 1px solid var(--red); color: var(--red); }
 
-/* Trigger buttons for calendar/select/time */
+/* ============ TRIGGERS ============ */
 .date-trigger, .select-trigger, .time-trigger {
   width: 100%; display: flex; align-items: center; gap: 10px;
   padding: 10px 12px; border-radius: 10px;
@@ -114,6 +131,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   color: var(--text); cursor: pointer; font-size: 14px;
   text-align: left; transition: .15s;
   font-family: inherit;
+  min-height: 42px;
 }
 .date-trigger:hover, .select-trigger:hover, .time-trigger:hover { border-color: var(--accent); }
 .date-trigger.compact, .time-trigger.compact { padding: 7px 12px; font-size: 13px; width: auto; }
@@ -122,7 +140,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .select-trigger .st-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .time-trigger .tt-text { flex: 1; font-variant-numeric: tabular-nums; font-weight: 600; }
 
-/* Cards */
+/* ============ CARDS ============ */
 .grid { display: grid; gap: 14px; }
 .cards-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 .cards-3 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
@@ -138,14 +156,14 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 
 .stat .label { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
-.stat .value { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+.stat .value { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; word-break: break-word; }
 .stat .sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .income { color: var(--green); }
 .expense { color: var(--red); }
 .balance-pos { color: var(--accent); }
 .balance-neg { color: var(--orange); }
 
-/* Transactions */
+/* ============ TRANSACTIONS ============ */
 .tx-form { display: grid; grid-template-columns: 1fr 1fr 1.3fr 1fr 1.5fr auto; gap: 10px; align-items: end; }
 .type-toggle { display: flex; gap: 6px; }
 .type-toggle button {
@@ -183,7 +201,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   letter-spacing: .5px; margin-bottom: 8px; padding-left: 4px;
 }
 
-/* Bars */
+/* ============ BARS ============ */
 .bar-row { margin-bottom: 14px; }
 .bar-top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; gap: 8px; }
 .bar-top .name { color: var(--text); font-weight: 500; }
@@ -191,7 +209,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .bar-bg { height: 8px; background: var(--panel2); border-radius: 99px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 99px; transition: width .4s ease; }
 
-/* Donut */
+/* ============ DONUT ============ */
 .donut-wrap { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
 .donut { width: 160px; height: 160px; border-radius: 50%; position: relative; flex-shrink: 0; }
 .donut::after { content: ''; position: absolute; inset: 26px; background: var(--panel); border-radius: 50%; }
@@ -204,7 +222,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .legend-item .n { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .legend-item .v { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-/* Daily chart */
+/* ============ DAILY CHART ============ */
 .daily-chart { display: flex; align-items: flex-end; gap: 3px; height: 140px; padding-top: 10px; overflow-x: auto; }
 .daily-bar { flex: 1; min-width: 8px; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; height: 100%; position: relative; }
 .daily-bar .b { width: 100%; border-radius: 3px 3px 0 0; transition: height .3s; }
@@ -216,14 +234,14 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   padding: 4px 8px; border-radius: 6px; white-space: nowrap; z-index: 10;
 }
 
-/* Distribution */
+/* ============ DISTRIBUTION ============ */
 .dist-card { position: relative; overflow: hidden; }
 .dist-card .stripe { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
 .dist-card .dist-name { font-weight: 700; font-size: 15px; }
 .dist-card .dist-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .dist-card .pct-input { display: flex; align-items: center; gap: 6px; margin-top: 12px; }
 .dist-card .pct-input input { width: 74px; text-align: center; font-weight: 700; }
-.dist-card .amount { font-size: 24px; font-weight: 700; margin-top: 12px; letter-spacing: -0.5px; }
+.dist-card .amount { font-size: 24px; font-weight: 700; margin-top: 12px; letter-spacing: -0.5px; word-break: break-word; }
 .dist-card .actual { font-size: 12px; margin-top: 10px; color: var(--muted); line-height: 1.6; }
 
 .card-head-row {
@@ -240,7 +258,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 
 .progress-total { height: 10px; background: var(--panel2); border-radius: 99px; overflow: hidden; display: flex; margin: 8px 0 12px; }
 
-/* Planner */
+/* ============ PLANNER ============ */
 .planner-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .planner-date { font-size: 17px; font-weight: 700; }
 .task-form { display: grid; grid-template-columns: 140px 1fr auto; gap: 10px; align-items: end; }
@@ -267,17 +285,17 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .task-check:hover { border-color: var(--accent); }
 .task.done .task-check { background: var(--green); border-color: var(--green); color: #fff; }
 
-/* Empty */
+/* ============ EMPTY ============ */
 .empty { text-align: center; color: var(--muted); padding: 40px 20px; font-size: 14px; }
 .empty .big { font-size: 40px; margin-bottom: 10px; opacity: .5; }
 
-/* Row / misc */
+/* ============ MISC ============ */
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .mt { margin-top: 14px; }
 .muted { color: var(--muted); font-size: 13px; }
 .hidden { display: none !important; }
 
-/* Alerts / warnings */
+/* ============ ALERTS ============ */
 .alert-list { display: flex; flex-direction: column; gap: 8px; }
 .alert-item {
   display: flex; gap: 12px; padding: 12px 14px;
@@ -288,11 +306,11 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .alert-item.info { border-left-color: var(--accent); }
 .alert-icon { font-size: 18px; flex-shrink: 0; }
 .alert-body { flex: 1; min-width: 0; }
-.alert-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
-.alert-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.alert-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; word-break: break-word; }
+.alert-desc { font-size: 12px; color: var(--muted); line-height: 1.5; word-break: break-word; }
 .alert-date { font-size: 11px; color: var(--muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
 
-/* ========== POPUPS ========== */
+/* ============ POPUPS ============ */
 .popup-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.7);
@@ -317,7 +335,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   overflow: hidden;
 }
 
-/* Calendar — compact */
+/* ============ CALENDAR ============ */
 .calendar-popup { padding: 14px; max-width: 320px; }
 .cal-head {
   display: flex; align-items: center; justify-content: space-between;
@@ -333,7 +351,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .cal-nav:hover { background: var(--border); color: var(--accent); }
 .cal-title { font-weight: 700; font-size: 13px; letter-spacing: -0.1px; white-space: nowrap; }
-
 .cal-week {
   display: grid; grid-template-columns: repeat(7, 1fr);
   margin-bottom: 4px;
@@ -358,10 +375,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .cal-day.has-violation.selected { background: var(--red); color: #fff; }
 .cal-day.has-success { background: rgba(34,197,94,.15); color: var(--green); }
 .cal-day.has-success.selected { background: var(--green); color: #fff; }
-.cal-day .dot {
-  position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
-  width: 3px; height: 3px; border-radius: 50%; background: currentColor;
-}
 
 .cal-foot {
   display: flex; justify-content: space-between; align-items: center;
@@ -370,7 +383,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .cal-foot .btn { padding: 7px 12px; font-size: 12px; }
 
-/* Time popup */
+/* ============ TIME PICKER ============ */
 .time-popup { padding: 16px; max-width: 280px; }
 .time-display {
   text-align: center; font-size: 40px; font-weight: 700;
@@ -408,7 +421,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .time-quick button:hover { border-color: var(--accent); color: var(--accent); }
 
-/* Select popup */
+/* ============ SELECT ============ */
 .select-popup { padding: 8px; max-height: 70vh; overflow-y: auto; }
 .select-head {
   padding: 12px 14px 6px;
@@ -431,15 +444,13 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   text-transform: uppercase; letter-spacing: .5px; font-weight: 600;
 }
 
-/* Progress bar (plans) */
+/* ============ PLANS ============ */
 .plan-item {
   padding: 14px; background: var(--panel2);
   border: 1px solid var(--border); border-radius: 12px;
   margin-bottom: 10px;
 }
-.plan-head {
-  display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;
-}
+.plan-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
 .plan-title { flex: 1; font-weight: 600; font-size: 14px; word-break: break-word; }
 .plan-period { font-size: 11px; color: var(--muted); margin-top: 2px; }
 .plan-pct { font-size: 15px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
@@ -474,7 +485,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .plan-add-form input { font-size: 13px; padding: 8px 10px; }
 
-/* Goals */
+/* ============ GOALS ============ */
 .goal-card {
   padding: 16px; background: var(--panel2);
   border: 1px solid var(--border); border-radius: 12px;
@@ -485,7 +496,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .goal-info { flex: 1; min-width: 0; }
 .goal-title { font-weight: 700; font-size: 15px; word-break: break-word; }
 .goal-period { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.goal-amount { font-size: 20px; font-weight: 700; color: var(--accent); margin-top: 6px; }
+.goal-amount { font-size: 20px; font-weight: 700; color: var(--accent); margin-top: 6px; word-break: break-word; }
 .goal-del {
   background: transparent; border: none; color: var(--muted); cursor: pointer;
   font-size: 18px; padding: 4px 8px; border-radius: 8px; line-height: 1;
@@ -512,7 +523,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .goal-tip b { color: var(--purple); }
 
-/* Debts */
+/* ============ DEBTS ============ */
 .debt-card {
   padding: 14px; background: var(--panel2);
   border: 1px solid var(--border); border-radius: 12px;
@@ -520,9 +531,9 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .debt-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
 .debt-info { flex: 1; min-width: 0; }
-.debt-name { font-weight: 600; font-size: 14px; }
+.debt-name { font-weight: 600; font-size: 14px; word-break: break-word; }
 .debt-type { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.debt-amount { font-size: 16px; font-weight: 700; color: var(--red); margin-top: 4px; }
+.debt-amount { font-size: 16px; font-weight: 700; color: var(--red); margin-top: 4px; word-break: break-word; }
 .debt-del {
   background: transparent; border: none; color: var(--muted); cursor: pointer;
   font-size: 18px; padding: 4px 8px; border-radius: 8px; line-height: 1;
@@ -533,7 +544,7 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .debt-progress-fill { height: 100%; background: var(--red); border-radius: 99px; transition: width .3s; }
 .debt-detail { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); flex-wrap: wrap; gap: 6px; }
 
-/* Day analytics modal */
+/* ============ DAY POPUP ============ */
 .day-popup { max-width: 460px; padding: 0; }
 .day-head {
   padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
@@ -553,7 +564,6 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .day-section-title {
   font-size: 11px; color: var(--muted); text-transform: uppercase;
   letter-spacing: .5px; font-weight: 700; margin-bottom: 8px;
-  display: flex; align-items: center; gap: 6px;
 }
 .day-badge {
   display: inline-flex; align-items: center; gap: 4px;
@@ -569,65 +579,269 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .mini-tx-icon { font-size: 16px; flex-shrink: 0; }
 .mini-tx-info { flex: 1; min-width: 0; }
-.mini-tx-name { font-weight: 500; }
-.mini-tx-note { font-size: 11px; color: var(--muted); }
+.mini-tx-name { font-weight: 500; word-break: break-word; }
+.mini-tx-note { font-size: 11px; color: var(--muted); word-break: break-word; }
 .mini-tx-amt { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
-/* ========== MOBILE ========== */
+/* ==================================================
+   ================ MOBILE OPTIMIZATION =============
+   ================================================== */
+
+/* Tablet */
 @media (max-width: 900px) {
   .tx-form { grid-template-columns: 1fr 1fr; }
-  .tx-form > *:nth-child(2) { grid-column: 2; }
 }
 
-@media (max-width: 700px) {
-  .app { padding: 10px; }
-  header { padding: 12px 14px; gap: 12px; flex-direction: column; align-items: stretch; }
-  .brand { justify-content: center; font-size: 19px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-  nav { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; scrollbar-width: none; }
-  nav::-webkit-scrollbar { display: none; }
-  nav button { flex-shrink: 0; padding: 8px 12px; font-size: 13px; }
+/* Phone */
+@media (max-width: 640px) {
+  html { font-size: 15px; }
+  body { font-size: 14px; }
 
-  .period-bar { flex-wrap: nowrap; overflow-x: auto; padding: 10px 12px; scrollbar-width: none; }
+  /* App container: full width, tight padding */
+  .app {
+    padding: 8px;
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)); /* space for bottom nav */
+    max-width: 100%;
+  }
+
+  /* === Header becomes compact sticky === */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    gap: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 12px;
+    background: var(--panel);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    background: rgba(21,25,34,.92);
+  }
+  .brand {
+    font-size: 17px;
+    padding: 0;
+    border: none;
+    flex: 1;
+    justify-content: flex-start;
+  }
+  .brand::before { font-size: 18px; }
+
+  /* Hide top nav — replaced with bottom nav */
+  header nav {
+    display: none;
+  }
+
+  /* === Bottom Navigation Bar === */
+  .mobile-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(21,25,34,.96);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    z-index: 999;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: space-around;
+  }
+  .mobile-nav::-webkit-scrollbar { display: none; }
+  .mobile-nav button {
+    flex: 1;
+    min-width: 56px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 6px 4px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    transition: .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-nav button .nav-emoji {
+    font-size: 20px;
+    line-height: 1;
+    transition: transform .15s;
+  }
+  .mobile-nav button.active {
+    color: var(--accent);
+    background: rgba(79,140,255,.12);
+  }
+  .mobile-nav button.active .nav-emoji {
+    transform: scale(1.15);
+  }
+
+  /* === Period bar: horizontal scroll chips === */
+  .period-bar {
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 6px;
+    border-radius: 12px;
+  }
   .period-bar::-webkit-scrollbar { display: none; }
+  .period-bar .label { display: none; }
   .period-bar > * { flex-shrink: 0; }
   .period-bar .range-note { display: none; }
+  .chip { padding: 6px 11px; font-size: 12px; }
 
-  input, select, textarea, .date-trigger, .select-trigger, .time-trigger, .btn { font-size: 16px; }
-  .btn.small { font-size: 14px; }
-  .chip { font-size: 13px; }
+  /* === Inputs: prevent iOS zoom === */
+  input[type=text], input[type=number], input[type=date], select, textarea,
+  .date-trigger, .select-trigger, .time-trigger, .btn, button {
+    font-size: 16px;
+  }
+  .btn { padding: 11px 16px; font-size: 14px; }
+  .btn.small { padding: 8px 12px; font-size: 13px; }
 
-  .cards-4 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .cards-3 { grid-template-columns: 1fr; }
-  .two-col { grid-template-columns: 1fr; }
-  .stat .value { font-size: 18px; }
-  .stat .label { font-size: 12px; }
-  .card { padding: 15px; }
-  .card h3 { font-size: 12px; margin-bottom: 12px; }
+  /* === Cards: tighter === */
+  .card {
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+  .card h3 { font-size: 12px; margin-bottom: 10px; }
+  .grid { gap: 10px; }
+  .mt { margin-top: 10px; }
 
-  .tx-form { grid-template-columns: 1fr !important; }
-  .task-form { grid-template-columns: 1fr !important; }
+  /* === Stats: 2 columns even on mobile === */
+  .cards-4 { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .cards-3 { grid-template-columns: 1fr; gap: 8px; }
+  .two-col { grid-template-columns: 1fr; gap: 10px; }
 
-  .donut-wrap { flex-direction: column; align-items: stretch; gap: 16px; }
-  .donut { margin: 0 auto; }
+  .stat { padding: 12px !important; }
+  .stat .value { font-size: 17px; }
+  .stat .label { font-size: 11px; margin-bottom: 3px; }
+  .stat .sub { font-size: 10px; }
 
-  .planner-head { gap: 8px; }
-  .planner-date { font-size: 15px; flex: 1; min-width: 0; }
+  /* === Forms: everything stacks === */
+  .tx-form,
+  .task-form {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+  #planForm, #goalForm, #debtForm {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
 
-  .popup-overlay { padding: 0; place-items: end center; align-items: end; }
-  .popup { max-width: 100%; border-radius: 22px 22px 0 0; max-height: 90vh; animation: slideUp .22s ease; padding-bottom: env(safe-area-inset-bottom, 0); }
-  .calendar-popup { max-width: 100%; }
-  .select-popup { max-height: 80vh; }
-  .cal-day { font-size: 13px; }
+  /* === Transaction items: tighter === */
+  .tx-item {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  .tx-icon { width: 36px; height: 36px; font-size: 17px; }
+  .tx-info .t { font-size: 13px; }
+  .tx-info .d { font-size: 11px; }
+  .tx-amount { font-size: 14px; }
+  .tx-del { font-size: 22px; padding: 6px 8px; }
 
-  .dist-card .amount { font-size: 22px; }
-  .dist-card .pct-input input { font-size: 16px; }
+  /* === Donut charts: center on mobile === */
+  .donut-wrap { flex-direction: column; align-items: stretch; gap: 14px; }
+  .donut { margin: 0 auto; width: 140px; height: 140px; }
+  .donut::after { inset: 22px; }
+  .donut-center .v { font-size: 14px; }
+  .legend { min-width: 0; }
+  .legend-item { font-size: 12px; gap: 8px; }
 
-  .goal-amount { font-size: 18px; }
-  .day-body { max-height: 75vh; }
+  /* === Daily chart smaller === */
+  .daily-chart { height: 110px; gap: 2px; }
+  .daily-bar { min-width: 6px; }
+
+  /* === Distribution cards === */
+  .dist-card .amount { font-size: 20px; }
+  .dist-card .pct-input input { font-size: 16px; width: 68px; }
+
+  /* === Planner === */
+  .planner-head { gap: 6px; }
+  .planner-head .btn { padding: 8px 10px; font-size: 13px; }
+  .planner-date { font-size: 14px; flex-basis: 100%; order: -1; text-align: center; }
+  .task { padding: 10px 12px; gap: 10px; }
+  .task-time { font-size: 13px; min-width: 46px; }
+  .task-text { font-size: 13px; }
+  .task-check { width: 22px; height: 22px; }
+
+  /* === Plans / Goals / Debts === */
+  .plan-item, .goal-card, .debt-card { padding: 12px; }
+  .plan-title, .goal-title, .debt-name { font-size: 13px; }
+  .goal-amount, .debt-amount { font-size: 17px; }
+  .goal-emoji { font-size: 22px; }
+  .goal-stats { font-size: 11px; gap: 6px; }
+  .goal-tip { font-size: 11px; padding: 9px 10px; }
+
+  /* === Popups: bottom-sheet style on mobile === */
+  .popup-overlay {
+    padding: 0;
+    place-items: end center;
+    align-items: end;
+  }
+  .popup {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 22px 22px 0 0;
+    max-height: 92vh;
+    animation: slideUp .25s ease;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .calendar-popup { max-width: 100%; border-radius: 22px 22px 0 0; padding: 16px; }
+  .time-popup { max-width: 100%; }
+  .select-popup { max-height: 82vh; border-radius: 22px 22px 0 0; }
+  .cal-day { font-size: 14px; border-radius: 9px; }
+  .cal-nav { width: 34px; height: 34px; }
+  .day-popup { max-width: 100%; border-radius: 22px 22px 0 0; }
+  .day-body { max-height: 75vh; padding: 14px 16px 18px; }
+
+  /* === Alerts === */
+  .alert-item { padding: 10px 12px; gap: 10px; }
+  .alert-title { font-size: 13px; }
+  .alert-desc { font-size: 11px; }
+
+  /* === Card head row === */
+  .card-head-row { gap: 8px; }
+  .card-head-row h3 { font-size: 12px; }
+
+  /* === Bars === */
+  .bar-top { font-size: 12px; }
+  .bar-row { margin-bottom: 11px; }
+
+  /* === Misc === */
+  .empty { padding: 30px 14px; font-size: 13px; }
+  .empty .big { font-size: 32px; }
+  .muted { font-size: 12px; }
 }
 
-@media (max-width: 380px) {
+/* Show mobile nav only on phone */
+.mobile-nav { display: none; }
+
+/* Very small phones */
+@media (max-width: 360px) {
   .cards-4 { grid-template-columns: 1fr; }
+  .stat .value { font-size: 16px; }
+}
+
+/* Landscape phone: reduce vertical spacing */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+  .app { padding-bottom: 20px; }
+  .mobile-nav { position: static; margin-top: 10px; }
+}
+
+/* ============ PRINT ============ */
+@media print {
+  .mobile-nav, header nav, .period-bar, .btn { display: none !important; }
 }
 </style>
 </head>
@@ -650,6 +864,38 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   <div class="period-bar" id="periodBar"></div>
   <main id="main"></main>
 </div>
+
+<!-- Mobile bottom navigation -->
+<nav class="mobile-nav" id="mobileNav">
+  <button data-tab="dashboard" class="active">
+    <span class="nav-emoji">📊</span>
+    <span>Обзор</span>
+  </button>
+  <button data-tab="transactions">
+    <span class="nav-emoji">💸</span>
+    <span>Операции</span>
+  </button>
+  <button data-tab="plans">
+    <span class="nav-emoji">🎯</span>
+    <span>Планы</span>
+  </button>
+  <button data-tab="goals">
+    <span class="nav-emoji">🏆</span>
+    <span>Цели</span>
+  </button>
+  <button data-tab="debts">
+    <span class="nav-emoji">💳</span>
+    <span>Долги</span>
+  </button>
+  <button data-tab="planner">
+    <span class="nav-emoji">📅</span>
+    <span>Дневник</span>
+  </button>
+  <button data-tab="more" id="mobileMoreBtn">
+    <span class="nav-emoji">⋯</span>
+    <span>Ещё</span>
+  </button>
+</nav>
 
 <script>
 /* ============================ DATA ============================ */
@@ -846,13 +1092,8 @@ function closePopup() {
 function getDaysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
 function getFirstWeekday(y, m) { const d = new Date(y, m, 1).getDay(); return (d + 6) % 7; }
 
-/**
- * Открывает компактный календарь.
- * options.dayStatus(iso) → null | 'ok' | 'bad'
- */
 function openCalendarPopup(initialISO, onSelect, options = {}) {
   closePopup();
-
   const init = initialISO ? new Date(initialISO + 'T00:00:00') : new Date();
   let viewYear = init.getFullYear();
   let viewMonth = init.getMonth();
@@ -889,9 +1130,7 @@ function openCalendarPopup(initialISO, onSelect, options = {}) {
           <div class="cal-title">${MONTHS_FULL[viewMonth]} ${viewYear}</div>
           <button type="button" class="cal-nav" data-nav="1">›</button>
         </div>
-        <div class="cal-week">
-          ${WEEKDAYS_SHORT.map(w => `<span>${w}</span>`).join('')}
-        </div>
+        <div class="cal-week">${WEEKDAYS_SHORT.map(w => `<span>${w}</span>`).join('')}</div>
         <div class="cal-grid">${daysHTML}</div>
         <div class="cal-foot">
           <button type="button" class="btn ghost small" data-cal-clear>Отмена</button>
@@ -908,8 +1147,7 @@ function openCalendarPopup(initialISO, onSelect, options = {}) {
       viewMonth += parseInt(nav.dataset.nav);
       if (viewMonth < 0) { viewMonth = 11; viewYear--; }
       if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-      render();
-      return;
+      render(); return;
     }
     const day = e.target.closest('[data-day]');
     if (day) { onSelect(day.dataset.day); closePopup(); return; }
@@ -924,7 +1162,6 @@ function openCalendarPopup(initialISO, onSelect, options = {}) {
 
 function openTimePicker(initial, onSelect) {
   closePopup();
-
   let [hh, mm] = (initial || '09:00').split(':').map(x => parseInt(x));
   if (isNaN(hh)) hh = 9;
   if (isNaN(mm)) mm = 0;
@@ -936,13 +1173,9 @@ function openTimePicker(initial, onSelect) {
 
   const render = () => {
     let hoursHTML = '';
-    for (let h = 0; h < 24; h++) {
-      hoursHTML += `<div class="time-item ${h === hh ? 'active' : ''}" data-h="${h}">${String(h).padStart(2,'0')}</div>`;
-    }
+    for (let h = 0; h < 24; h++) hoursHTML += `<div class="time-item ${h === hh ? 'active' : ''}" data-h="${h}">${String(h).padStart(2,'0')}</div>`;
     let minsHTML = '';
-    for (let m = 0; m < 60; m += 5) {
-      minsHTML += `<div class="time-item ${m === mm ? 'active' : ''}" data-m="${m}">${String(m).padStart(2,'0')}</div>`;
-    }
+    for (let m = 0; m < 60; m += 5) minsHTML += `<div class="time-item ${m === mm ? 'active' : ''}" data-m="${m}">${String(m).padStart(2,'0')}</div>`;
 
     overlay.innerHTML = `
       <div class="popup time-popup">
@@ -971,7 +1204,6 @@ function openTimePicker(initial, onSelect) {
       </div>
     `;
 
-    // центрируем активные элементы
     setTimeout(() => {
       const hs = document.getElementById('hoursScroll');
       const ms = document.getElementById('minsScroll');
@@ -984,34 +1216,26 @@ function openTimePicker(initial, onSelect) {
 
   overlay.addEventListener('click', e => {
     if (e.target === overlay) { closePopup(); return; }
-
     const hItem = e.target.closest('[data-h]');
     if (hItem) {
       hh = parseInt(hItem.dataset.h);
       overlay.querySelectorAll('#hoursScroll .time-item').forEach(el => el.classList.toggle('active', parseInt(el.dataset.h) === hh));
-      updateDisplay();
-      return;
+      updateDisplay(); return;
     }
     const mItem = e.target.closest('[data-m]');
     if (mItem) {
       mm = parseInt(mItem.dataset.m);
       overlay.querySelectorAll('#minsScroll .time-item').forEach(el => el.classList.toggle('active', parseInt(el.dataset.m) === mm));
-      updateDisplay();
-      return;
+      updateDisplay(); return;
     }
-
     const quick = e.target.closest('[data-quick]');
     if (quick) {
       const [qh, qm] = quick.dataset.quick.split(':').map(Number);
-      hh = qh; mm = qm;
-      render();
-      return;
+      hh = qh; mm = qm; render(); return;
     }
-
     if (e.target.closest('[data-time-ok]')) {
       onSelect(`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`);
-      closePopup();
-      return;
+      closePopup(); return;
     }
     if (e.target.closest('[data-time-cancel]')) closePopup();
   });
@@ -1066,19 +1290,13 @@ function openSelectPopup(title, options, selectedId, onSelect) {
   });
 }
 
-/* ============================ VIOLATIONS / ANALYTICS PER DAY ============================ */
+/* ============================ DAY ANALYTICS ============================ */
 
-/**
- * Возвращает объект с нарушениями дня:
- * { overDistribution: [...], unfinishedTasks: [...], planStatus: 'ok'|'bad'|null }
- */
 function analyzeDay(iso) {
   const dayTx = state.transactions.filter(t => t.date === iso);
   const dayExpense = dayTx.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
   const dayIncome = dayTx.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
 
-  // Выход за распределение: считаем по дневной норме
-  // Норма = (доход за месяц * pct / 100) / дней в месяце
   const monthIncome = state.transactions
     .filter(t => t.type === 'income' && t.date.slice(0,7) === iso.slice(0,7))
     .reduce((s,t) => s + t.amount, 0);
@@ -1107,12 +1325,9 @@ function analyzeDay(iso) {
     });
   }
 
-  // Незавершённые задачи в планере
   const tasks = state.planner[iso] || [];
   const unfinishedTasks = tasks.filter(t => !t.done);
 
-  // План-задачи — ищем планы, у которых истёк срок и не выполнен полностью
-  // Здесь: если есть план с периодом, и день = конец периода, и прогресс <100 — фиксируем
   const brokenPlans = [];
   state.plans.forEach(p => {
     if (p.endDate && p.endDate === iso) {
@@ -1126,9 +1341,7 @@ function analyzeDay(iso) {
 
   return {
     dayTx, dayExpense, dayIncome,
-    overDistribution,
-    unfinishedTasks,
-    brokenPlans,
+    overDistribution, unfinishedTasks, brokenPlans,
     status: hasBad ? 'bad' : (hasAny ? 'ok' : null)
   };
 }
@@ -1141,18 +1354,11 @@ function planPct(plan) {
 
 /* ============================ GOALS LOGIC ============================ */
 
-/**
- * Вычисляет прогресс цели и прогноз даты.
- * Прогноз: используем среднее пополнение в день из истории
- * транзакций со category='savings' или 'invest' (за последние 3 мес).
- * Если истории нет — берём распределение: savings% от среднего месячного дохода.
- */
 function goalStats(goal) {
   const saved = goal.saved || 0;
   const total = goal.amount;
   const pct = total > 0 ? Math.min(100, Math.round(saved / total * 100)) : 0;
 
-  // 1. Средние пополнения в день за последние 3 месяца
   const now = new Date();
   const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1);
   const fromIso = fmtDateLocal(threeMonthsAgo);
@@ -1166,9 +1372,7 @@ function goalStats(goal) {
   const daysSpan = Math.max(1, Math.round((now - threeMonthsAgo) / 86400000));
   let dailyRate = totalSaved / daysSpan;
 
-  // 2. Если истории нет — прогноз от распределения
   if (dailyRate < 1) {
-    // средний месячный доход за всё время
     const incomeByMonth = {};
     state.transactions.filter(t => t.type === 'income').forEach(t => {
       const k = t.date.slice(0,7);
@@ -1197,10 +1401,6 @@ function goalStats(goal) {
   return { saved, total, pct, remaining, dailyRate, etaText };
 }
 
-/**
- * Предлагаемое распределение под цель.
- * Учитывает долги: если долгов много — уменьшаем savings, увеличиваем debts.
- */
 function suggestedDistributionForGoal(goal) {
   const base = { ...state.distribution };
   const totalDebt = state.debts.reduce((s,d) => s + Math.max(0, d.amount - (d.paid || 0)), 0);
@@ -1208,7 +1408,7 @@ function suggestedDistributionForGoal(goal) {
   const daysToGoal = goal.periodDays || 90;
 
   const neededPerMonth = goalAmount / (daysToGoal / 30);
-  // средний месячный доход
+
   const incomeByMonth = {};
   state.transactions.filter(t => t.type === 'income').forEach(t => {
     const k = t.date.slice(0,7);
@@ -1219,7 +1419,6 @@ function suggestedDistributionForGoal(goal) {
     ? Object.values(incomeByMonth).reduce((a,b) => a+b, 0) / months.length
     : 0;
 
-  // Корректируем
   let suggested = { ...base };
 
   if (totalDebt > 0 && avgIncome > 0) {
@@ -1232,7 +1431,6 @@ function suggestedDistributionForGoal(goal) {
     if (sum !== 100) suggested.savings += 100 - sum;
   }
 
-  // Проверка достижимости
   const monthlyToGoal = avgIncome * suggested.savings / 100;
   const monthsNeeded = monthlyToGoal > 0 ? goalAmount / monthlyToGoal : Infinity;
 
@@ -1299,7 +1497,6 @@ function renderDashboard() {
   const todayTasks = (state.planner[todayStr()] || []).slice().sort((a,b) => a.time.localeCompare(b.time));
   const doneCount = todayTasks.filter(t => t.done).length;
 
-  // Нарушения за период
   const [fromIso, toIso] = getRange();
   const alerts = [];
   const cursor = new Date(fromIso + 'T00:00:00');
@@ -1311,8 +1508,7 @@ function renderDashboard() {
       if (a.overDistribution.length) {
         a.overDistribution.forEach(o => {
           alerts.push({
-            type: 'bad',
-            icon: '📊',
+            type: 'bad', icon: '📊',
             title: `Выход за распределение: ${GROUPS[o.group].name}`,
             desc: `Потрачено ${money(o.spent)} при норме ${money(o.norm)} (перерасход ${money(o.over)})`,
             date: iso
@@ -1321,8 +1517,7 @@ function renderDashboard() {
       }
       if (a.unfinishedTasks.length) {
         alerts.push({
-          type: 'bad',
-          icon: '📝',
+          type: 'bad', icon: '📝',
           title: `Не выполнен план на день`,
           desc: `${a.unfinishedTasks.length} незавершённых задач: ${a.unfinishedTasks.slice(0,2).map(t => t.text).join(', ')}${a.unfinishedTasks.length > 2 ? '…' : ''}`,
           date: iso
@@ -1330,8 +1525,7 @@ function renderDashboard() {
       }
       a.brokenPlans.forEach(bp => {
         alerts.push({
-          type: 'bad',
-          icon: '🎯',
+          type: 'bad', icon: '🎯',
           title: `План не выполнен: ${bp.plan.title}`,
           desc: `Прогресс ${bp.pct}% на дату завершения`,
           date: iso
@@ -1342,7 +1536,6 @@ function renderDashboard() {
   }
   alerts.sort((a,b) => b.date.localeCompare(a.date));
 
-  // активные цели
   const activeGoals = state.goals.filter(g => (g.saved || 0) < g.amount);
   const topGoal = activeGoals[0];
 
@@ -2036,14 +2229,14 @@ function renderPlanner() {
   <div class="card">
     <div class="planner-head">
       <button type="button" class="btn ghost small" data-planner-shift="-1">‹</button>
-      <div class="planner-date">${title}</div>
       <button type="button" class="btn ghost small" data-planner-shift="1">›</button>
       <button type="button" class="btn ghost small" data-planner-today>Сегодня</button>
       <button type="button" class="date-trigger compact" data-date-for="plannerDate" data-date-value="${date}">
         <span class="dt-text">${fmtDateHuman(date)}</span>
         <span class="dt-icon">📅</span>
       </button>
-      <button type="button" class="btn ghost small" data-day-view="${date}">Аналитика дня</button>
+      <button type="button" class="btn ghost small" data-day-view="${date}">Аналитика</button>
+      <div class="planner-date">${title}</div>
     </div>
 
     <form id="taskForm" class="task-form">
@@ -2110,10 +2303,8 @@ function openDayAnalytics(iso) {
   activePopup = overlay;
 
   const hasContent = a.dayTx.length || (state.planner[iso] || []).length || a.overDistribution.length || a.brokenPlans.length;
-
   let bodyHTML = '';
 
-  // 1. Статус
   if (a.status === 'bad') {
     bodyHTML += `<div class="day-section">
       <div class="day-section-title">Статус дня</div>
@@ -2126,13 +2317,12 @@ function openDayAnalytics(iso) {
     </div>`;
   }
 
-  // 2. Выход за распределение
   if (a.overDistribution.length) {
     bodyHTML += `<div class="day-section">
       <div class="day-section-title">📊 Выход за распределение</div>
       ${a.overDistribution.map(o => `
         <div class="alert-item critical" style="margin-bottom:6px">
-          <div class="alert-icon">${GROUPS[o.group].color ? '⚠️' : '⚠️'}</div>
+          <div class="alert-icon">⚠️</div>
           <div class="alert-body">
             <div class="alert-title">${GROUPS[o.group].name}</div>
             <div class="alert-desc">Потрачено ${money(o.spent)} при дневной норме ${money(o.norm)}. Перерасход: <b style="color:var(--red)">${money(o.over)}</b></div>
@@ -2142,10 +2332,9 @@ function openDayAnalytics(iso) {
     </div>`;
   }
 
-  // 3. Незавершённые задачи
   if (a.unfinishedTasks.length) {
     bodyHTML += `<div class="day-section">
-      <div class="day-section-title">📝 Не выполнено в дневнике (${a.unfinishedTasks.length})</div>
+      <div class="day-section-title">📝 Не выполнено (${a.unfinishedTasks.length})</div>
       ${a.unfinishedTasks.map(t => `
         <div class="mini-tx">
           <span class="mini-tx-icon">⏱</span>
@@ -2158,7 +2347,6 @@ function openDayAnalytics(iso) {
     </div>`;
   }
 
-  // 4. Невыполненные планы
   if (a.brokenPlans.length) {
     bodyHTML += `<div class="day-section">
       <div class="day-section-title">🎯 Не выполнен план</div>
@@ -2174,7 +2362,6 @@ function openDayAnalytics(iso) {
     </div>`;
   }
 
-  // 5. Транзакции
   if (a.dayTx.length) {
     bodyHTML += `<div class="day-section">
       <div class="day-section-title">💰 Операции (${a.dayTx.length})</div>
@@ -2200,7 +2387,6 @@ function openDayAnalytics(iso) {
     </div>`;
   }
 
-  // 6. Выполненные задачи
   const dayTasks = state.planner[iso] || [];
   const doneTasks = dayTasks.filter(t => t.done);
   if (doneTasks.length) {
@@ -2246,6 +2432,9 @@ function render() {
   document.querySelectorAll('#nav button').forEach(b => {
     b.classList.toggle('active', b.dataset.tab === ui.tab);
   });
+  document.querySelectorAll('#mobileNav button').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === ui.tab);
+  });
 
   const hidePeriod = ['planner', 'plans', 'goals', 'debts'].includes(ui.tab);
   document.getElementById('periodBar').classList.toggle('hidden', hidePeriod);
@@ -2262,6 +2451,7 @@ function render() {
   else if (ui.tab === 'planner') main.innerHTML = renderPlanner();
 
   attachHandlers();
+  window.scrollTo(0, 0);
 }
 
 /* ============================ HANDLERS ============================ */
@@ -2345,7 +2535,21 @@ function refreshDistributionNumbers() {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
 document.addEventListener('click', e => {
-  // brand → dashboard
+  // Mobile nav
+  const mobileBtn = e.target.closest('#mobileNav button');
+  if (mobileBtn) {
+    if (mobileBtn.id === 'mobileMoreBtn' || mobileBtn.dataset.tab === 'more') {
+      // Show full nav sheet
+      openMobileMoreSheet();
+      return;
+    }
+    ui.tab = mobileBtn.dataset.tab;
+    closePopup();
+    render();
+    return;
+  }
+
+  // brand
   if (e.target.closest('#brand')) {
     ui.tab = 'dashboard';
     closePopup();
@@ -2353,7 +2557,7 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // nav
+  // desktop nav
   const navBtn = e.target.closest('#nav button');
   if (navBtn) {
     ui.tab = navBtn.dataset.tab;
@@ -2394,7 +2598,6 @@ document.addEventListener('click', e => {
   // time triggers
   const timeTrig = e.target.closest('[data-time-for]');
   if (timeTrig) {
-    const key = timeTrig.dataset.timeFor;
     const current = timeTrig.dataset.timeValue || '09:00';
     openTimePicker(current, v => {
       timeTrig.dataset.timeValue = v;
@@ -2463,7 +2666,7 @@ document.addEventListener('click', e => {
 
   // goto date
   const goto = e.target.closest('[data-goto-date]');
-  if (goto) { ui.plannerDate = goto.dataset.gotoDate; render(); return; }
+  if (goto) { ui.plannerDate = goto.dataset.gotoDate; ui.tab = 'planner'; render(); return; }
 
   // planner shifts
   const shift = e.target.closest('[data-planner-shift]');
@@ -2546,9 +2749,50 @@ document.addEventListener('click', e => {
   }
 });
 
+// Mobile "More" sheet
+function openMobileMoreSheet() {
+  closePopup();
+  const overlay = document.createElement('div');
+  overlay.className = 'popup-overlay';
+  document.body.appendChild(overlay);
+  activePopup = overlay;
+
+  const allTabs = [
+    { id: 'dashboard',    name: 'Обзор',         icon: '📊' },
+    { id: 'transactions', name: 'Операции',      icon: '💸' },
+    { id: 'analytics',    name: 'Аналитика',     icon: '📈' },
+    { id: 'plans',        name: 'Планы',         icon: '🎯' },
+    { id: 'goals',        name: 'Цели',          icon: '🏆' },
+    { id: 'debts',        name: 'Долги',         icon: '💳' },
+    { id: 'distribution', name: 'Распределение', icon: '⚖️' },
+    { id: 'planner',      name: 'Дневник',       icon: '📅' }
+  ];
+
+  overlay.innerHTML = `
+    <div class="popup select-popup">
+      <div class="select-head">Все разделы</div>
+      ${allTabs.map(t => `
+        <button type="button" class="sel-item ${t.id === ui.tab ? 'selected' : ''}" data-sel="${t.id}">
+          <span class="sel-icon">${t.icon}</span>
+          <span class="sel-name">${t.name}</span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { closePopup(); return; }
+    const item = e.target.closest('[data-sel]');
+    if (item) {
+      ui.tab = item.dataset.sel;
+      closePopup();
+      render();
+    }
+  });
+}
+
 // Forms
 document.addEventListener('submit', e => {
-  // tx
   if (e.target.id === 'txForm') {
     e.preventDefault();
     const amount = parseFloat(document.getElementById('txAmount').value);
@@ -2564,7 +2808,6 @@ document.addEventListener('submit', e => {
     return;
   }
 
-  // task
   if (e.target.id === 'taskForm') {
     e.preventDefault();
     const timeTrig = document.querySelector('[data-time-for="taskTime"]');
@@ -2578,7 +2821,6 @@ document.addEventListener('submit', e => {
     return;
   }
 
-  // plan
   if (e.target.id === 'planForm') {
     e.preventDefault();
     const title = document.getElementById('planTitle').value.trim();
@@ -2594,7 +2836,6 @@ document.addEventListener('submit', e => {
     return;
   }
 
-  // plan subtask add
   const planAddAttr = e.target.dataset.planAdd;
   if (planAddAttr) {
     e.preventDefault();
@@ -2609,7 +2850,6 @@ document.addEventListener('submit', e => {
     return;
   }
 
-  // goal
   if (e.target.id === 'goalForm') {
     e.preventDefault();
     const title = document.getElementById('goalTitle').value.trim();
@@ -2625,7 +2865,6 @@ document.addEventListener('submit', e => {
     return;
   }
 
-  // goal add savings
   const goalAddAttr = e.target.dataset.goalAdd;
   if (goalAddAttr) {
     e.preventDefault();
@@ -2635,7 +2874,6 @@ document.addEventListener('submit', e => {
     const g = state.goals.find(x => x.id === goalAddAttr);
     if (g) {
       g.saved = (g.saved || 0) + amount;
-      // также добавим транзакцию
       state.transactions.push({
         id: uid(), type: 'expense', amount,
         category: 'savings',
@@ -2647,7 +2885,6 @@ document.addEventListener('submit', e => {
     return;
   }
 
-  // debt
   if (e.target.id === 'debtForm') {
     e.preventDefault();
     const name = document.getElementById('debtName').value.trim();
@@ -2664,7 +2901,6 @@ document.addEventListener('submit', e => {
     return;
   }
 
-  // debt payment
   const debtAddAttr = e.target.dataset.debtAdd;
   if (debtAddAttr) {
     e.preventDefault();
@@ -2674,7 +2910,6 @@ document.addEventListener('submit', e => {
     const d = state.debts.find(x => x.id === debtAddAttr);
     if (d) {
       d.paid = Math.min(d.amount, (d.paid || 0) + amount);
-      // добавим транзакцию
       const catMap = { mfo: 'debt_mfo', credit: 'debt_credit', friend: 'debt_friend', other: 'debt_mfo' };
       state.transactions.push({
         id: uid(), type: 'expense', amount,
